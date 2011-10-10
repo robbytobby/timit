@@ -1,0 +1,56 @@
+@import blueprint
+@import compass/css3
+@import "compass/utilities/lists/horizontal-list"
+body.bp
+  +blueprint
+  +blueprint-interaction
+  textarea
+    height: auto
+
+body.two-col
+  #container
+    +container
+  #header
+    +column($blueprint-grid-columns)
+    margin-top: 10px
+  #content
+    +column($blueprint-grid-columns)
+    +colborder(#a0a0a0, 2px)
+    min-height: 600px
+    padding-top: 10px
+    margin-top: 10px
+  .translation_missing
+    border: solid red 1px
+  a
+    text-decoration: none
+    &:hover
+      background-color: transparent
+
+
+#content
+  h1
+    font-size: 1.5em
+    font-weight: bold
+    width: auto
+    margin-bottom: 0px
+    span
+      margin: 0 0 0 5px
+  h2
+    font-size: 1.35em
+    font-weight: bold
+    margin-top: 2em 
+  hr
+    color: #c0c0c0
+  th
+    text-align: left
+
+#topmenu
+  ul
+    +horizontal-list
+    font-size: 1.5em
+    li
+      margin-right: 20px
+  border-bottom: 2px solid #a0a0a0
+  padding-bottom: 5px
+
+

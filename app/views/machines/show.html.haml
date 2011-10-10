@@ -1,0 +1,10 @@
+%p
+  %b Name:
+  = @machine.name
+%p
+  %b Description:
+  = @machine.description
+
+= link_to 'Edit', edit_machine_path(@machine)
+\|
+= link_to 'Back', machines_path

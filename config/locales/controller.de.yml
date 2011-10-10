@@ -1,0 +1,8 @@
+de:
+  controller:
+    machines:
+      create:
+        success: 'Gerät erfolgreich angelegt'
+      update:
+        success: 'Gerät erfolgreich geändert'
+      

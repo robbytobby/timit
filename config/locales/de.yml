@@ -1,0 +1,16 @@
+de:
+  edit: 'bearbeiten'
+  destroy: 'löschen'
+  are_you_sure?: 'Bist du sicher?'
+  layouts:
+    topmenu:
+      machines: 'Geräte'
+      users: 'User'
+  machines:
+    index:
+      new: 'neues Gerät'
+      name: 'Name'
+      description: 'Beschreibung'
+    edit:
+      heading: 'Gerät bearbeiten'
+

@@ -1,0 +1,7 @@
+de:
+  formtastic:
+    actions:
+      create: "%{model} speichern"
+      update: "%{model} speichern"
+      submit: "%{model} speichern"
+      cancel: "abbrechen"

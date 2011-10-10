@@ -1,0 +1,13 @@
+%table
+  %tr
+    %th= t('.name')
+    %th= t('.description')
+    %th= link_to t('.new'), new_machine_path
+    %th
+
+  - @machines.each do |machine|
+    %tr
+      %td= machine.name
+      %td= machine.description
+      %td= link_to t('edit'), edit_machine_path(machine)
+      %td= link_to t('destroy'), machine, :confirm => t('are_you_sure?'), :method => :delete

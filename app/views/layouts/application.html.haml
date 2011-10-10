@@ -1,0 +1,20 @@
+!!! 5
+%html
+  %head
+    %title FiFi
+    = stylesheet_link_tag "application"
+    = javascript_include_tag "application"
+    = csrf_meta_tags
+
+  %body.bp.two-col
+    #container
+      #header
+        %h1 TiMiT
+        #topmenu
+          = render :partial => 'layouts/topmenu'
+      #content
+        - if flash[:error]
+          #error= flash[:error]
+        - if flash[:notice]
+          #notice= flash[:notice]
+        = yield

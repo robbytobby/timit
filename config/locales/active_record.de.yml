@@ -1,0 +1,8 @@
+de:
+  activerecord:
+    models:
+      machine: 'Gerät'
+    attributes:
+      machine: 
+        name: 'Name'
+        description: 'Beschreibung'
