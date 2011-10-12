@@ -1,3 +1,14 @@
-%ul
-  %li= link_to t('.machines'), machines_path
-  %li= link_to t('.users'), '#'
+-if user_signed_in?
+  %ul.app_menu
+    %li= link_to t('.machines'), machines_path
+    %li= link_to t('.users'), '#'
+  %ul.user_menu
+    %li= link_to t(".sign_out"), destroy_user_session_path, :method => :delete
+-else
+  %ul.user_menu
+    - if controller_name != 'sessions'
+      %li= link_to t(".sign_in"), new_user_session_path
+    - if controller_name != 'registrations'
+      %li= link_to t(".sign_up"), new_user_registration_path
+    - if controller_name != 'passwords'
+      %li= link_to t(".forgot_your_password?"), new_user_password_path

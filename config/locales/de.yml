@@ -2,10 +2,17 @@ de:
   edit: 'bearbeiten'
   destroy: 'löschen'
   are_you_sure?: 'Bist du sicher?'
+  support:
+    array:
+      two_words_connector: ' und '
   layouts:
     topmenu:
       machines: 'Geräte'
       users: 'User'
+      sign_in: "anmelden"
+      sign_up: "Zugang beantragen"
+      sign_out: "abmelden"
+      forgot_your_password?: "Passwort vergessen?"
   machines:
     index:
       new: 'neues Gerät'

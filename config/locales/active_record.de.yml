@@ -2,7 +2,12 @@ de:
   activerecord:
     models:
       machine: 'Gerät'
+      user: 'User'
     attributes:
       machine: 
         name: 'Name'
         description: 'Beschreibung'
+      user:
+        email: 'E-Mail'
+        password: 'Passwort'
+        password_confirmation: 'Passwort bestätigen'

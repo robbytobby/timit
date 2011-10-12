@@ -31,6 +31,8 @@ gem 'schema_plus'
 gem 'state_machine'
 gem 'strip_attributes', '~>1.0'
 gem 'will_paginate', '~>3.0'
+### BUG: devise nicht vor strip_attributes laden
+gem 'devise'
 
 # Use unicorn as the web server
 # gem 'unicorn'
