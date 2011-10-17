@@ -1,4 +1,6 @@
 Timit::Application.routes.draw do
+  resources :bookings
+
   devise_for :users
 
   resources :machines

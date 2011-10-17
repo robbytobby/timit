@@ -1,0 +1,21 @@
+%p#notice= notice
+
+%p
+  %b Starts at:
+  = @booking.starts_at
+%p
+  %b Ends at:
+  = @booking.ends_at
+%p
+  %b All day:
+  = @booking.all_day
+%p
+  %b User:
+  = @booking.user_id
+%p
+  %b Machine:
+  = @booking.machine_id
+
+= link_to 'Edit', edit_booking_path(@booking)
+\|
+= link_to 'Back', bookings_path

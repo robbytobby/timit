@@ -4,6 +4,10 @@ de:
       machine: 'Gerät'
       user: 'User'
     attributes:
+      booking:
+        starts_at: 'Beginn'
+        ends_at: 'Ende'
+        all_day: 'ganzer Tag'
       machine: 
         name: 'Name'
         description: 'Beschreibung'

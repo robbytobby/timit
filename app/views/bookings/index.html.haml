@@ -1,0 +1,27 @@
+%h1= t('.heading')
+
+%table
+  %tr
+    %th= t('activerecord.attributes.booking.starts_at')
+    %th= t('activerecord.attributes.booking.ends_at')
+    %th= t('activerecord.attributes.booking.all_day')
+    %th= t('activerecord.models.user')
+    %th= t('activerecord.models.machine')
+    %th
+    %th
+    %th
+
+  - @bookings.each do |booking|
+    %tr
+      %td= l booking.starts_at
+      %td= l booking.ends_at
+      %td= booking.all_day
+      %td= booking.user_id
+      %td= booking.machine_id
+      %td= link_to 'Show', booking
+      %td= link_to 'Edit', edit_booking_path(booking)
+      %td= link_to 'Destroy', booking, :confirm => 'Are you sure?', :method => :delete
+
+%br
+
+= link_to 'New Booking', new_booking_path
