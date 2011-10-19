@@ -24,8 +24,7 @@ class BookingsController < ApplicationController
   # GET /bookings/new
   # GET /bookings/new.json
   def new
-    @booking = Booking.new
-    @booking.user = current_user
+    @booking = Booking.new(params[:booking])
 
     respond_to do |format|
       format.html # new.html.erb
@@ -42,6 +41,7 @@ class BookingsController < ApplicationController
   # POST /bookings.json
   def create
     @booking = Booking.new(params[:booking])
+    @booking.user = current_user
 
     respond_to do |format|
       if @booking.save

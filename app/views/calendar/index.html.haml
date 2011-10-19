@@ -1,6 +1,23 @@
 %h2= t('.heading')
 -if user_signed_in?
-  %p das siehts du wenn du angemeldet bist 
+  %table.calendar
+    %tr
+      %th
+      -@machines.each do |m|
+        %th= m.name
+    - (@calendar.start_date..@calendar.end_date).each do |d|
+      %tr{:class => "day#{d.wday} #{cycle('odd', 'even')}"}
+        %td.date= t('date.abbr_day_names')[d.wday] + ', ' +  l(d)
+        - @machines.each do |m|
+          -if @calendar.entry_for?(m.id, d)
+            %td 
+              - @calendar.entries_for(m.id, d).each do |booking|
+                %div{:class => booking.day_type(d)}
+                  = booking.user.email if  booking.first_day?(d) || d == @calendar.start_date
+          -else
+            %td 
+              %div.free 
+                = link_to '+', new_booking_path(:booking => {:machine_id => m, :starts_at => d.to_datetime})
 -else
   %p und das ohne Anmeldung 
 

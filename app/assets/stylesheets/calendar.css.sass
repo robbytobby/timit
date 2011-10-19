@@ -1,0 +1,38 @@
+@import compass/css3
+$booking_border_width: 2px
+$booking_border: $booking_border_width solid blue
+$booking_margin: 4px
+$booking_height: 30px
+$booking_padding: 4px
+
+body.bp
+  table.calendar
+    border-collapse: collapse
+    tr.day0
+      td
+        border-bottom: 2px solid black
+    td
+      padding: 0 4px
+      border: 1px solid gray
+      &.date
+        font-weight: bold
+      div
+        padding: $booking_padding
+        &.booked
+          border-left: $booking_border
+          border-right: $booking_border
+          background-color: #bbbbdd
+          height: $booking_height
+        &.firstday
+          border-top: $booking_border
+          margin-top: $booking_margin
+          +border-top-radius($booking_margin)
+          height: $booking_height - $booking_border_width - $booking_margin
+        &.lastday
+          border-bottom: $booking_border
+          margin-bottom: $booking_margin
+          +border-bottom-radius($booking_margin)
+          height: $booking_height - $booking_border_width - $booking_margin
+        &.free
+          height: $booking_height
+          
