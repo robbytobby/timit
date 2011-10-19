@@ -14,25 +14,23 @@ body.bp
     td
       padding: 0 4px
       border: 1px solid gray
+      height: 3em
       &.date
         font-weight: bold
       div
         padding: $booking_padding
+        height: 100%
         &.booked
           border-left: $booking_border
           border-right: $booking_border
           background-color: #bbbbdd
-          height: $booking_height
         &.firstday
           border-top: $booking_border
           margin-top: $booking_margin
           +border-top-radius($booking_margin)
-          height: $booking_height - $booking_border_width - $booking_margin
         &.lastday
           border-bottom: $booking_border
           margin-bottom: $booking_margin
           +border-bottom-radius($booking_margin)
-          height: $booking_height - $booking_border_width - $booking_margin
         &.free
-          height: $booking_height
           
