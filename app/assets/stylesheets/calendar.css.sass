@@ -1,9 +1,9 @@
 @import compass/css3
 $booking_border_width: 2px
 $booking_border: $booking_border_width solid blue
-$booking_margin: 4px
-$booking_height: 30px
-$booking_padding: 4px
+$booking_margin: 2px
+$booking_height: 24px
+$booking_padding: 2px
 
 body.bp
   table.calendar
@@ -14,12 +14,13 @@ body.bp
     td
       padding: 0 4px
       border: 1px solid gray
-      height: 3em
+      height: $booking_height
+      vertical-align: top
       &.date
         font-weight: bold
       div
         padding: $booking_padding
-        height: 100%
+        height: $booking_height
         &.booked
           border-left: $booking_border
           border-right: $booking_border
@@ -27,10 +28,17 @@ body.bp
         &.firstday
           border-top: $booking_border
           margin-top: $booking_margin
-          +border-top-radius($booking_margin)
+          +border-top-radius(2 * $booking_margin)
+          height: $booking_height - $booking_border_width - 2 / 3 * $booking_margin
+          &.lastday
+            height: $booking_height - 2 * $booking_border_width - 4 / 3 *  $booking_margin
         &.lastday
           border-bottom: $booking_border
           margin-bottom: $booking_margin
-          +border-bottom-radius($booking_margin)
+          +border-bottom-radius(2 * $booking_margin)
+          height: $booking_height - $booking_border_width
+          position: relative
+            top: 0
+        &.middle
         &.free
           
