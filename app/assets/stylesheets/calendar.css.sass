@@ -1,34 +1,50 @@
 @import compass/css3
 $booking_border_width: 1px
 $booking_border: $booking_border_width solid blue
-$booking_margin: 2px
-$booking_height: 24px
 $booking_padding: 2px
+
+$date_width: 90px
+$column_width: 169px
+$column_vertical_padding: 4px
+$machine_width: $column_width - 2 * $column_vertical_padding - 2 * $booking_border_width
+$table_thick_border: 2px solid black
+$table_thin_border: 1px solid gray
+
+@mixin font_def
+  font_size: 12px
+  line-height: 16px
 
 body.bp
   table.calendar
     border-collapse: collapse
-    tr.day0
-      td
-        border-bottom: 2px solid black
+    tr.day0 td
+      border-bottom: $table_thick_border
+    th
+      border-bottom: $table_thin_border
     td
-      padding: 0 4px
-      border: 1px solid gray
-      height: $booking_height
+      border-right: $table_thin_border
+      border-bottom: $table_thin_border
+      width: $machine_width
+      padding: 0 $column_vertical_padding
       vertical-align: top
       &.date
+        white-space: nowrap
+        width: $date_width
         font-weight: bold
       div
+        width: $machine_width - 2 * $booking_padding
+        +font_def
         padding: $booking_padding
         &.booked
           border: $booking_border
-          +border-radius(2 * $booking_margin)
           background-color: #bbbbdd
-          height: $booking_height - 2 * $booking_border_width
+          position: relative
+        &.spacer
         &.free
-          height: $booking_height
+          padding-top: 3px
+          padding-bottom: 3px
+          position: relative
         &.multiday
           position: absolute
-          border-color: red
           overflow: hidden
           

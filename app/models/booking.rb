@@ -18,6 +18,10 @@ class Booking < ActiveRecord::Base
     date == starts_at.to_date
   end
 
+  def last_day?(date)
+    date == ends_at.to_date
+  end
+
   def multiday?
     starts_at.to_date != ends_at.to_date
   end
