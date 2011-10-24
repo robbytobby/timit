@@ -14,10 +14,13 @@
               %div.free 
                 = link_to '+', new_booking_path(:booking => {:machine_id => m, :starts_at => d.to_datetime})
             - @calendar.entries_for(m.id, d).each do |booking|
-              %div{:class => booking.day_type(d)}
-                = booking.user.email if  booking.first_day?(d) || d == @calendar.start_date
-            - @calendar.number_of_spacers(m.id, d, @machines).times do |i|
-              %div{:class => 'booked middle'}
+              -if booking.first_day?(d) || d == @calendar.start_date
+                -if booking.multiday?
+                  %div{:class => "booked multiday", :style => "height: #{booking.number_of_days * 28 - 2}px"}
+                    = booking.user.email 
+                    = booking.number_of_days
+                -else
+                  %div.booked= booking.user.email 
             - if @calendar.draw_new_booking_last?(m.id, d)
               %div.free 
                 = link_to '+', new_booking_path(:booking => {:machine_id => m, :starts_at => d.to_datetime})

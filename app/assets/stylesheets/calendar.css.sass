@@ -1,5 +1,5 @@
 @import compass/css3
-$booking_border_width: 2px
+$booking_border_width: 1px
 $booking_border: $booking_border_width solid blue
 $booking_margin: 2px
 $booking_height: 24px
@@ -20,25 +20,15 @@ body.bp
         font-weight: bold
       div
         padding: $booking_padding
-        height: $booking_height
         &.booked
-          border-left: $booking_border
-          border-right: $booking_border
+          border: $booking_border
+          +border-radius(2 * $booking_margin)
           background-color: #bbbbdd
-        &.firstday
-          border-top: $booking_border
-          margin-top: $booking_margin
-          +border-top-radius(2 * $booking_margin)
-          height: $booking_height - $booking_border_width - 2 / 3 * $booking_margin
-          &.lastday
-            height: $booking_height - 2 * $booking_border_width - 4 / 3 *  $booking_margin
-        &.lastday
-          border-bottom: $booking_border
-          margin-bottom: $booking_margin
-          +border-bottom-radius(2 * $booking_margin)
-          height: $booking_height - $booking_border_width
-          position: relative
-            top: 0
-        &.middle
+          height: $booking_height - 2 * $booking_border_width
         &.free
+          height: $booking_height
+        &.multiday
+          position: absolute
+          border-color: red
+          overflow: hidden
           

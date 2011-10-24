@@ -21,4 +21,8 @@ class Booking < ActiveRecord::Base
   def multiday?
     starts_at.to_date != ends_at.to_date
   end
+
+  def number_of_days
+    (ends_at.to_date - starts_at.to_date + 1).to_i
+  end
 end
