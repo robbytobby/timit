@@ -4,7 +4,7 @@ Timit::Application.routes.draw do
   devise_for :users
 
   resources :machines
-  match 'calendar' => 'calendar/index'
+  match 'calendar' => 'calendar#index'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

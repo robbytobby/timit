@@ -2,29 +2,41 @@
 $booking_border_width: 1px
 $booking_border: $booking_border_width solid blue
 $booking_padding: 2px
+$booking_margin: 4px
+$radius: 4px
 
 $date_width: 90px
 $column_width: 169px
 $column_vertical_padding: 4px
 $machine_width: $column_width - 2 * $column_vertical_padding - 2 * $booking_border_width
-$table_thick_border: 2px solid black
-$table_thin_border: 1px solid gray
+$table_border_width: 1px
+$table_thick_border: $table_border_width solid black
+$table_thin_border: $table_border_width dotted gray
+
+$font-size: 12px
+$line-height: $font-size / 3 * 4
+$dh: $line-height + 2 * ($booking_padding + $booking_border_width)
+
 
 @mixin font_def
-  font_size: 12px
-  line-height: 16px
+  font-size: $font-size
+  line-height: $line-height
 
 body.bp
   table.calendar
     border-collapse: collapse
-    tr.day0 td
-      border-bottom: $table_thick_border
+    tr
+      &.day0 td
+        border-bottom: $table_thick_border
+      @for $i from 1 through 10
+        &.height-#{$i}
+          height: $dh * $i + ($i + 1) * $booking_margin + $table_border_width
     th
       border-bottom: $table_thin_border
     td
+      +font_def
       border-right: $table_thin_border
       border-bottom: $table_thin_border
-      width: $machine_width
       padding: 0 $column_vertical_padding
       vertical-align: top
       &.date
@@ -35,16 +47,26 @@ body.bp
         width: $machine_width - 2 * $booking_padding
         +font_def
         padding: $booking_padding
+        margin: $booking_margin 0
+        +border-radius($radius)
         &.booked
           border: $booking_border
           background-color: #bbbbdd
           position: relative
         &.spacer
         &.free
-          padding-top: 3px
-          padding-bottom: 3px
+          padding-top: $booking_padding + $booking_border_width
+          padding-bottom: $booking_padding + $booking_border_width
           position: relative
         &.multiday
+          margin-top: 0
           position: absolute
           overflow: hidden
-          
+          &.all_day
+            margin-top: $booking_margin
+        &.offset
+          top: $dh + $booking_margin
+        @for $i from 1 through 60
+          @for $j from 0 through $i
+            &.height-#{$i}-#{$j}
+              height: $dh * $i - 2 * ($booking_padding + $booking_border_width) + (2 * $i - $j - 2) * $booking_margin + ($i - $j - 1) * $table_border_width 

@@ -5,27 +5,16 @@
       %th
       -@calendar.machines.each do |m|
         %th= m.name
-    - (@calendar.start_date..@calendar.end_date).each do |d|
-      %tr{:class => "day#{d.wday} #{cycle('odd', 'even')}", :style => "height: #{@calendar.row_height(d)}"}
+    - @calendar.days.each do |d|
+      %tr{:class => row_class(@calendar, d)}
         %td.date= t('date.abbr_day_names')[d.wday] + ', ' +  l(d)
         - @calendar.machines.each do |m|
           %td 
-            - if @calendar.draw_new_booking_first?(m.id, d)
-              %div.free 
-                = link_to '+', new_booking_path(:booking => {:machine_id => m, :starts_at => d.to_datetime})
+            = new_booking(m,d) if @calendar.draw_new_booking_first?(m.id, d)
             - @calendar.entries_for(m.id, d).each do |booking|
-              -if booking.first_day?(d) || d == @calendar.start_date
-                -if booking.multiday?
-                  %div{:class => "booked multiday", :style => "height: #{@calendar.div_height(booking)}"}
-                    = booking.user.email 
-                    = booking.number_of_days
-                    und jetz schwätze mir emol a wengle damit de siggsch wie des ausschaut wenn a menge text do steht
-                -else
-                  %div.booked{:style => @calendar.spacing(booking)}
-                    = booking.user.email 
-            - if @calendar.draw_new_booking_last?(m.id, d)
-              %div.free{:style => @calendar.free_spacing(m.id, d)}
-                = link_to '+', new_booking_path(:booking => {:machine_id => m, :starts_at => d.to_datetime})
+              = draw_booking(@calendar, booking, d)
+            = new_booking(m,d,offset(@calendar, m.id, d)) if @calendar.draw_new_booking_last?(m.id, d)
+
 -else
   %p und das ohne Anmeldung 
 

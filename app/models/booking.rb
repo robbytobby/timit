@@ -29,4 +29,8 @@ class Booking < ActiveRecord::Base
   def number_of_days
     (ends_at.to_date - starts_at.to_date + 1).to_i
   end
+
+  def days
+    starts_at.to_date..ends_at.to_date
+  end
 end
