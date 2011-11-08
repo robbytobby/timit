@@ -4,6 +4,7 @@ $booking_border: $booking_border_width solid blue
 $booking_padding: 2px
 $booking_margin: 4px
 $radius: 4px
+$booking_color: #bbccee
 
 $date_width: 90px
 $column_width: 169px
@@ -43,6 +44,7 @@ body.bp
         white-space: nowrap
         width: $date_width
         font-weight: bold
+        padding-top: $booking_margin + $booking_padding + $booking_border_width
       div
         width: $machine_width - 2 * $booking_padding
         +font_def
@@ -51,7 +53,7 @@ body.bp
         +border-radius($radius)
         &.booked
           border: $booking_border
-          background-color: #bbbbdd
+          background-color: $booking_color
           position: relative
         &.spacer
         &.free

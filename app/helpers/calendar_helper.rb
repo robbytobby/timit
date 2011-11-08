@@ -5,13 +5,14 @@ module CalendarHelper
 
   def div_class(calendar, booking)
     klass = "booked"
+    klass << " #{div_height(calendar, booking)}"
     if booking.multiday?
       klass << " multiday"
       klass << " all_day" if booking.all_day
-      klass << " #{div_height(calendar, booking)}"
     else
       klass << " #{offset(calendar, booking.machine_id, booking.starts_at.to_date)}"
     end
+    klass
   end
 
   def offset(calendar, machine_id, day)
