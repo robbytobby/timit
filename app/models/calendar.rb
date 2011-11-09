@@ -12,7 +12,7 @@ class Calendar
     self.days = starts.to_date...ends.to_date
 
     if machine_ids
-      self.machines = Machine.find(machin_ids).order(:id)
+      self.machines = Machine.find(machine_ids).order(:id)
     else
       self.machines = Machine.order(:id)
     end
@@ -23,6 +23,12 @@ class Calendar
   end
 
   def draw_new_booking_first?(machine_id, date)
+    #if first = entries_for(machine_id, date).first
+    #  return false unless first.starts_at?(date)
+    #  return false if first.all_day
+    #end
+    #return true
+
     value = true
     if first = entries_for(machine_id, date).first
       value = false unless first.starts_at.to_date == date
