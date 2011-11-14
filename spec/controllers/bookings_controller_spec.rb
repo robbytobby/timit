@@ -79,7 +79,7 @@ describe BookingsController do
 
       it "redirects to the created booking" do
         post :create, :booking => valid_attributes
-        response.should redirect_to(Booking.last)
+        response.should redirect_to(:calendar)
       end
     end
 
@@ -121,7 +121,7 @@ describe BookingsController do
       it "redirects to the booking" do
         booking = Booking.create! valid_attributes
         put :update, :id => booking.id, :booking => valid_attributes
-        response.should redirect_to(booking)
+        response.should redirect_to(:calendar)
       end
     end
 

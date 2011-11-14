@@ -5,7 +5,7 @@ FactoryGirl.define do
       starts_at "2011-10-17 17:34:14"
       ends_at "2011-10-17 17:34:14"
       all_day false
-      user_id 1
-      machine_id 1
+      association :user
+      association :machine 
     end
 end

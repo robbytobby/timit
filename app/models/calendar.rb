@@ -2,20 +2,16 @@ class Calendar
   attr_accessor :bookings
   attr_accessor :days
   attr_accessor :machines
-  def initialize(starts, ends, machine_ids)
+  private :machines=, :days=, :bookings=
+
+  def initialize(starts = nil, ends = nil, machine_ids = nil)
     starts ||= Date.today
     ends ||= Date.today + 4.weeks
     self.bookings = Booking.where("starts_at <= :ends and ends_at >= :starts", 
                                   :ends => ends.to_datetime, 
                                   :starts => starts.to_datetime).order(:starts_at)
-
     self.days = starts.to_date...ends.to_date
-
-    if machine_ids
-      self.machines = Machine.find(machine_ids).order(:id)
-    else
-      self.machines = Machine.order(:id)
-    end
+    self.machines = machine_ids ? Machine.order(:id).find(machine_ids) : Machine.order(:id)
   end
 
   def entries_for(machine_id, date)
@@ -23,18 +19,11 @@ class Calendar
   end
 
   def draw_new_booking_first?(machine_id, date)
-    #if first = entries_for(machine_id, date).first
-    #  return false unless first.starts_at?(date)
-    #  return false if first.all_day
-    #end
-    #return true
-
-    value = true
     if first = entries_for(machine_id, date).first
-      value = false unless first.starts_at.to_date == date
-      value = false if first.all_day
+      return false unless first.starts_at?(date)
+      return false if first.all_day
     end
-    return value
+    return true
   end
 
   def draw_new_booking_last?(machine_id, date)
