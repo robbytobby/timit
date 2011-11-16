@@ -37,12 +37,12 @@ describe Calendar do
         @calendar = Calendar.new
         first_day = @calendar.days.first.to_datetime
         last_day = @calendar.days.last.to_datetime
-        @to_early_booking = FactoryGirl.create(:booking, :starts_at => first_day - 1.day, :ends_at =>  first_day - 1.day)
+        @to_early_booking = FactoryGirl.create(:booking, :starts_at => first_day - 1.day, :ends_at =>  first_day - 1.day + 1.second)
         @started_booking = FactoryGirl.create(:booking, :starts_at => first_day - 3.days, :ends_at =>  first_day)
-        @today_booking = FactoryGirl.create(:booking, :starts_at => first_day, :ends_at => first_day)
-        @future_booking = FactoryGirl.create(:booking, :starts_at => last_day, :ends_at => last_day)
+        @today_booking = FactoryGirl.create(:booking, :starts_at => first_day, :ends_at => first_day + 1.second)
+        @future_booking = FactoryGirl.create(:booking, :starts_at => last_day, :ends_at => last_day + 1.second)
         @future_booking2 = FactoryGirl.create(:booking, :starts_at => last_day - 2.days, :ends_at => last_day + 2.days)
-        @to_late_booking = FactoryGirl.create(:booking, :starts_at => last_day + 1.day, :ends_at => last_day + 1.day)
+        @to_late_booking = FactoryGirl.create(:booking, :starts_at => last_day + 1.day, :ends_at => last_day + 1.day + 1.second)
         @calendar = Calendar.new
       end
 

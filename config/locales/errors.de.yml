@@ -22,3 +22,6 @@ de:
       odd: "muss ungerade sein"
       even: "muss gerade sein"
       not_an_integer: "muss ganzzahlig sein"
+      start_after_end: "Buchungsende muß nach dem Buchungsanfang sein"
+      date_conflicts: "kollidiert mit einer Buchung von %{start} bis %{end}"
+
