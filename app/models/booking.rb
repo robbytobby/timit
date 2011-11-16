@@ -33,28 +33,29 @@ class Booking < ActiveRecord::Base
     starts_at.to_date..ends_at.to_date
   end
 
+  def human_start(format = :short)
+    I18n.l starts_at, :format => format
+  end
+
+  def human_end(format = :short)
+    I18n.l ends_at, :format => format 
+  end
+
   private
   def end_after_start
     errors.add(:ends_at, :start_after_end) unless ends_at > starts_at
   end
 
   def no_overlaps
-    rel = Booking.where("machine_id = :machine", :machine => machine_id)
-    rel = rel.where("id != :id", :id => id) unless self.new_record?
-    if b = rel.where("starts_at <= :start and ends_at > :start", :start => starts_at)
-      date_conflict(:starts_at, b)
-    end
-    if b = rel.where("starts_at < :end and ends_at > :end", :end => ends_at)
-      date_conflict(:ends_at, b)
-    end
-    if b = rel.where("starts_at >= :start and ends_at <= :end", :start => starts_at, :end => ends_at)
-      date_conflict(:ends_at, b)
-    end
+    date_conflict(:starts_at, "starts_at <= :start and ends_at > :start")
+    date_conflict(:ends_at, "starts_at < :end and ends_at > :end")
+    date_conflict(:ends_at, "starts_at >= :start and ends_at <= :end")
   end
 
-  def date_conflict(attr, records)
-    records.each do |r|
-      errors.add(attr, :date_conflicts, :start => I18n.l(r.starts_at, :format => :short), :end => I18n.l(r.ends_at, :format => :short))
-    end
+  def date_conflict(attr, condition)
+    conflicts = Booking.where("machine_id = :machine", :machine => machine_id)
+    conflicts = conflicts.where("id != :id", :id => id) unless self.new_record?
+    conflicts = conflicts.where(condition, :start => starts_at, :end => ends_at)
+    conflicts.each{|c| errors.add(attr, :date_conflicts, :from => c.human_start, :to => c.human_end)}
   end
 end

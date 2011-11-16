@@ -9,7 +9,7 @@ describe Booking do
     @booking.should be_valid
   end
 
-  it "includes all days between the starting and the anding day" do
+  it "includes all days between the starting and the ending day" do
     @booking = FactoryGirl.build(:booking, :starts_at => "2011-10-17 17:34:14", :ends_at =>"2011-10-19 17:34:14")
     @booking.days.each{|d| @booking.includes?(d).should be_true}
     @booking.includes?(@booking.days.first - 1.day).should be false
@@ -46,6 +46,16 @@ describe Booking do
     @booking.days.last.should == @booking.ends_at.to_date
   end
 
+  it "localizes starts_at" do
+    @booking.human_start.should == I18n.l(@booking.starts_at, :format => :short)
+    @booking.human_start(:long).should == I18n.l(@booking.starts_at, :format => :long)
+  end
+
+  it "localizes starts_at" do
+    @booking.human_end.should == I18n.l(@booking.ends_at, :format => :short)
+    @booking.human_end(:long).should == I18n.l(@booking.ends_at, :format => :long)
+  end
+
   it "is not valid without user_id" do
     @booking.user_id = nil
     @booking.should_not be_valid
@@ -61,7 +71,7 @@ describe Booking do
     @booking.should_not be_valid
   end
 
-  describe "overlaps" do
+  describe "does not overlap" do
     before :each do
       @now = Time.now
       @old_booking = FactoryGirl.create(:booking, :starts_at => @now, :ends_at => @now + 6.hours)
@@ -73,12 +83,12 @@ describe Booking do
         FactoryGirl.build(:booking, :starts_at => @now, :ends_at => @now + 3.days, :machine_id => @old_booking.machine_id).should_not be_valid
       end
 
-      it "#is not valid if its end lies in an existing booking for that machine" do
+      it "is not valid if its end lies in an existing booking for that machine" do
         FactoryGirl.build(:booking, :starts_at => @now - 1.day, :ends_at => @now).should be_valid
         FactoryGirl.build(:booking, :starts_at => @now - 1.day, :ends_at => @now + 1.minute, :machine_id => @old_booking.machine_id).should_not be_valid
       end
 
-      it "#is not valid if its dates include an existing booking for that machine" do
+      it "is not valid if its dates include an existing booking for that machine" do
         FactoryGirl.build(:booking, :starts_at => @now - 1.day, :ends_at => @now + 1.day).should be_valid
         FactoryGirl.build(:booking, :starts_at => @now - 1.day, :ends_at => @now + 1.day, :machine_id => @old_booking.machine_id).should_not be_valid
       end
