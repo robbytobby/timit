@@ -14,6 +14,7 @@ de:
       invalid_token: 'Ungültiger Schlüssel.'
       timeout: 'Die Sitzung ist abgelaufen, bitte melde dich erneut an.'
       inactive: 'Dein Account ist noch nicht aktiviert.'
+      not_approved: 'Dein Account ist nicht aktiviert'
     sessions:
       signed_in: 'Erfolgreich Angemeldet.'
       signed_out: 'Erfolgreich Abgemeldet.'
@@ -34,6 +35,8 @@ de:
       destroyed: 'Der Benutzer wurde erfolgreich gelöscht.'
       new:
         sign_up: 'Zugang beantragen'
+      user:
+        inactive_signed_up: 'Dein Account ist angelegt, muß aber noch durch den Admin freigegeben werden. Du wirst per email informiert über die Freischaltung.'
     unlocks:
       send_instructions: 'Du wirst in Kürze eine E-Mail mit den Anweisungen zum Entsperren des Accounts erhalten.'
       unlocked: 'Dein Acoount wurde erfolgreich entsperrt. Du bist nun angemeldet'

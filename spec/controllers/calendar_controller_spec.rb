@@ -15,7 +15,7 @@ describe CalendarController do
 
     context "with user logged in" do
       before :each do
-        sign_in FactoryGirl.create(:user)
+        sign_in FactoryGirl.create :approved_user
       end
 
       describe "GET index" do
