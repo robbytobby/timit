@@ -20,4 +20,8 @@ de:
       description: 'Beschreibung'
     edit:
       heading: 'Gerät bearbeiten'
+  users:
+    index:
+    edit:
+      heading: 'User %{name} bearbeiten'
 

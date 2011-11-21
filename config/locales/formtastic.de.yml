@@ -8,3 +8,4 @@ de:
       sign_in: "anmelden"
       sign_up: "Zugang beantragen"
       send_reset_password_instructions: "Anweisungen zum Passwort zurücksezten zuschicken"
+      change_my_password: 'Passwort ändern'

@@ -25,4 +25,5 @@ de:
       start_after_end: "Buchungsende muß nach dem Buchungsanfang sein"
       date_conflicts: "kollidiert mit einer Buchung von %{from} bis %{to}"
       taken: "wird schon verwendet"
+      not_saved: "nicht gespeichert"
 

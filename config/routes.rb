@@ -1,8 +1,9 @@
 Timit::Application.routes.draw do
   resources :bookings
 
-  devise_for :users, :controllers => {:registrations => "registrations"}
+  devise_for :users, :controllers => {:registrations => "registrations"}, :path_prefix => 'devise'
 
+  resources :users
   resources :machines
   match 'calendar' => 'calendar#index'
 

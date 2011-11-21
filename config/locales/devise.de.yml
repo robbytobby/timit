@@ -26,6 +26,10 @@ de:
       updated: 'Dein Passwort wurde erfolreich geändert. Du bist nun angemeldet.'
       new:
         forgot_your_password?: 'Passwort vergessen?'
+      edit:
+        new_password: 'Neues Passwort'
+        password_confirmation: 'Bitte Passort bestätigen'
+        change_your_password: 'Ändere dein Passwort'
     confirmations:
       send_instructions: 'Du wirst in Kürze eine E-Mail erhalten mit deren Hilfe du deinen Account bestätigen kannst.'
       confirmed: 'Dein Acoount wurde erfolgreich bestätigt. Du bist nun angemeldet.'
