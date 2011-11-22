@@ -24,4 +24,6 @@ de:
     index:
     edit:
       heading: 'User %{name} bearbeiten'
+    new:
+      heading: 'Neuer User'
 

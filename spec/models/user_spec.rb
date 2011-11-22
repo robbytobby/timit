@@ -8,4 +8,12 @@ describe User do
     @user = FactoryGirl.create(:user, :approved => true)
     @user.should be_active_for_authentication
   end
+
+  describe "send_welcome_email" do
+    it "generates a reset_password_token!" do
+      @user = FactoryGirl.create(:user)
+      @user.send_welcome_email
+      @user.reload.reset_password_token.should_not be_blank
+    end
+  end
 end

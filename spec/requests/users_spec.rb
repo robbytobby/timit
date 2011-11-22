@@ -15,6 +15,20 @@ describe "Users" do
         response.should redirect_to(new_user_session_path)
       end
     end
+
+    describe "GET new" do
+      it "redirects to login" do
+        get new_user_path
+        response.should redirect_to(new_user_session_path)
+      end
+    end
+
+    describe "POST create" do
+      it "redirects to login" do
+        post users_path
+        response.should redirect_to(new_user_session_path)
+      end
+    end
   end
 
   context "with login" do
@@ -39,6 +53,34 @@ describe "Users" do
         response.body.should have_selector(:a, :href => new_user_path)
         response.body.should have_selector(:a, :href => edit_user_path(@user))
         response.body.should have_selector(:a, :href => user_path(@user), :'data-method' => 'delete')
+      end
+    end
+
+    describe "GET new" do
+      it "rendes a new user form" do
+        get new_user_path
+        response.should render_template :new
+        response.should render_template '_form'
+        response.body.should have_selector(:input, :id => "user_email", :value => '')
+        response.body.should_not have_selector(:input, :id => "user_password")
+        response.body.should have_selector(:input, :type => "submit", :name => "commit")
+        response.body.should have_selector(:a, :href => users_path)
+      end
+    end
+
+    describe "POST create" do
+      context "with valid params" do
+        it "redirects to index" do
+          post users_path :user => FactoryGirl.build(:user).attributes.symbolize_keys
+          response.should redirect_to users_path
+        end
+      end
+
+      context "with invalid params" do
+        it "re-renders new" do
+          post users_path :user => FactoryGirl.attributes_for(:user, :email => '')
+          response.should render_template :new
+        end
       end
     end
 
