@@ -24,6 +24,7 @@ de:
     passwords:
       send_instructions: 'Du wirst in Kürze eine E-Mail erhalten, in der dir erklärt wird, wie du dein Passwort zurücksetzt.'
       updated: 'Dein Passwort wurde erfolreich geändert. Du bist nun angemeldet.'
+      updated_not_active: 'Dein Passwort wurde erfolreich geändert.'
       new:
         forgot_your_password?: 'Passwort vergessen?'
       edit:

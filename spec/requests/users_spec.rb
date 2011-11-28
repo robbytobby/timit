@@ -33,15 +33,17 @@ describe "Users" do
 
   context "with login" do
     before :all do
+      @current_user = FactoryGirl.create :approved_user
       @user = FactoryGirl.create :approved_user
     end
 
     after :all do
       @user.destroy
+      @current_user.destroy
     end
 
     before :each do
-      post user_session_path, :user => {:email => @user.email, :password => 'password'}
+      post user_session_path, :user => {:email => @current_user.email, :password => 'password'}
     end
 
     describe "GET index" do

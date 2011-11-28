@@ -17,6 +17,8 @@ describe UsersController do
       get :index
       assigns(:users).should eq([@current_user, @user])
     end
+
+    it "has filters e.q.'only not approved'"
   end
 
   describe "GET show" do
@@ -101,7 +103,7 @@ describe UsersController do
       end
 
       it "sends a welcom email to the user" do
-        User.any_instance.should_receive(:send_welcome_email)
+        User.any_instance.should_receive(:send_welcome_email).with(@current_user)
         post :create, :user => valid_attributes
       end
     end
@@ -118,5 +120,125 @@ describe UsersController do
         }.not_to change(User, :count)
       end
     end
+  end
+
+  describe "destroy" do
+    it "destroys the user" do
+      user = @user
+      expect {
+        delete :destroy, :id => @user.id.to_s
+      }.to change(User, :count).by(-1)
+    end
+
+    it "redirects to the users list" do
+      user = @user
+      delete :destroy, :id => user.id.to_s
+      response.should redirect_to(users_url)
+    end
+
+    it "informes the user via email" do
+      UserMailer.stub(:destroy_email => @mail = mock(Mail, :deliver => true)) 
+      UserMailer.should_receive(:destroy_email).with(@user, @current_user)
+      @mail.should_receive(:deliver)
+      delete :destroy, :id => @user
+    end
+
+    it "does not delete the last admin"
+
+    context "the current user" do
+      it "does not delete the current user" do
+        expect{
+          delete :destroy, :id => @current_user.id.to_s
+        }.not_to change(User, :count)
+      end
+
+      it "gives a notice that you can't delete yourself" do
+        delete :destroy, :id => @current_user.id.to_s
+        flash[:notice].should_not be_blank
+      end
+
+      it "redirects to index" do
+        delete :destroy, :id => @current_user.id.to_s
+        response.should redirect_to(users_url)
+      end
+    end
+
+  end
+
+  describe "change approved" do
+
+    it "changes the 'approved' value from true to false" do
+      get :change_approved, :id => @user
+      @user.reload.should be_approved
+    end
+
+    it "changes the 'approved' value from false to true" do
+      @user = FactoryGirl.create(:approved_user)
+      get :change_approved, :id => @user
+      @user.reload.should_not be_approved
+    end
+
+    context "of current user" do
+      it "does not change the account" do
+        expect{
+          get :change_approved, :id => @current_user.id.to_s
+        }.not_to change(@current_user, :approved)
+      end
+
+      it "sends a note about not being able to change yoursef" do
+        get :change_approved, :id => @current_user.id.to_s
+        flash[:notice].should_not be_empty
+      end
+
+      it "redirects to index" do
+        get :change_approved, :id => @current_user.id.to_s
+        response.should redirect_to(users_url)
+      end
+    end
+
+    context "user could be saved" do
+      it "informes the user via email" do
+        UserMailer.stub(:approval_change_email => @mail = mock(Mail, :deliver => true)) 
+        UserMailer.should_receive(:approval_change_email).with(@user, @current_user)
+        @mail.should_receive(:deliver)
+        get :change_approved, :id => @user
+      end
+
+      it "redirect to index with success notice" do
+        get :change_approved, :id => @user
+        response.should redirect_to users_url
+        flash[:notice].should == I18n.t('controller.users.activation.success', :name => @user.user_name)
+
+        get :change_approved, :id => @user
+        response.should redirect_to users_url
+        flash[:notice].should == I18n.t('controller.users.deactivation.success', :name => @user.user_name)
+      end
+
+    end
+
+    context "user could not be saved" do
+      before(:each) do
+        @user.stub(:save => false)
+        User.stub(:find => @user)
+      end
+
+      it "does not send an email" do
+        UserMailer.stub(:approval_change_email => @mail = mock(Mail, :deliver => true)) 
+        UserMailer.should_not_receive(:approval_change_email).with(@user, @current_user)
+        @mail.should_not_receive(:deliver)
+        get :change_approved, :id => @user
+      end
+
+      it "redirect to index with success notice" do
+        get :change_approved, :id => @user
+        response.should redirect_to users_url
+        flash[:notice].should == I18n.t('controller.users.activation.failure', :name => @user.user_name)
+      end
+    end
+
+  end
+
+  describe "the roles" do
+    it "user should be restricted in editing, and only allow for the own data, admin may manage all"
   end
 end

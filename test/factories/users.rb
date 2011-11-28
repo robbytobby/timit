@@ -8,5 +8,8 @@ FactoryGirl.define do
     factory :approved_user do
       approved true
     end
+    factory :admin_user do
+      approved true
+    end
   end
 end

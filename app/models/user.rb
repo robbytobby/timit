@@ -24,8 +24,16 @@ class User < ActiveRecord::Base
     email
   end
 
-  def send_welcome_email
+  def mail_name
+    "#{user_name} <#{email}>"
+  end
+
+  def toggle_approved 
+    self.approved = !approved
+  end
+
+  def send_welcome_email(admin)
     generate_reset_password_token! if should_generate_token?
-    UserMailer.welcome_email(self).deliver
+    UserMailer.welcome_email(self, admin).deliver
   end
 end

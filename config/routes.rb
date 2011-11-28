@@ -3,7 +3,11 @@ Timit::Application.routes.draw do
 
   devise_for :users, :controllers => {:registrations => "registrations"}, :path_prefix => 'devise'
 
-  resources :users
+  resources :users do
+    member do
+      get 'change_approved'
+    end
+  end
   resources :machines
   match 'calendar' => 'calendar#index'
 

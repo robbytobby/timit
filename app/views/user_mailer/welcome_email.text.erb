@@ -1,0 +1,5 @@
+<%= t('.hi', :name =>  @user.user_name) %>,
+
+<%= t('.p1', :link => edit_password_url(@user, :reset_password_token => @user.reset_password_token)) %>
+
+<%= t('.p2', :link => new_user_session_url ) %>

@@ -1,0 +1,7 @@
+<%= t '.hi', :name => @user.user_name %>
+<%- if @user.approved? %>
+  <%= t '.p1.activated', :link => new_user_session_url %>
+<%- else %>
+  <%= t '.p1.deactivated' %>
+<%- end %>
+

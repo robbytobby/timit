@@ -26,4 +26,24 @@ de:
       heading: 'User %{name} bearbeiten'
     new:
       heading: 'Neuer User'
+  registrations:
+    new:
+      sign_up: "Zugang beantragen"
+  calendar:
+  user_mailer:
+    welcome_email:
+      subject: "Dein neuer Account für TiMiT"
+      hi: "Hallo %{name}"
+      p1: "ich habe für dich einen Account für 'TiMiT', unserem Online-Kalender für die Meßgeräte angelegt. Dort wird die Meßzeit für diverse Maschinen verwaltet. \n Damit du den Account auch nutzen kannst mußt du zunächst unter\n %{link}\n ein Passwort setzen."
+      p2: "Danach kannst du dich mit diesem Passwort jederzeit unter %{link} einloggen um deine Buchungen zu managen."
+    approval_change_email:
+      subject: "Dein Account für TiMiT"
+      hi: "Hallo %{name}"
+      p1:
+        activated: "ich habe gerade deinen Account freigeschaltet. Du kannst dich ab sofort auf %{link} einloggen."
+        deactivated: "ich habe soeben deinen Account für Timit deaktiviert." 
+    destroy_email:
+      hi: "Hallo %{name}"
+      p1: "Dein Account für TiMiT wurde gelöscht"
+      
 
