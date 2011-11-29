@@ -92,6 +92,13 @@ describe UsersController do
         }.to change(User, :count).by(1)
       end
 
+      it "creates an approved User" do
+        @user = FactoryGirl.build(:user)
+        post :create, :user => @user.attributes.symbolize_keys
+        User.find_by_email(@user.email).should be_approved
+      end
+
+
       it "assigns the new user to @user" do
         post :create, :user => user_attr = valid_attributes
         assigns(:user).email == user_attr[:email]

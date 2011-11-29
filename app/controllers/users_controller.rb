@@ -34,6 +34,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(params[:user])
     @user.password = Devise.friendly_token.first(8)
+    @user.toggle_approved
 
     respond_to do |format|
       if @user.save

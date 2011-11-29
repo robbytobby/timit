@@ -2,6 +2,8 @@ de:
   edit: 'bearbeiten'
   destroy: 'löschen'
   are_you_sure?: 'Bist du sicher?'
+  y: 'ja'
+  n: 'nein'
   support:
     array:
       two_words_connector: ' und '
@@ -9,6 +11,8 @@ de:
     topmenu:
       machines: 'Geräte'
       users: 'User'
+      calendar: 'Kalender'
+      bookings: 'Buchungen'
       sign_in: "anmelden"
       sign_up: "Zugang beantragen"
       sign_out: "abmelden"
@@ -22,6 +26,13 @@ de:
       heading: 'Gerät bearbeiten'
   users:
     index:
+      email: 'E-Mail'
+      phone: 'Telefon'
+      name: 'Name'
+      approved?: 'Zugelassen?'
+      new: 'Neuer User'
+      activate: 'zulassen'
+      deactivate: 'sperren'
     edit:
       heading: 'User %{name} bearbeiten'
     new:

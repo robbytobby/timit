@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111121124837) do
+ActiveRecord::Schema.define(:version => 20111129090114) do
 
   create_table "machines", :force => true do |t|
     t.string   "name"
@@ -34,6 +34,9 @@ ActiveRecord::Schema.define(:version => 20111121124837) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "approved",                              :default => false, :null => false
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "phone"
     t.index ["email"], :name => "index_users_on_email", :unique => true
     t.index ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
   end

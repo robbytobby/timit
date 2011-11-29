@@ -6,7 +6,9 @@ class User < ActiveRecord::Base
   has_many :bookings
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me
+  attr_accessible :first_name, :last_name, :phone, :email, :password, :password_confirmation, :remember_me
+  validates_presence_of :first_name, :last_name, :phone
+  validates :phone, :format => /^\d[\d -\/]*\d$/
 
   def active_for_authentication? 
     super && approved? 
@@ -22,6 +24,10 @@ class User < ActiveRecord::Base
 
   def user_name
     email
+  end
+
+  def name
+    first_name + ' ' + last_name
   end
 
   def mail_name

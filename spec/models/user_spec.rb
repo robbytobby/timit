@@ -12,6 +12,12 @@ describe User do
     @user.should be_active_for_authentication
   end
 
+  subject{ FactoryGirl.create(:user, :approved => false) }
+  it { should_not accept_values_for(:first_name, nil, '', ' ') }
+  it { should_not accept_values_for(:last_name, nil, '', ' ') }
+  it { should_not accept_values_for(:phone, nil, '', ' ', '1a3', 'abc') }
+  its(:name) { should == @user.first_name + ' ' + @user.last_name }
+
   describe "mail_name" do
     it "is the combination of user_name and email_address" do
       @user.mail_name.should == "#{@user.user_name} <#{@user.email}>"

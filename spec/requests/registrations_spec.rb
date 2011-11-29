@@ -17,6 +17,14 @@ describe "Registrations" do
       post user_registration_path, :user => FactoryGirl.attributes_for(:user)
       response.should redirect_to(new_user_session_path)
     end
+
+    it "should be okay with first_name, last_name, phone, email and password" do
+      # If this fails, go and add the necessary fields to app/views/registrations/new
+      params = { :user => { first_name: 'First', last_name: 'Last', phone: '203', email: 'w@w.w', password: 'geheim', password_confirmation: 'geheim'}}
+      expect{
+        post user_registration_path, params
+      }.to change(User, :count).by(1)
+    end
   end
 
 end

@@ -1,5 +1,6 @@
 -if user_signed_in?
   %ul.app_menu
+    %li= link_to t('.calendar'), calendar_path
     %li= link_to t('.machines'), machines_path
     %li= link_to t('.users'), users_path
     %li= link_to t('.bookings'), bookings_path
