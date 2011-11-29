@@ -41,6 +41,10 @@ de:
     new:
       sign_up: "Zugang beantragen"
   calendar:
+    index:
+      next_period: '>>'
+      prev_period: '<<'
+      heading: "%{start} - %{end}"
   user_mailer:
     welcome_email:
       subject: "Dein neuer Account für TiMiT"

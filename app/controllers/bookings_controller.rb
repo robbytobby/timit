@@ -1,6 +1,8 @@
 class BookingsController < ApplicationController
+  before_filter :store_location, :only => [:new, :edit, :destroy]
   # GET /bookings
   # GET /bookings.json
+
   def index
     @bookings = Booking.all
 
@@ -45,7 +47,7 @@ class BookingsController < ApplicationController
 
     respond_to do |format|
       if @booking.save
-        format.html { redirect_to :calendar, notice: 'Booking was successfully created.' }
+        format.html { redirect_back_or_default(calendar_path, notice: 'Booking was successfully created.') }
         format.json { render json: @booking, status: :created, location: @booking }
       else
         format.html { render action: "new" }
@@ -61,7 +63,7 @@ class BookingsController < ApplicationController
 
     respond_to do |format|
       if @booking.update_attributes(params[:booking])
-        format.html { redirect_to :calendar, notice: 'Booking was successfully updated.' }
+        format.html { redirect_back_or_default(calendar_path, notice: 'Booking was successfully updated.') }
         format.json { head :ok }
       else
         format.html { render action: "edit" }
@@ -77,7 +79,7 @@ class BookingsController < ApplicationController
     @booking.destroy
 
     respond_to do |format|
-      format.html { redirect_to bookings_url }
+      format.html { redirect_back_or_default(calendar_path, notice: 'Booking was successfully deleted.') }
       format.json { head :ok }
     end
   end

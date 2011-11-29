@@ -173,6 +173,7 @@ describe UsersController do
   end
 
   describe "change approved" do
+    it "should be PUT"
 
     it "changes the 'approved' value from true to false" do
       get :change_approved, :id => @user

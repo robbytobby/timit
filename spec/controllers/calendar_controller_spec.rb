@@ -24,6 +24,35 @@ describe CalendarController do
           Calendar.should_receive(:new).with(params[:start_date], params[:end_date], nil)
           get :index, params
         end
+
+        it "assigns a new calendar" do
+          get :index
+          assigns(:calendar).should be_instance_of(Calendar)
+        end
+
+        its "start date defaults to today" do
+          get :index
+          assigns(:calendar).days.first.should == Date.today
+        end
+
+        its "end date defaults to today + 4 weeks" do
+          get :index
+          assigns(:calendar).days.last.should == Date.today + 4.weeks
+        end
+
+        its "start date may be set" do
+          get :index, :start_date => (Date.today + 2.weeks)
+          @calendar = assigns(:calendar)
+          @calendar.days.first.should == (Date.today + 2.weeks)
+          @calendar.days.last.should == (Date.today + 6.weeks)
+        end
+
+        its "end date may as well be set" do
+          get :index, :end_date => Date.today + 1.week
+          @calendar = assigns(:calendar)
+          @calendar.days.first.should == Date.today
+          @calendar.days.last.should == (Date.today + 1.weeks)
+        end
       end
     end
   end

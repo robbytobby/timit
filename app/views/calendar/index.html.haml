@@ -1,4 +1,7 @@
-%h2= t('.heading')
+%h2
+  = link_to t('.prev_period'), calendar_path(:start_date => @calendar.prev)
+  = t('.heading', :start => l(@calendar.days.first), :end => l(@calendar.days.last - 1.day))
+  = link_to t('.next_period'), calendar_path(:start_date => @calendar.next)
 %table.calendar
   %tr
     %th

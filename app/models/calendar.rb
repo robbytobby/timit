@@ -6,7 +6,7 @@ class Calendar
 
   def initialize(starts = nil, ends = nil, machine_ids = nil)
     starts ||= Date.today
-    ends ||= Date.today + 4.weeks
+    ends ||= (starts.to_date + 4.weeks)
     self.bookings = Booking.where("starts_at <= :ends and ends_at >= :starts", 
                                   :ends => ends.to_datetime, 
                                   :starts => starts.to_datetime).order(:starts_at)
@@ -46,5 +46,13 @@ class Calendar
 
   def max_entries(date)
     machines.collect{|m| number_of_entries(m.id, date)}.max
+  end
+
+  def next
+    days.last
+  end
+
+  def prev
+    days.first - 4.weeks
   end
 end

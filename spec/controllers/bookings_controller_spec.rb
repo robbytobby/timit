@@ -59,6 +59,12 @@ describe BookingsController do
       get :new
       assigns(:booking).should be_a_new(Booking)
     end
+
+    it "saves referrer in the session" do
+      @request.env['HTTP_REFERER'] = 'http://www.test'
+      get :new
+      session[:return_to].should == 'http://www.test'
+    end
   end
 
   describe "GET edit" do
@@ -66,6 +72,13 @@ describe BookingsController do
       booking = @booking
       get :edit, :id => booking.id.to_s
       assigns(:booking).should eq(booking)
+    end
+
+    it "saves referrer in the session" do
+      @request.env['HTTP_REFERER'] = 'http://www.test'
+      booking = @booking
+      get :edit, :id => booking.id.to_s
+      session[:return_to].should == 'http://www.test'
     end
   end
 
@@ -83,9 +96,15 @@ describe BookingsController do
         assigns(:booking).should be_persisted
       end
 
-      it "redirects to the created booking" do
+      it "redirects to the calendar by default" do
         post :create, :booking => valid_attributes
         response.should redirect_to(:calendar)
+      end
+
+      it "redirects to the url saved in session" do
+        session[:return_to] = calendar_path(:start_date => Date.today - 3.weeks)
+        post :create, :booking => valid_attributes
+        response.should redirect_to(session[:return_to])
       end
     end
 
@@ -124,10 +143,17 @@ describe BookingsController do
         assigns(:booking).should eq(booking)
       end
 
-      it "redirects to the booking" do
+      it "redirects to the booking per default to the calendar" do
         booking = @booking
         put :update, :id => booking.id, :booking => valid_attributes
         response.should redirect_to(:calendar)
+      end
+
+      it "redirects to the url saved in session" do
+        session[:return_to] = calendar_path(:start_date => Date.today - 3.weeks)
+        booking = @booking
+        put :update, :id => booking.id, :booking => valid_attributes
+        response.should redirect_to(session[:return_to])
       end
     end
 
@@ -158,11 +184,17 @@ describe BookingsController do
       }.to change(Booking, :count).by(-1)
     end
 
-    it "redirects to the bookings list" do
+    it "redirects to the calendar per default" do
       booking = @booking
       delete :destroy, :id => booking.id.to_s
-      response.should redirect_to(bookings_url)
+      response.should redirect_to(calendar_path)
+    end
+
+    it "redirects to the url saved in session" do
+      @request.env['HTTP_REFERER'] = 'http://www.test'
+      booking = @booking
+      delete :destroy, :id => booking.id.to_s
+      response.should redirect_to('http://www.test')
     end
   end
-
 end

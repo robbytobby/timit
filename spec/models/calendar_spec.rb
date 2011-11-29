@@ -104,6 +104,7 @@ describe Calendar do
     before :all do
       @booking1 = FactoryGirl.create(:booking, :starts_at => Time.now + 1.day, :ends_at => Time.now + 2.days)
       @booking2 = FactoryGirl.create(:booking, :starts_at => Time.now + 1.day, :ends_at => Time.now + 2.days, :all_day => true)
+      @booking3 = FactoryGirl.create(:booking, :starts_at => Time.now.beginning_of_day + 6.days + 59.minutes, :ends_at => Time.now + 7.days, :all_day => false)
       @calendar = Calendar.new(Date.today, Date.today + 1.week)
     end
 
@@ -119,6 +120,11 @@ describe Calendar do
 
     it "does not have a new booking link in the beginning, if the first entry for a given date and machine is an all day event" do
       @calendar.draw_new_booking_first?(@booking2.machine_id, Date.today + 1.day).should be_false
+    end
+
+    it "does not have a new booking link in the beginning, if the free span in fron is less than 1 hour" do
+      pending 'does not test the right thing'
+      @calendar.draw_new_booking_first?(@booking3.machine_id, Date.today + 6.days).should be_false
     end
 
     it "has a new booking link in the beginning, if it has no entry for a given date and machine" do
@@ -174,6 +180,18 @@ describe Calendar do
     @calendar.max_entries(Date.today + 2.days).should == 3
     @calendar.max_entries(Date.today + 3.days).should == 1
     @calendar.max_entries(Date.today + 4.days).should == 2
+  end
+
+  describe "next" do
+    it "is the current end_date + 1 day" do
+      @calendar.next.should == @calendar.days.last
+    end
+  end
+
+  describe "prev" do
+    it "is the current start_date - 4 weeks" do
+      @calendar.prev.should == @calendar.days.first - 4.weeks
+    end
   end
 end
 
