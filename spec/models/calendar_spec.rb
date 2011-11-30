@@ -104,8 +104,8 @@ describe Calendar do
     before :all do
       @booking1 = FactoryGirl.create(:booking, :starts_at => Time.now + 1.day, :ends_at => Time.now + 2.days)
       @booking2 = FactoryGirl.create(:booking, :starts_at => Time.now + 1.day, :ends_at => Time.now + 2.days, :all_day => true)
-      @booking3 = FactoryGirl.create(:booking, :starts_at => Time.now.beginning_of_day + 6.days + 59.minutes, :ends_at => Time.now + 7.days, :all_day => false)
-      @calendar = Calendar.new(Date.today, Date.today + 1.week)
+      @booking3 = FactoryGirl.create(:booking, :starts_at => DateTime.now.beginning_of_day + 6.days + 59.minutes, :ends_at => DateTime.now + 7.days)
+      @calendar = Calendar.new(Date.today, Date.today + 2.weeks)
     end
 
     after :all do
@@ -122,8 +122,7 @@ describe Calendar do
       @calendar.draw_new_booking_first?(@booking2.machine_id, Date.today + 1.day).should be_false
     end
 
-    it "does not have a new booking link in the beginning, if the free span in fron is less than 1 hour" do
-      pending 'does not test the right thing'
+    it "does not have a new booking link in the beginning, if the free span in front is less than 1 hour" do
       @calendar.draw_new_booking_first?(@booking3.machine_id, Date.today + 6.days).should be_false
     end
 

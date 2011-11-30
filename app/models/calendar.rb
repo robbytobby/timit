@@ -20,7 +20,11 @@ class Calendar
 
   def draw_new_booking_first?(machine_id, date)
     if first = entries_for(machine_id, date).first
-      return false unless first.starts_at?(date)
+      if first.starts_at?(date)
+        return false if first.starts_at - date.to_datetime < 1.hour
+      else
+        return false
+      end
       return false if first.all_day
     end
     return true

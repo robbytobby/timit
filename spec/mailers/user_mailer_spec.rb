@@ -6,8 +6,6 @@ describe UserMailer do
     default_url_options[:host] = 'localhost:3000'
   end
 
-  it "has a default from"
-
   describe "welcome email" do
     before :each do
       @user = FactoryGirl.create(:user)
@@ -109,6 +107,47 @@ describe UserMailer do
     end
 
     it "has a destroy body" do
+      @mail.parts.each do |body|
+        body.should have_content(@user.user_name)
+        #TODO: andere Inhalte
+      end
+    end
+  end
+
+  describe "sign_up_notification" do
+    before :each do
+      @user = FactoryGirl.create(:approved_user)
+      @admin = FactoryGirl.create(:admin_user)
+      @mail = UserMailer.sign_up_notification(@user)
+    end
+
+    it "has the correct sender" do
+      pending 'after cancan integration'
+      @mail.from.should == 'timit@physchem.uni-freiburg.de'
+    end
+
+    it "has the address of all admins" do
+      pending 'after cancan integration'
+      @mail.to.should == @admins.join(', ')
+    end
+
+    it "has the approval change subject" do
+      pending 'after cancan integration'
+      @mail.subject.should == I18n.t('user_mailer.sign_up_notification.subject')
+    end
+
+    it "has the right encoding" do
+      pending 'after cancan integration'
+      @mail.charset.should == 'UTF-8'
+    end
+
+    it "comes as multipart email" do
+      pending 'after cancan integration'
+      @mail.content_type.should contain('multipart/alternative')
+    end
+
+    it "has a destroy body" do
+      pending 'after cancan integration'
       @mail.parts.each do |body|
         body.should have_content(@user.user_name)
         #TODO: andere Inhalte

@@ -13,5 +13,11 @@ class UserMailer < ActionMailer::Base
     @user = user
     mail(:to => user.mail_name, :from => admin.mail_name, :subject => t('user_mailer.destroy_mail.subject'))
   end
+
+  def sign_up_notification(user)
+    #TODO: after cancan 
+    #@user = user
+    #mail(:to => @admins.join(', '), :from => 'timit@physchem.uni-freiburg.de', :subject => t('user_mailer.sign_up_notification.subject'))
+  end
 end
 
