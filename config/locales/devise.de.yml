@@ -14,7 +14,8 @@ de:
       invalid_token: 'Ungültiger Schlüssel.'
       timeout: 'Die Sitzung ist abgelaufen, bitte melde dich erneut an.'
       inactive: 'Dein Account ist noch nicht aktiviert.'
-      not_approved: 'Dein Account ist nicht aktiviert'
+      not_approved: 'Dein Account ist nicht aktiviert.'
+      allready_authenticated: 'Du bist schon eingeloggt.'
     sessions:
       signed_in: 'Erfolgreich Angemeldet.'
       signed_out: 'Erfolgreich Abgemeldet.'
