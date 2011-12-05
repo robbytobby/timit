@@ -1,27 +1,19 @@
-%h2= t('.heading')
--if user_signed_in?
-  %table.calendar
-    %tr
-      %th
-      -@machines.each do |m|
-        %th= m.name
-    - (@calendar.start_date..@calendar.end_date).each do |d|
-      %tr{:class => "day#{d.wday} #{cycle('odd', 'even')}"}
-        %td.date= t('date.abbr_day_names')[d.wday] + ', ' +  l(d)
-        - @machines.each do |m|
-          %td 
-            - if @calendar.draw_new_booking_first?(m.id, d)
-              %div.free 
-                = link_to '+', new_booking_path(:booking => {:machine_id => m, :starts_at => d.to_datetime})
-            - @calendar.entries_for(m.id, d).each do |booking|
-              %div{:class => booking.day_type(d)}
-                = 'something quite long and even longer' if  booking.first_day?(d) || d == @calendar.start_date
-                = 'something quite long and even longer' if  booking.first_day?(d) || d == @calendar.start_date
-            - @calendar.number_of_spacers(m.id, d, @machines).times do |i|
-              %div{:class => 'booked middle'}
-            - if @calendar.draw_new_booking_last?(m.id, d)
-              %div.free 
-                = link_to '+', new_booking_path(:booking => {:machine_id => m, :starts_at => d.to_datetime})
--else
-  %p und das ohne Anmeldung 
-
+%h2
+  = link_to t('.prev_period'), calendar_path(:start_date => @calendar.prev)
+  = t('.heading', :start => l(@calendar.days.first), :end => l(@calendar.days.last - 1.day))
+  = link_to t('.next_period'), calendar_path(:start_date => @calendar.next)
+%table.calendar
+  %tr
+    %th
+    -@calendar.machines.each do |m|
+      %th= m.name
+  - @calendar.days.each do |d|
+    %tr{:class => row_class(@calendar, d)}
+      %td.date= t('date.abbr_day_names')[d.wday] + ', ' +  l(d)
+      - @calendar.machines.each do |m|
+        %td 
+          = new_booking(m,d) if @calendar.draw_new_booking_first?(m.id, d)
+          = draw_spacer(@calendar, m.id, d)
+          - @calendar.entries_for(m.id, d).each do |booking|
+            = draw_booking(@calendar, booking, d)
+          = new_booking(m,d) if @calendar.draw_new_booking_last?(m.id, d)

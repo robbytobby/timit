@@ -13,7 +13,7 @@ describe "Machines" do
 
   context "with login" do
     before :all do
-      @user = FactoryGirl.create :user
+      @user = FactoryGirl.create :approved_user
     end
 
     after :all do

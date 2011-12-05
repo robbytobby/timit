@@ -14,6 +14,8 @@ de:
       invalid_token: 'Ungültiger Schlüssel.'
       timeout: 'Die Sitzung ist abgelaufen, bitte melde dich erneut an.'
       inactive: 'Dein Account ist noch nicht aktiviert.'
+      not_approved: 'Dein Account ist nicht aktiviert.'
+      allready_authenticated: 'Du bist schon eingeloggt.'
     sessions:
       signed_in: 'Erfolgreich Angemeldet.'
       signed_out: 'Erfolgreich Abgemeldet.'
@@ -23,8 +25,13 @@ de:
     passwords:
       send_instructions: 'Du wirst in Kürze eine E-Mail erhalten, in der dir erklärt wird, wie du dein Passwort zurücksetzt.'
       updated: 'Dein Passwort wurde erfolreich geändert. Du bist nun angemeldet.'
+      updated_not_active: 'Dein Passwort wurde erfolreich geändert.'
       new:
         forgot_your_password?: 'Passwort vergessen?'
+      edit:
+        new_password: 'Neues Passwort'
+        password_confirmation: 'Bitte Passort bestätigen'
+        change_your_password: 'Ändere dein Passwort'
     confirmations:
       send_instructions: 'Du wirst in Kürze eine E-Mail erhalten mit deren Hilfe du deinen Account bestätigen kannst.'
       confirmed: 'Dein Acoount wurde erfolgreich bestätigt. Du bist nun angemeldet.'
@@ -34,6 +41,8 @@ de:
       destroyed: 'Der Benutzer wurde erfolgreich gelöscht.'
       new:
         sign_up: 'Zugang beantragen'
+      user:
+        inactive_signed_up: 'Dein Account ist angelegt, muß aber noch durch den Admin freigegeben werden. Du wirst per email informiert über die Freischaltung.'
     unlocks:
       send_instructions: 'Du wirst in Kürze eine E-Mail mit den Anweisungen zum Entsperren des Accounts erhalten.'
       unlocked: 'Dein Acoount wurde erfolgreich entsperrt. Du bist nun angemeldet'
@@ -42,5 +51,10 @@ de:
         subject: 'Anweisungen zur Bestätigung'
       reset_password_instructions:
         subject: 'Anweisungen zur Passwortwiederherstellung'
+        hello: 'Hallo %{name} !'
+        password_reset_request: "Jemand hat einen Link zum ändern deines Passwortes angefordert, was du durch durch den folgenden Link tun kannst:"
+        false_request_ignore: "Wenn du diesen Link nicht angefordert hast, ignoriere bitte diese Mail."
+        wont_change: "Bis du dem obigen Link folgst und ein neues Passwort setzt, gilt weiterhin dein altes Passwort."
+        change_my_password: "Passwort ändern"
       unlock_instructions:
         subject: 'Anweisungen zum entsperren'

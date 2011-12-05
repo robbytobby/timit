@@ -1,10 +1,15 @@
 Timit::Application.routes.draw do
   resources :bookings
 
-  devise_for :users
+  devise_for :users, :controllers => {:registrations => "registrations"}, :path_prefix => 'devise'
 
+  resources :users do
+    member do
+      get 'change_approved'
+    end
+  end
   resources :machines
-  match 'calendar' => 'calendar/index'
+  match 'calendar' => 'calendar#index'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

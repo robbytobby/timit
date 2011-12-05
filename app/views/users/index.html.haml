@@ -1,0 +1,19 @@
+%table
+  %tr
+    %th= t('.name')
+    %th= t('.phone')
+    %th= t('.email')
+    %th= t('.approved?')
+    %th= link_to t('.new'), new_user_path
+    %th
+
+  - @users.each do |user|
+    %tr
+      %td= user.name
+      %td= user.phone
+      %td= user.email
+      %td= t( user.approved? ? 'y' : 'n' )
+      %td
+        = link_to t( user.approved? ? '.deactivate' : '.activate'), change_approved_user_path(user) unless user == current_user 
+        = link_to t('edit'), edit_user_path(user)
+        = link_to t('destroy'), user, :confirm => t('are_you_sure?'), :method => :delete unless user == current_user

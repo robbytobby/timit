@@ -25,16 +25,22 @@ describe BookingsController do
   # Booking. As you add validations to Booking, be sure to
   # update the return value of this method accordingly.
   def valid_attributes
-    {}
+    FactoryGirl.build(:booking).attributes.symbolize_keys
+  end
+  
+  after :all do
+    Machine.destroy_all
+    User.destroy_all
   end
 
   before :each do
-    sign_in FactoryGirl.create(:user)
+    sign_in FactoryGirl.create :approved_user
+    @booking = FactoryGirl.create(:booking)
   end
 
   describe "GET index" do
     it "assigns all bookings as @bookings" do
-      booking = Booking.create! valid_attributes
+      booking = @booking
       get :index
       assigns(:bookings).should eq([booking])
     end
@@ -42,7 +48,7 @@ describe BookingsController do
 
   describe "GET show" do
     it "assigns the requested booking as @booking" do
-      booking = Booking.create! valid_attributes
+      booking = @booking
       get :show, :id => booking.id.to_s
       assigns(:booking).should eq(booking)
     end
@@ -53,13 +59,26 @@ describe BookingsController do
       get :new
       assigns(:booking).should be_a_new(Booking)
     end
+
+    it "saves referrer in the session" do
+      @request.env['HTTP_REFERER'] = 'http://www.test'
+      get :new
+      session[:return_to].should == 'http://www.test'
+    end
   end
 
   describe "GET edit" do
     it "assigns the requested booking as @booking" do
-      booking = Booking.create! valid_attributes
+      booking = @booking
       get :edit, :id => booking.id.to_s
       assigns(:booking).should eq(booking)
+    end
+
+    it "saves referrer in the session" do
+      @request.env['HTTP_REFERER'] = 'http://www.test'
+      booking = @booking
+      get :edit, :id => booking.id.to_s
+      session[:return_to].should == 'http://www.test'
     end
   end
 
@@ -77,9 +96,15 @@ describe BookingsController do
         assigns(:booking).should be_persisted
       end
 
-      it "redirects to the created booking" do
+      it "redirects to the calendar by default" do
         post :create, :booking => valid_attributes
-        response.should redirect_to(Booking.last)
+        response.should redirect_to(:calendar)
+      end
+
+      it "redirects to the url saved in session" do
+        session[:return_to] = calendar_path(:start_date => Date.today - 3.weeks)
+        post :create, :booking => valid_attributes
+        response.should redirect_to(session[:return_to])
       end
     end
 
@@ -103,7 +128,7 @@ describe BookingsController do
   describe "PUT update" do
     describe "with valid params" do
       it "updates the requested booking" do
-        booking = Booking.create! valid_attributes
+        booking = @booking
         # Assuming there are no other bookings in the database, this
         # specifies that the Booking created on the previous line
         # receives the :update_attributes message with whatever params are
@@ -113,21 +138,28 @@ describe BookingsController do
       end
 
       it "assigns the requested booking as @booking" do
-        booking = Booking.create! valid_attributes
+        booking = @booking
         put :update, :id => booking.id, :booking => valid_attributes
         assigns(:booking).should eq(booking)
       end
 
-      it "redirects to the booking" do
-        booking = Booking.create! valid_attributes
+      it "redirects to the booking per default to the calendar" do
+        booking = @booking
         put :update, :id => booking.id, :booking => valid_attributes
-        response.should redirect_to(booking)
+        response.should redirect_to(:calendar)
+      end
+
+      it "redirects to the url saved in session" do
+        session[:return_to] = calendar_path(:start_date => Date.today - 3.weeks)
+        booking = @booking
+        put :update, :id => booking.id, :booking => valid_attributes
+        response.should redirect_to(session[:return_to])
       end
     end
 
     describe "with invalid params" do
       it "assigns the booking as @booking" do
-        booking = Booking.create! valid_attributes
+        booking = @booking
         # Trigger the behavior that occurs when invalid params are submitted
         Booking.any_instance.stub(:save).and_return(false)
         put :update, :id => booking.id.to_s, :booking => {}
@@ -135,7 +167,7 @@ describe BookingsController do
       end
 
       it "re-renders the 'edit' template" do
-        booking = Booking.create! valid_attributes
+        booking = @booking
         # Trigger the behavior that occurs when invalid params are submitted
         Booking.any_instance.stub(:save).and_return(false)
         put :update, :id => booking.id.to_s, :booking => {}
@@ -146,17 +178,23 @@ describe BookingsController do
 
   describe "DELETE destroy" do
     it "destroys the requested booking" do
-      booking = Booking.create! valid_attributes
+      booking = @booking
       expect {
         delete :destroy, :id => booking.id.to_s
       }.to change(Booking, :count).by(-1)
     end
 
-    it "redirects to the bookings list" do
-      booking = Booking.create! valid_attributes
+    it "redirects to the calendar per default" do
+      booking = @booking
       delete :destroy, :id => booking.id.to_s
-      response.should redirect_to(bookings_url)
+      response.should redirect_to(calendar_path)
+    end
+
+    it "redirects to the url saved in session" do
+      @request.env['HTTP_REFERER'] = 'http://www.test'
+      booking = @booking
+      delete :destroy, :id => booking.id.to_s
+      response.should redirect_to('http://www.test')
     end
   end
-
 end

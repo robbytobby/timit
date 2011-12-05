@@ -33,6 +33,7 @@ gem 'strip_attributes', '~>1.0'
 gem 'will_paginate', '~>3.0'
 ### BUG: devise nicht vor strip_attributes laden
 gem 'devise'
+gem 'cancan'
 
 # Use unicorn as the web server
 # gem 'unicorn'

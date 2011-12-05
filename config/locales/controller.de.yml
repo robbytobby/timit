@@ -5,4 +5,17 @@ de:
         success: 'Gerät erfolgreich angelegt'
       update:
         success: 'Gerät erfolgreich geändert'
-      
+    users:
+      actions:
+        destroy: 'löschen'
+        change_approved: 'deaktivieren'
+      activation:
+        failure: "Der User %{name} konnte nicht gespeichert werden, der Account ist weiterhin inaktiv"
+        success: "Der Account von %{name} ist nun aktiviert"
+      deactivation:
+        failure: "Der User %{name} konnte nicht gespeichert werden, der Account ist weiterhin aktiv"
+        success: "Der Account von %{name} ist nun deaktiviert"
+      not_yourself: "Du kannst dich selbst nicht %{action}."
+      update:
+        success: 'Account erfolgreich geändert'
+         
