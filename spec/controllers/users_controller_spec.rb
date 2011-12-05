@@ -8,7 +8,7 @@ describe UsersController do
   end
 
   before :each do
-    sign_in(@current_user = FactoryGirl.create(:approved_user))
+    sign_in(@current_user = FactoryGirl.create(:admin_user))
     @user = FactoryGirl.create(:user)
   end
 

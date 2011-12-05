@@ -45,6 +45,10 @@ class User < ActiveRecord::Base
     generate_reset_password_token! if should_generate_token?
     UserMailer.welcome_email(self, admin).deliver
   end
+  
+  def role?(test)
+    role == test.to_s
+  end
 
   def self.roles
     @@ROLES

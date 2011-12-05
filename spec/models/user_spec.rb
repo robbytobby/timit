@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'cancan/matchers'
 
 describe User do
   before(:each) do
@@ -61,5 +62,82 @@ describe User do
       @user.toggle_approved
       @user.should be_approved
     end
+  end
+
+  describe "role admin" do
+    before :each do
+      @user = FactoryGirl.create(:admin_user) 
+      @ability = Ability.new(@user)
+    end
+    it "should be able to manage everything" do
+      @ability.should be_able_to(:manage, :all)
+    end
+  end
+
+  describe "in role teaching" do
+    before :each do
+      @user = FactoryGirl.create(:teaching_user) 
+      @ability = Ability.new(@user)
+    end
+
+    it "should be able to manage Bookings" do
+      @ability.should be_able_to(:manage, Booking)
+    end
+
+    it "should not be able to :manage other users" do
+      other_user = FactoryGirl.create(:user)
+      @ability.should_not be_able_to :manage, other_user
+    end
+
+    it "should be able to manage itself" do
+      @ability.should be_able_to :update, @user
+      @ability.should be_able_to :destroy, @user
+    end
+
+    it "should be able to :read everything" do
+      @ability.should be_able_to :read, :all
+    end
+
+    it "should not be able to manage machines" do
+      @ability.should_not be_able_to :manage, Machine
+    end
+  end
+
+  describe "in role unprivileged" do
+    before :each do
+      @user = FactoryGirl.create(:unprivileged_user) 
+      @ability = Ability.new(@user)
+    end
+
+    it "should not be able to manage Bookings of others" do
+      other_booking = FactoryGirl.create(:booking)
+      @ability.should_not be_able_to(:manage, other_booking)
+    end
+
+    it "should be able to manage it's own bookings" do
+      own_booking = FactoryGirl.create(:booking, :user => @user)
+      @ability.should be_able_to :create, Booking, :user_id => @user.id
+      @ability.should be_able_to :update, own_booking
+      @ability.should be_able_to :destroy, own_booking
+    end
+
+    it "should not be able to :manage other users" do
+      other_user = FactoryGirl.create(:user)
+      @ability.should_not be_able_to :manage, other_user
+    end
+
+    it "should be able to manage itself" do
+      @ability.should be_able_to :update, @user
+      @ability.should be_able_to :destroy, @user
+    end
+
+    it "should not be able to manage machines" do
+      @ability.should_not be_able_to :manage, Machine
+    end
+
+    it "should be able to :read everything" do
+      @ability.should be_able_to :read, :all
+    end
+
   end
 end

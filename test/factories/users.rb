@@ -14,6 +14,14 @@ FactoryGirl.define do
     end
     factory :admin_user do
       approved true
+      role 'admin'
+    end
+    factory :teaching_user do
+      approved true
+      role 'teaching'
+    end
+    factory :unprivileged_user do
+      approved true
     end
   end
 end

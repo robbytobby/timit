@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_filter :authenticate_user! 
+  load_and_authorize_resource
   before_filter :find_user, :only => [:show, :edit, :update, :destroy, :change_approved]
   before_filter :not_yourself, :only => [:destroy, :change_approved]
 
