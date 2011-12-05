@@ -51,7 +51,7 @@ class UsersController < ApplicationController
   def update
     respond_to do |format|
       if @user.update_attributes(params[:user])
-        format.html { redirect_to users_path, notice: t('controller.user.update.success') }
+        format.html { redirect_to users_path, notice: t('controller.users.update.success') }
         format.json { head :ok }
       else
         format.html { render action: "edit" }

@@ -8,6 +8,7 @@ FactoryGirl.define do
     sequence(:email){|n| "email#{n}@test.org"}
     password "password"
     password_confirmation "password"
+    role "unprivileged"
     factory :approved_user do
       approved true
     end

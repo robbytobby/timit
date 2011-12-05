@@ -68,6 +68,11 @@ describe "Users" do
         response.body.should have_selector(:input, :type => "submit", :name => "commit")
         response.body.should have_selector(:a, :href => users_path)
       end
+
+      it "renders a role select field if the current user is an admin" do
+        get new_user_path
+        response.body.should have_selector(:select, :id => 'user_role')
+      end
     end
 
     describe "POST create" do

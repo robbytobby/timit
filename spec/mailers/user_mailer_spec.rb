@@ -15,11 +15,11 @@ describe UserMailer do
     end
 
     it "has the correct sender" do
-      @mail.from.should == @admin.mail_name 
+      @mail.from.should contain(@admin.email)
     end
 
     it "has the address of the user" do
-      @mail.to.should == @user.mail_name
+      @mail.to.should contain(@user.email)
     end
 
     it "has the welcome subject" do
@@ -52,11 +52,11 @@ describe UserMailer do
     end
     
     it "has the correct sender" do
-      @mail.from.should == @admin.mail_name 
+      @mail.from.should contain(@admin.email)
     end
 
     it "has the address of the user" do
-      @mail.to.should == @user.mail_name
+      @mail.to.should contain(@user.email)
     end
 
     it "has the approval change subject" do
@@ -87,11 +87,11 @@ describe UserMailer do
     end
     
     it "has the correct sender" do
-      @mail.from.should == @admin.mail_name 
+      @mail.from.should contain(@admin.email)
     end
 
     it "has the address of the user" do
-      @mail.to.should == @user.mail_name
+      @mail.to.should contain(@user.email)
     end
 
     it "has the approval change subject" do

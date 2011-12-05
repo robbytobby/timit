@@ -16,3 +16,12 @@ de:
         password: 'Passwort'
         password_confirmation: 'Passwort bestätigen'
         reset_password_token: 'Der Link zum Zurücksetzen des Passworts'
+        unprivileged: 'unprivilegierter Nutzer'
+        teaching: 'Assistent im Praktikum'
+        admin: 'Administrator'
+    errors:
+      models:
+        user:
+          attributes:
+            role:
+              undefined: "ist nicht definiert"

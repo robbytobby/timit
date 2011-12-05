@@ -5,6 +5,10 @@ describe User do
     @user = FactoryGirl.create(:user, :approved => false)
   end
 
+  it "has a defined set of roles" do
+    User.roles.should == [ "unprivileged", "teaching", "admin" ]
+  end
+
   it "needs to be approved before being able to sign in" do
     @user.should_not be_active_for_authentication
 
@@ -16,6 +20,9 @@ describe User do
   it { should_not accept_values_for(:first_name, nil, '', ' ') }
   it { should_not accept_values_for(:last_name, nil, '', ' ') }
   it { should_not accept_values_for(:phone, nil, '', ' ', '1a3', 'abc') }
+  it { should_not accept_values_for(:role, nil, '', ' ') }
+  it { should accept_values_for(:role, 'unprivileged', 'teaching', 'admin') }
+  it { should_not accept_values_for(:role, 'test', 'blah', 'gotcha')}
   its(:name) { should == @user.first_name + ' ' + @user.last_name }
 
   describe "mail_name" do
