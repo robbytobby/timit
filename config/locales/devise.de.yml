@@ -50,5 +50,10 @@ de:
         subject: 'Anweisungen zur Bestätigung'
       reset_password_instructions:
         subject: 'Anweisungen zur Passwortwiederherstellung'
+        hello: 'Hallo %{name} !'
+        password_reset_request: "Jemand hat einen Link zum ändern deines Passwortes angefordert, was du durch durch den folgenden Link tun kannst:"
+        false_request_ignore: "Wenn du diesen Link nicht angefordert hast, ignoriere bitte diese Mail."
+        wont_change: "Bis du dem obigen Link folgst und ein neues Passwort setzt, gilt weiterhin dein altes Passwort."
+        change_my_password: "Passwort ändern"
       unlock_instructions:
         subject: 'Anweisungen zum entsperren'
