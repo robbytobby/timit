@@ -8,7 +8,7 @@ module CalendarHelper
     klass << " #{div_height(calendar, booking)}"
     if booking.multiday?
       klass << " multiday"
-      klass << " all_day" if booking.all_day
+      klass << " all_day" unless calendar.draw_new_booking_link?(booking.machine_id, booking.starts_at.to_date)
     end
     klass
   end

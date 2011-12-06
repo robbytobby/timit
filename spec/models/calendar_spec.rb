@@ -104,7 +104,8 @@ describe Calendar do
     before :all do
       @booking1 = FactoryGirl.create(:booking, :starts_at => Time.now + 1.day, :ends_at => Time.now + 2.days)
       @booking2 = FactoryGirl.create(:booking, :starts_at => Time.now + 1.day, :ends_at => Time.now + 2.days, :all_day => true)
-      @booking3 = FactoryGirl.create(:booking, :starts_at => DateTime.now.beginning_of_day + 6.days + 59.minutes, :ends_at => DateTime.now + 7.days)
+      @booking3 = FactoryGirl.create(:booking, :starts_at => '2011-12-10 00:59:00', :ends_at => '2011-12-11 23:01:00')
+      @booking4 = FactoryGirl.create(:booking, :starts_at => '2011-12-10 01:00:00', :ends_at => '2011-12-11 23:00:00')
       @calendar = Calendar.new(Date.today, Date.today + 2.weeks)
     end
 
@@ -123,7 +124,11 @@ describe Calendar do
     end
 
     it "does not have a new booking link in the beginning, if the free span in front is less than 1 hour" do
-      @calendar.draw_new_booking_first?(@booking3.machine_id, Date.today + 6.days).should be_false
+      @calendar.draw_new_booking_first?(@booking3.machine_id, '2011-12-10'.to_date).should be_false
+    end
+
+    it "does have a new booking link in the beginning, if the free span in front is more than 1 hour" do
+      @calendar.draw_new_booking_first?(@booking4.machine_id, '2011-12-10'.to_date).should be_true
     end
 
     it "has a new booking link in the beginning, if it has no entry for a given date and machine" do
@@ -145,6 +150,14 @@ describe Calendar do
       @calendar.draw_new_booking_last?(@booking1.machine_id, @booking1.ends_at.to_date).should be_false
       @calendar.stub(:draw_new_booking_first? => false)
       @calendar.draw_new_booking_last?(@booking1.machine_id, @booking1.ends_at.to_date).should be_true
+    end
+
+    it "does not have a new booking link as the last item, if the free span leaving for that day is less than 1 hour" do
+      @calendar.draw_new_booking_last?(@booking3.machine_id, '2011-12-11'.to_date).should be_false
+    end
+
+    it "does have a new booking link as the last item, if the free span leaving for that day is more than 1 hour" do
+      @calendar.draw_new_booking_last?(@booking4.machine_id, '2011-12-11'.to_date).should be_true
     end
 
     it "know if it draws a new bookin link" do

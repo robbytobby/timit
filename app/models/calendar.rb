@@ -20,11 +20,7 @@ class Calendar
 
   def draw_new_booking_first?(machine_id, date)
     if first = entries_for(machine_id, date).first
-      if first.starts_at?(date)
-        return false if first.starts_at - date.to_datetime < 1.hour
-      else
-        return false
-      end
+      return false if !first.starts_at?(date) || first.starts_at - date.to_datetime < 1.hour
       return false if first.all_day
     end
     return true
@@ -33,7 +29,7 @@ class Calendar
   def draw_new_booking_last?(machine_id, date)
     return false if draw_new_booking_first?(machine_id, date)
     if last = entries_for(machine_id, date).last
-      return true if  last.ends_at.to_date == date && !last.all_day
+      return true if last.ends_at?(date) && !last.all_day && last.ends_at.end_of_day - last.ends_at >= 1.hour
     end
     return false
   end
