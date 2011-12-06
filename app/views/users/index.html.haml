@@ -1,19 +1,24 @@
+%p= link_to t('.new'), new_user_path if can? :create, User
 %table
   %tr
     %th= t('.name')
+    %th= t('.role')
     %th= t('.phone')
     %th= t('.email')
     %th= t('.approved?')
-    %th= link_to t('.new'), new_user_path if can? :create, User
-    %th
 
   - @users.each do |user|
-    %tr
-      %td= user.name
-      %td= user.phone
-      %td= user.email
-      %td= t( user.approved? ? 'y' : 'n' )
+    %tr{:class => cycle('odd', 'even')}
       %td
-        = link_to t( user.approved? ? '.deactivate' : '.activate'), change_approved_user_path(user) if can? :change_approved, user
-        = link_to t('edit'), edit_user_path(user) if can? :update, user
-        = link_to t('destroy'), user, :confirm => t('are_you_sure?'), :method => :delete if can? :destroy, user
+        -if can?(:manage, user)
+          = link_to image_tag('icons/destroy.svg', :size => '16x16') ,
+                    user, :confirm => t('confirm', :action => t('delete'), :name => user.name), :title => t('delete'),
+                    :method => :delete
+        -if can? :manage, user
+          = link_to image_tag('icons/edit.svg', :size => '16x16'), edit_user_path(user), :title => t('edit')
+        = link_to user.name, user_path(user), :title => t('show')
+      %td= t(".#{user.role}")
+      %td= user.phone
+      %td= mail_to user.email
+      %td
+        = link_to_if can?(:change_approved, user), image_tag(user.approved? ? 'icons/approved.svg' : 'icons/not_approved.svg', :size => '16x16'), change_approved_user_path(user), :title => t(user.approved? ? '.deactivate' : '.activate')

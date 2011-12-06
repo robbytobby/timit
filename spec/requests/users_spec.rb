@@ -61,13 +61,13 @@ describe "Users" do
         response.should render_template('index')
         response.body.should include(@user.email)
         response.body.should_not have_selector(:a, :href => new_user_path)
-        response.body.should have_selector(:a, :href => edit_user_path(@current_user))
-        response.body.should have_selector(:a, :href => user_path(@current_user), :'data-method' => 'delete')
+        response.body.should_not have_selector(:a, :href => edit_user_path(@current_user))
+        response.body.should_not have_selector(:a, :href => user_path(@current_user), :'data-method' => 'delete')
         response.body.should_not have_selector(:a, :href => edit_user_path(@user))
         response.body.should_not have_selector(:a, :href => user_path(@user), :'data-method' => 'delete')
       end
 
-      it "renders new, edit and delete links for all users if an admin is signe in" do
+      it "renders new, edit and delete links for all users if an admin is signed in" do
         session_for :admin
         @user = FactoryGirl.create :approved_user
         get users_path

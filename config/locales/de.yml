@@ -1,10 +1,14 @@
 de:
   edit: 'bearbeiten'
   destroy: 'löschen'
+  delete: 'löschen'
   are_you_sure?: 'Bist du sicher?'
   y: 'ja'
   n: 'nein'
   back: 'zurück'
+  confirm: "Bist du dir sicher, dass du %{name} %{action} willst?"
+  mail_to: "email schreiben"
+  show: "anzeigen"
   support:
     array:
       two_words_connector: ' und '
@@ -31,10 +35,14 @@ de:
       email: 'E-Mail'
       phone: 'Telefon'
       name: 'Name'
-      approved?: 'Zugelassen?'
+      approved?: 'Aktiv?'
       new: 'Neuer User'
       activate: 'zulassen'
       deactivate: 'sperren'
+      role: 'Privilegien'
+      unprivileged: 'Keine'
+      teaching: 'Lehre'
+      admin: 'Administrator'
     edit:
       heading: 'User %{name} bearbeiten'
     new:
