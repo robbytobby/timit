@@ -8,6 +8,8 @@ class Ability
     can [:update, :destroy], User, :id => user.id
     if user.role?(:admin)
       can :manage, :all
+      cannot :change_role, User, :id => user.id
+      cannot :change_approved, User, :id => user.id
     elsif user.role?(:teaching)
       can :manage, Booking
     elsif user.role?(:unprivileged)

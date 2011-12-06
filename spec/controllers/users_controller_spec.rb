@@ -58,6 +58,32 @@ describe UsersController do
         put :update, :id => @user, :user => {:email => 'test@test.test'}
         response.should redirect_to(users_path)
       end
+
+      it "does not update somebody elses password" do
+        put :update, :id => @user, :user => {:password => 'new_password'}
+        @user.encrypted_password.should == @user.reload.encrypted_password
+      end
+
+      it "does not change own password" do
+        put :update, :id => @current_user, :user => {:password => 'new_password'}
+        @current_user.encrypted_password.should == @current_user.reload.encrypted_password
+      end
+
+      it "is possible to change the role - for admins" do
+        put :update, :id => @user, :user => {:role => 'admin'}
+        @user.reload.role.should == 'admin'
+      end
+
+      it "is not possible to chage the own role" do
+        put :update, :id => @current_user, :user => {:role => 'unprivileged'}
+        @current_user.reload.role.should == 'admin'
+      end
+
+      it "is not possible to change the role for non admin users" do
+        sign_in(@current_user = FactoryGirl.create(:unprivileged_user))
+        put :update, :id => @user, :user => {:role => 'admin'}
+        @user.reload.role.should_not == 'admin'
+      end
     end
 
     describe "with invalid params" do
@@ -72,7 +98,7 @@ describe UsersController do
         @user.reload.email.should eq(old_email)
       end
       
-      it "re-renders eit" do
+      it "re-renders it" do
         put :update, :id => @user, :user => {:email => 'newmail'}
         response.should render_template :edit
       end
@@ -150,31 +176,26 @@ describe UsersController do
       delete :destroy, :id => @user
     end
 
-    it "does not delete the last admin"
+    it "does not delete the last admin" do
+    end
 
     context "the current user" do
-      it "does not delete the current user" do
+      it "does delete the current user" do
         expect{
           delete :destroy, :id => @current_user.id.to_s
-        }.not_to change(User, :count)
+        }.to change(User, :count)
       end
 
-      it "gives a notice that you can't delete yourself" do
+      it "redirects to login page" do
         delete :destroy, :id => @current_user.id.to_s
-        flash[:notice].should_not be_blank
+        response.should redirect_to(new_user_session_url)
       end
 
-      it "redirects to index" do
-        delete :destroy, :id => @current_user.id.to_s
-        response.should redirect_to(users_url)
-      end
     end
 
   end
 
   describe "change approved" do
-    it "should be PUT"
-
     it "changes the 'approved' value from true to false" do
       get :change_approved, :id => @user
       @user.reload.should be_approved
@@ -195,12 +216,12 @@ describe UsersController do
 
       it "sends a note about not being able to change yoursef" do
         get :change_approved, :id => @current_user.id.to_s
-        flash[:notice].should_not be_empty
+        flash[:error].should_not be_empty
       end
 
       it "redirects to index" do
         get :change_approved, :id => @current_user.id.to_s
-        response.should redirect_to(users_url)
+        response.should redirect_to(root_url)
       end
     end
 
@@ -243,10 +264,5 @@ describe UsersController do
         flash[:notice].should == I18n.t('controller.users.activation.failure', :name => @user.user_name)
       end
     end
-
-  end
-
-  describe "the roles" do
-    it "user should be restricted in editing, and only allow for the own data, admin may manage all"
   end
 end

@@ -1,10 +1,15 @@
 -if user_signed_in?
   %ul.app_menu
     %li= link_to t('.calendar'), calendar_path
-    %li= link_to t('.machines'), machines_path
-    %li= link_to t('.users'), users_path
-    %li= link_to t('.bookings'), bookings_path
+    -if can? :manage, Machine
+      %li= link_to t('.machines'), machines_path 
+    -if can? :manage, User
+      %li= link_to t('.users'), users_path
+    -if can? :manage, Booking
+      %li= link_to t('.bookings'), bookings_path
   %ul.user_menu
+    %li= current_user.role
+    %li= link_to t('.edit_account'), edit_user_registration_path
     %li= link_to t(".sign_out"), destroy_user_session_path, :method => :delete
 -else
   %ul.user_menu

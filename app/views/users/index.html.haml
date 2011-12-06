@@ -4,7 +4,7 @@
     %th= t('.phone')
     %th= t('.email')
     %th= t('.approved?')
-    %th= link_to t('.new'), new_user_path
+    %th= link_to t('.new'), new_user_path if can? :create, User
     %th
 
   - @users.each do |user|
@@ -14,6 +14,6 @@
       %td= user.email
       %td= t( user.approved? ? 'y' : 'n' )
       %td
-        = link_to t( user.approved? ? '.deactivate' : '.activate'), change_approved_user_path(user) unless user == current_user 
-        = link_to t('edit'), edit_user_path(user)
-        = link_to t('destroy'), user, :confirm => t('are_you_sure?'), :method => :delete unless user == current_user
+        = link_to t( user.approved? ? '.deactivate' : '.activate'), change_approved_user_path(user) if can? :change_approved, user
+        = link_to t('edit'), edit_user_path(user) if can? :update, user
+        = link_to t('destroy'), user, :confirm => t('are_you_sure?'), :method => :delete if can? :destroy, user

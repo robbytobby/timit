@@ -69,6 +69,7 @@ describe User do
       @user = FactoryGirl.create(:admin_user) 
       @ability = Ability.new(@user)
     end
+
     it "should be able to manage everything" do
       @ability.should be_able_to(:manage, :all)
     end
@@ -92,6 +93,10 @@ describe User do
     it "should be able to manage itself" do
       @ability.should be_able_to :update, @user
       @ability.should be_able_to :destroy, @user
+    end
+
+    it "should not be able to change its role" do
+      @ability.should_not be_able_to :change_role, @user
     end
 
     it "should be able to :read everything" do
@@ -129,6 +134,10 @@ describe User do
     it "should be able to manage itself" do
       @ability.should be_able_to :update, @user
       @ability.should be_able_to :destroy, @user
+    end
+    
+    it "should not be able to change its role" do
+      @ability.should_not be_able_to :change_role, @user
     end
 
     it "should not be able to manage machines" do

@@ -18,4 +18,8 @@ de:
       not_yourself: "Du kannst dich selbst nicht %{action}."
       update:
         success: 'Account erfolgreich geändert'
+      destroy:
+        success: 'Account erfolgreich gelöscht'
+      destroy_self:
+        success: 'Dein Account ist nun gelöscht'
          

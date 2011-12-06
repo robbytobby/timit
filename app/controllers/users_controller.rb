@@ -1,8 +1,7 @@
 class UsersController < ApplicationController
   before_filter :authenticate_user! 
   load_and_authorize_resource
-  before_filter :find_user, :only => [:show, :edit, :update, :destroy, :change_approved]
-  before_filter :not_yourself, :only => [:destroy, :change_approved]
+  before_filter :delete_blank_password, :only => :update
 
   def index
     @users = User.order(:id)
@@ -21,8 +20,6 @@ class UsersController < ApplicationController
   end
 
   def new
-    @user = User.new(params[:user])
-
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @user }
@@ -33,7 +30,6 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(params[:user])
     @user.password = Devise.friendly_token.first(8)
     @user.toggle_approved
 
@@ -50,8 +46,13 @@ class UsersController < ApplicationController
   end
 
   def update
+    params[:user].delete(:password)
+    params[:user].delete(:role) if cannot? :change_role, @user
+    change_role(params[:user][:role]) if params[:user][:role]
+
     respond_to do |format|
       if @user.update_attributes(params[:user])
+        sign_in @user, :bypass => true if params[:user][:password]
         format.html { redirect_to users_path, notice: t('controller.users.update.success') }
         format.json { head :ok }
       else
@@ -66,7 +67,13 @@ class UsersController < ApplicationController
     UserMailer.destroy_email(@user, current_user).deliver
 
     respond_to do |format|
-      format.html { redirect_to users_url }
+      format.html do
+        if @user == current_user
+          redirect_to new_user_session_url, notice: t('controller.users.destroy_self.success')
+        else
+          redirect_to users_url, notice: t('controller.users.destroy.success') 
+        end
+      end
       format.json { head :ok }
     end
   end
@@ -89,12 +96,14 @@ class UsersController < ApplicationController
   end
 
   protected
-  def find_user
-    @user = User.find(params[:id])
+  def change_role(role)
+    @user.role = role
   end
 
-  def not_yourself
-    notice =  t('controller.users.not_yourself', :action => t('controller.users.actions.' + params[:action]))
-    redirect_to users_path, notice: notice  if @user == current_user
+  def delete_blank_password
+    if params[:user][:password].blank?
+      params[:user].delete(:password)
+      params[:user].delete(:password_confirmation)
+    end
   end
 end

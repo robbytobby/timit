@@ -60,7 +60,21 @@ describe "Users" do
         get users_path
         response.should render_template('index')
         response.body.should include(@user.email)
+        response.body.should_not have_selector(:a, :href => new_user_path)
+        response.body.should have_selector(:a, :href => edit_user_path(@current_user))
+        response.body.should have_selector(:a, :href => user_path(@current_user), :'data-method' => 'delete')
+        response.body.should_not have_selector(:a, :href => edit_user_path(@user))
+        response.body.should_not have_selector(:a, :href => user_path(@user), :'data-method' => 'delete')
+      end
+
+      it "renders new, edit and delete links for all users if an admin is signe in" do
+        session_for :admin
+        @user = FactoryGirl.create :approved_user
+        get users_path
+        response.body.should include(@user.email)
         response.body.should have_selector(:a, :href => new_user_path)
+        response.body.should have_selector(:a, :href => edit_user_path(@current_user))
+        response.body.should have_selector(:a, :href => user_path(@current_user), :'data-method' => 'delete')
         response.body.should have_selector(:a, :href => edit_user_path(@user))
         response.body.should have_selector(:a, :href => user_path(@user), :'data-method' => 'delete')
       end
@@ -134,24 +148,46 @@ describe "Users" do
         @user = FactoryGirl.create(:user)
       end
 
-      it "should not be accessible for all but admins" do
-        (User.roles - ['admin']).each{ |role| access_check(role, false){get edit_user_path(@user)} }
+      context "own account" do
+        it "should be accessible for admins" do
+          session_for(:admin)
+          get edit_user_path(@current_user) 
+          response.status.should == 200
+        end
+
+        it "should be accessible for teachers" do
+          session_for(:teaching)
+          get edit_user_path(@current_user) 
+          response.status.should == 200
+        end
+
+        it "should be accessible for unprivileged users" do
+          session_for(:unprivileged)
+          get edit_user_path(@current_user) 
+          response.status.should == 200
+        end
       end
 
-      it "should be accessible for admins" do
-        access_check(:admin, true){get edit_user_path(@user)} 
-      end
+      context "other account" do
+        it "should not be accessible for all but admins" do
+          (User.roles - ['admin']).each{ |role| access_check(role, false){get edit_user_path(@user)} }
+        end
 
-      it "renders the user edit form" do
-        session_for :admin
-        get edit_user_path(@user = FactoryGirl.create(:user))
-        response.status.should == 200
-        response.should render_template(:edit)
-        response.body.should include(@user.email)
-        response.body.should include(I18n.t('users.edit.heading', :name => @user.user_name))
-        response.body.should have_selector(:input, :id => "user_email", :value => @user.email)
-        response.body.should have_selector(:input, :type => "submit", :name => "commit")
-        response.body.should have_selector(:a, :href => users_path)
+        it "should be accessible for admins" do
+          access_check(:admin, true){get edit_user_path(@user)} 
+        end
+
+        it "renders the user edit form" do
+          session_for :admin
+          get edit_user_path(@user = FactoryGirl.create(:user))
+          response.status.should == 200
+          response.should render_template(:edit)
+          response.body.should include(@user.email)
+          response.body.should include(I18n.t('users.edit.heading', :name => @user.user_name))
+          response.body.should have_selector(:input, :id => "user_email", :value => @user.email)
+          response.body.should have_selector(:input, :type => "submit", :name => "commit")
+          response.body.should have_selector(:a, :href => users_path)
+        end
       end
     end
 

@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
   has_many :bookings, :dependent => :destroy
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :first_name, :last_name, :phone, :email, :password, :password_confirmation, :remember_me, :role
+  attr_accessible :first_name, :last_name, :phone, :email, :password, :password_confirmation, :remember_me
   validates_presence_of :first_name, :last_name, :phone, :role
   validates :phone, :format => /^\d[\d -\/]*\d$/
   validate :role_defined?
@@ -58,5 +58,4 @@ class User < ActiveRecord::Base
   def role_defined?
     errors.add(:role, :undefined) unless @@ROLES.include?(role)
   end
-
 end

@@ -15,7 +15,7 @@ de:
       timeout: 'Die Sitzung ist abgelaufen, bitte melde dich erneut an.'
       inactive: 'Dein Account ist noch nicht aktiviert.'
       not_approved: 'Dein Account ist nicht aktiviert.'
-      allready_authenticated: 'Du bist schon eingeloggt.'
+      already_authenticated: 'Du bist schon eingeloggt.'
     sessions:
       signed_in: 'Erfolgreich Angemeldet.'
       signed_out: 'Erfolgreich Abgemeldet.'
@@ -37,7 +37,7 @@ de:
       confirmed: 'Dein Acoount wurde erfolgreich bestätigt. Du bist nun angemeldet.'
     registrations:
       signed_up: 'Der Benutzer wurde erfolreich angelegt. Falls das Bestätigungsmodul eingeschaltet ist, wird nun eine Bestätigungsmail versand.'
-      updated: 'You updated your account successfully.'
+      updated: 'Dein Account wurde erfolgreich geändert'
       destroyed: 'Der Benutzer wurde erfolgreich gelöscht.'
       new:
         sign_up: 'Zugang beantragen'
