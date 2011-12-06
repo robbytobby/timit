@@ -1,11 +1,11 @@
 class BookingsController < ApplicationController
+  before_filter :authenticate_user! 
+  load_and_authorize_resource
   before_filter :store_location, :only => [:new, :edit, :destroy]
   # GET /bookings
   # GET /bookings.json
 
   def index
-    @bookings = Booking.all
-
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @bookings }
@@ -15,8 +15,6 @@ class BookingsController < ApplicationController
   # GET /bookings/1
   # GET /bookings/1.json
   def show
-    @booking = Booking.find(params[:id])
-
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @booking }
@@ -26,8 +24,6 @@ class BookingsController < ApplicationController
   # GET /bookings/new
   # GET /bookings/new.json
   def new
-    @booking = Booking.new(params[:booking])
-
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @booking }
@@ -36,13 +32,11 @@ class BookingsController < ApplicationController
 
   # GET /bookings/1/edit
   def edit
-    @booking = Booking.find(params[:id])
   end
 
   # POST /bookings
   # POST /bookings.json
   def create
-    @booking = Booking.new(params[:booking])
     @booking.user = current_user
 
     respond_to do |format|
@@ -59,8 +53,6 @@ class BookingsController < ApplicationController
   # PUT /bookings/1
   # PUT /bookings/1.json
   def update
-    @booking = Booking.find(params[:id])
-
     respond_to do |format|
       if @booking.update_attributes(params[:booking])
         format.html { redirect_back_or_default(calendar_path, notice: 'Booking was successfully updated.') }
@@ -75,9 +67,7 @@ class BookingsController < ApplicationController
   # DELETE /bookings/1
   # DELETE /bookings/1.json
   def destroy
-    @booking = Booking.find(params[:id])
     @booking.destroy
-
     respond_to do |format|
       format.html { redirect_back_or_default(calendar_path, notice: 'Booking was successfully deleted.') }
       format.json { head :ok }

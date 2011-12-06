@@ -34,7 +34,7 @@ describe BookingsController do
   end
 
   before :each do
-    sign_in FactoryGirl.create :approved_user
+    sign_in FactoryGirl.create :admin_user
     @booking = FactoryGirl.create(:booking)
   end
 

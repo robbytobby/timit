@@ -8,8 +8,9 @@
     %th= t('activerecord.models.user')
     %th= t('activerecord.models.machine')
     %th
-    %th
-    %th
+    -if can? :manage, Booking
+      %th
+      %th
 
   - @bookings.each do |booking|
     %tr
@@ -19,8 +20,9 @@
       %td= booking.user_id
       %td= booking.machine_id
       %td= link_to 'Show', booking
-      %td= link_to 'Edit', edit_booking_path(booking)
-      %td= link_to 'Destroy', booking, :confirm => 'Are you sure?', :method => :delete
+      -if can? :manage, Booking
+        %td= link_to 'Edit', edit_booking_path(booking)
+        %td= link_to 'Destroy', booking, :confirm => 'Are you sure?', :method => :delete
 
 %br
 

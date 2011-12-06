@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'cancan/matchers'
 
 describe Booking do
   before :each do
@@ -124,6 +125,37 @@ describe Booking do
         @booking.ends_at = @now + 7.hours
         @booking.should_not be_valid
       end
+    end
+  end
+
+  describe "permissions" do
+    context "an unpriviliged user" do
+      before :each do
+        @user = FactoryGirl.create(:unprivileged_user) 
+        @own_booking = FactoryGirl.create(:booking, :user => @user)
+        @others_booking = FactoryGirl.create(:booking)
+        @ability = Ability.new(@user)
+      end
+
+      subject{ @ability}
+      it{ should_not be_able_to :manage, Booking}
+      it{ should be_able_to :read, Booking }
+      it{ should be_able_to :create, FactoryGirl.build(:booking, :user => @user) }
+      it{ should be_able_to :edit, @own_booking }
+      it{ should be_able_to :destroy, @own_booking }
+      it{ should_not be_able_to :create, FactoryGirl.build(:booking) }
+      it{ should_not be_able_to :edit, @others_booking }
+      it{ should_not be_able_to :destroy, @others_booking }
+    end
+
+    context "a teaching user" do
+      subject{ Ability.new(FactoryGirl.create(:teaching_user)) }
+      it{ should be_able_to :manage, Booking}
+    end
+
+    context "an admin user" do
+      subject{ Ability.new(FactoryGirl.create(:admin_user)) }
+      it{ should be_able_to :manage, Booking}
     end
   end
 end
