@@ -28,6 +28,41 @@ describe "Bookings" do
         response.should redirect_to(new_user_session_url)
       end
     end
+
+    describe "GET /booking/new" do
+      it "redirects to login path" do
+        get new_booking_path
+        response.should redirect_to(new_user_session_url)
+      end
+    end
+
+    describe "GET /booking/edit" do
+      it "redirects to login path" do
+        get edit_booking_path(FactoryGirl.create(:booking))
+        response.should redirect_to(new_user_session_url)
+      end
+    end
+
+    describe "post /bookings" do
+      it "redirects to login path" do
+        post bookings_path :booking => FactoryGirl.build(:booking)
+        response.should redirect_to(new_user_session_url)
+      end
+    end
+
+    describe "put /bookings" do
+      it "redirects to login path" do
+        put booking_path FactoryGirl.create(:booking) 
+        response.should redirect_to(new_user_session_url)
+      end
+    end
+
+    describe "delete /booking" do
+      it "redirects to login path" do
+        delete booking_path FactoryGirl.create(:booking) 
+        response.should redirect_to(new_user_session_url)
+      end
+    end
   end
 
   ### As User
@@ -57,7 +92,6 @@ describe "Bookings" do
         response.body.should_not have_selector(:a, :href => edit_booking_path(@bookings.first))
         response.body.should_not have_selector(:a, :href => booking_path(@bookings.first), 'data-method' => 'delete')
       end
-
 
       it "does show, edit and destroy links for admin and teaching users" do
         @bookings = FactoryGirl.create_list(:booking, 2)

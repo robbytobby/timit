@@ -69,7 +69,7 @@ describe MachinesController do
 
   context "with user logged in" do
     before :each do
-      sign_in FactoryGirl.create(:approved_user)
+      sign_in FactoryGirl.create(:admin_user)
     end
 
     describe "GET index" do
