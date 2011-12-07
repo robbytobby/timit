@@ -38,7 +38,7 @@ class MachinesController < ApplicationController
   def create
     respond_to do |format|
       if @machine.save
-        format.html { redirect_to machines_path, notice: t('controller.machines.create.success') }
+        format.html { redirect_to machines_path, notice: t('controller.success.create', :thing => t('activerecord.models.machine')) }
         format.json { render json: @machine, status: :created, location: @machine }
       else
         format.html { render action: "new" }
@@ -52,7 +52,7 @@ class MachinesController < ApplicationController
   def update
     respond_to do |format|
       if @machine.update_attributes(params[:machine])
-        format.html { redirect_to machines_path, notice: t('controller.machines.update.success') }
+        format.html { redirect_to machines_path, notice: t('controller.success.update', :thing => t('activerecord.models.machine')) }
         format.json { head :ok }
       else
         format.html { render action: "edit" }
@@ -67,7 +67,7 @@ class MachinesController < ApplicationController
     @machine.destroy
 
     respond_to do |format|
-      format.html { redirect_to machines_url }
+      format.html { redirect_to machines_url, notice: t('controller.success.destroy', :thing => t('activerecord.models.machine'))  }
       format.json { head :ok }
     end
   end

@@ -36,7 +36,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user.save
         @user.send_welcome_email(current_user)
-        format.html { redirect_to users_path, notice: t('controller.users.create.success') }
+        format.html { redirect_to users_path, notice: t('controller.success.create', :thing => t('activerecord.models.user')) }
         format.json { render json: @user, status: :created, location: @user }
       else
         format.html { render action: "new" }
@@ -53,7 +53,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user.update_attributes(params[:user])
         sign_in @user, :bypass => true if params[:user][:password]
-        format.html { redirect_to users_path, notice: t('controller.users.update.success') }
+        format.html { redirect_to users_path, notice: t('controller.success.update', :thing => t('activerecord.models.user')) }
         format.json { head :ok }
       else
         format.html { render action: "edit" }
@@ -71,7 +71,7 @@ class UsersController < ApplicationController
         if @user == current_user
           redirect_to new_user_session_url, notice: t('controller.users.destroy_self.success')
         else
-          redirect_to users_url, notice: t('controller.users.destroy.success') 
+          redirect_to users_url, notice: t('controller.success.destroy', :thing => t('activerecord.models.user')) 
         end
       end
       format.json { head :ok }

@@ -1,10 +1,10 @@
 de:
   controller:
+    success:
+      create: '%{thing} erfolgreich angelegt.'
+      update: '%{thing} erfolgreich geändert.'
+      destroy: '%{thing} erfolgreich gelöscht.'
     machines:
-      create:
-        success: 'Gerät erfolgreich angelegt'
-      update:
-        success: 'Gerät erfolgreich geändert'
     users:
       actions:
         destroy: 'löschen'
@@ -16,12 +16,8 @@ de:
         failure: "Der User %{name} konnte nicht gespeichert werden, der Account ist weiterhin aktiv"
         success: "Der Account von %{name} ist nun deaktiviert"
       not_yourself: "Du kannst dich selbst nicht %{action}."
-      create: 
-        success: 'Acount erfolgreich angelegt'
-      update:
-        success: 'Account erfolgreich geändert'
-      destroy:
-        success: 'Account erfolgreich gelöscht'
       destroy_self:
         success: 'Dein Account ist nun gelöscht'
+    bookings:
+      success: 'Buchung erfolgreich %{action}.'
          
