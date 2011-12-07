@@ -36,7 +36,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user.save
         @user.send_welcome_email(current_user)
-        format.html { redirect_to users_path, notice: 'User was successfully created.' }
+        format.html { redirect_to users_path, notice: t('controller.users.create.success') }
         format.json { render json: @user, status: :created, location: @user }
       else
         format.html { render action: "new" }

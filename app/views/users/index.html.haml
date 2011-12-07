@@ -1,7 +1,8 @@
-%p= link_to t('.new'), new_user_path if can? :create, User
 %table
   %tr
-    %th= t('.name')
+    %th
+      = link_to image_tag('icons/png16/add.png'), new_user_path if can? :create, User
+      = t('.name')
     %th= t('.role')
     %th= t('.phone')
     %th= t('.email')
@@ -11,14 +12,14 @@
     %tr{:class => cycle('odd', 'even')}
       %td
         -if can?(:manage, user)
-          = link_to image_tag('icons/destroy.svg', :size => '16x16') ,
+          = link_to image_tag('icons/png16/destroy.png', :size => '16x16') ,
                     user, :confirm => t('confirm', :action => t('delete'), :name => user.name), :title => t('delete'),
                     :method => :delete
         -if can? :manage, user
-          = link_to image_tag('icons/edit.svg', :size => '16x16'), edit_user_path(user), :title => t('edit')
+          = link_to image_tag('icons/png16/edit.png', :size => '16x16'), edit_user_path(user), :title => t('edit')
         = link_to user.name, user_path(user), :title => t('show')
       %td= t(".#{user.role}")
       %td= user.phone
       %td= mail_to user.email
       %td
-        = link_to_if can?(:change_approved, user), image_tag(user.approved? ? 'icons/approved.svg' : 'icons/not_approved.svg', :size => '16x16'), change_approved_user_path(user), :title => t(user.approved? ? '.deactivate' : '.activate')
+        = link_to_if can?(:change_approved, user), image_tag(user.approved? ? 'icons/png16/approved.png' : 'icons/png16/not_approved.png', :size => '16x16'), change_approved_user_path(user), :title => t(user.approved? ? '.deactivate' : '.activate')

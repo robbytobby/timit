@@ -16,6 +16,8 @@ de:
         failure: "Der User %{name} konnte nicht gespeichert werden, der Account ist weiterhin aktiv"
         success: "Der Account von %{name} ist nun deaktiviert"
       not_yourself: "Du kannst dich selbst nicht %{action}."
+      create: 
+        success: 'Acount erfolgreich angelegt'
       update:
         success: 'Account erfolgreich geändert'
       destroy:
