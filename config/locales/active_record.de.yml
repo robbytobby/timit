@@ -3,11 +3,13 @@ de:
     models:
       machine: 'Gerät'
       user: 'User'
+      booking: 'Buchung'
     attributes:
       booking:
         starts_at: 'Beginn'
         ends_at: 'Ende'
         all_day: 'ganzer Tag'
+        id: '#'
       machine: 
         name: 'Name'
         description: 'Beschreibung'
@@ -20,9 +22,16 @@ de:
         phone: 'Telefon'
         first_name: 'Vorname'
         last_name: 'Nachname'
-        unprivileged: 'unprivilegierter Nutzer'
-        teaching: 'Assistent im Praktikum'
+        unprivileged: 'keine'
+        teaching: 'Lehre'
         admin: 'Administrator'
+        role: 'Privilegien'
+        created_at: 'angelegt am'
+        updated_at: 'aktualisiert am'
+        approved: 'aktiviert?'
+        current_sign_in_ip: 'IP des letzten Logins'
+        current_sign_in_at: 'letzter Login am'
+        sign_in_count: 'Anzahl der Logins'
     errors:
       models:
         user:

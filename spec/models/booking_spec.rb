@@ -48,13 +48,25 @@ describe Booking do
   end
 
   it "localizes starts_at" do
-    @booking.human_start.should == I18n.l(@booking.starts_at, :format => :short)
+    @booking.human_start.should == I18n.l(@booking.starts_at, :format => :default)
     @booking.human_start(:long).should == I18n.l(@booking.starts_at, :format => :long)
   end
 
+  it "shows starts_at as date if its a full day event" do
+    @booking.all_day = true
+    @booking.human_start.should == I18n.l(@booking.starts_at.to_date, :format => :default)
+    @booking.human_start(:long).should == I18n.l(@booking.starts_at.to_date, :format => :long)
+  end
+
   it "localizes starts_at" do
-    @booking.human_end.should == I18n.l(@booking.ends_at, :format => :short)
-    @booking.human_end(:long).should == I18n.l(@booking.ends_at, :format => :long)
+    @booking.human_end.should == I18n.l(@booking.ends_at, :format => :default)
+    @booking.human_end(:long).should == I18n.l(@booking.ends_at, :format => :default)
+  end
+
+  it "shows ends_at as date if its a full day event" do
+    @booking.all_day = true
+    @booking.human_end.should == I18n.l(@booking.ends_at.to_date, :format => :default)
+    @booking.human_end(:long).should == I18n.l(@booking.ends_at.to_date, :format => :long)
   end
 
   it "is not valid without user_id" do

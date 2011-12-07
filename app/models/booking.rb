@@ -33,12 +33,20 @@ class Booking < ActiveRecord::Base
     starts_at.to_date..ends_at.to_date
   end
 
-  def human_start(format = :short)
-    I18n.l starts_at, :format => format
+  def human_start(format = :default)
+    if all_day
+      I18n.l starts_at.to_date, :format => format
+    else
+      I18n.l starts_at, :format => format
+    end
   end
 
-  def human_end(format = :short)
-    I18n.l ends_at, :format => format 
+  def human_end(format = :default)
+    if all_day
+      I18n.l ends_at.to_date, :format => format
+    else
+      I18n.l ends_at, :format => format
+    end
   end
 
   private

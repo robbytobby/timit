@@ -1,0 +1,47 @@
+%h2= @user.name
+.user
+  %h3= t '.personal'
+  %ul
+    %li
+      %b= t('activerecord.attributes.user.first_name') + ':'
+      = @user.first_name
+    %li
+      %b= t('activerecord.attributes.user.last_name') + ':'
+      = @user.last_name
+    %li
+      %b= t('activerecord.attributes.user.phone') + ':'
+      = @user.phone
+    %li
+      %b= t('activerecord.attributes.user.email') + ':'
+      = @user.email
+    %li
+      %b= t('activerecord.attributes.user.role') + ':'
+      = t 'activerecord.attributes.user.' + @user.role
+-if can? :manage, User
+  .user
+    %h3= t '.account'
+    %ul
+      %li
+        %b= t('activerecord.attributes.user.created_at') + ':'
+        = l @user.created_at, :format => :middle
+      %li
+        %b= t('activerecord.attributes.user.updated_at') + ':'
+        = l @user.updated_at, :format => :middle
+      %li
+        %b= t('activerecord.attributes.user.approved') + ':'
+        = @user.approved
+      %li
+        %b= t('activerecord.attributes.user.sign_in_count') + ':'
+        = @user.sign_in_count
+      -if @user.current_sign_in_at 
+        %li
+          %b= t('activerecord.attributes.user.current_sign_in_at') + ':'
+          = l @user.current_sign_in_at, :format => :middle
+        %li
+          %b= t('activerecord.attributes.user.current_sign_in_ip') + ':'
+          = @user.current_sign_in_ip
+.clear
+= link_to t('edit'), edit_user_path(@user)
+\|
+= link_to t('back'), users_path
+  

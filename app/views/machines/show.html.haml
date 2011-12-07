@@ -1,10 +1,12 @@
-%p
-  %b Name:
-  = @machine.name
-%p
-  %b Description:
-  = @machine.description
-
-= link_to 'Edit', edit_machine_path(@machine)
+%h2= @machine.name
+.machine
+  %ul
+    %li
+      %b= t('activerecord.attributes.machine.name') + ':'
+      = @machine.name
+    %li
+      %b= t('activerecord.attributes.machine.description') + ':'
+      = @machine.description
+= link_to t('edit'), edit_machine_path(@machine)
 \|
-= link_to 'Back', machines_path
+= link_to t('back'), machines_path

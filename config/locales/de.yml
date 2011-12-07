@@ -31,6 +31,9 @@ de:
     edit:
       heading: 'Gerät bearbeiten'
   users:
+    show:
+      personal: 'persönliche Daten:'
+      account: 'technische Daten:'
     index:
       email: 'E-Mail'
       phone: 'Telefon'
