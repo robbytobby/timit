@@ -33,14 +33,6 @@ module CalendarHelper
     content_tag(:div, link_to('+', new_booking_path(:booking => {:machine_id => machine, :starts_at => day.to_datetime})), :class => "free")
   end
 
-  def draw_booking(calendar, booking, day)
-    if booking.first_day?(day) || day == calendar.days.first
-      content_tag(:div,
-                  link_to( booking.user.email, edit_booking_path(booking)),
-                  :class => div_class(@calendar, booking))
-    end
-  end
-
   def draw_spacer(calendar, machine_id, day)
     first = @calendar.entries_for(machine_id, day).first 
     content_tag(:div, '', :class => 'spacer') if first && first.multiday? && first.days.last == day

@@ -79,9 +79,6 @@ describe CalendarHelper do
     end
   end
 
-  describe "draw_booking" do
-  end
-
   describe "draw_spacer" do
     before :each do
       @booking1 = FactoryGirl.create(:booking, :starts_at => Time.now, :ends_at => Time.now + 2.hours)
@@ -103,30 +100,6 @@ describe CalendarHelper do
 
     it "draws a spacer div if the first booking for a given date and machine is a multiday event and it is the last day of that booking" do
       draw_spacer(@calendar, @booking2.machine_id, @booking2.days.last).should have_selector(:div, :class => "spacer")
-    end
-  end
-
-  describe "draw_booking" do
-    before :each do
-      @booking1 = FactoryGirl.create(:booking, :starts_at => Time.now, :ends_at => Time.now + 1.day)
-      @booking2 = FactoryGirl.create(:booking, :starts_at => Time.now - 1.day, :ends_at => Time.now + 2.days) 
-      @calendar = Calendar.new
-    end
-
-    it "draw an entry if its the first date of that booking" do
-      draw_booking(@calendar, @booking1, Date.today).should have_selector(:div, :class => div_class(@calendar, @booking1)) do |div|
-        div.should have_selector(:a)
-      end
-    end
-
-    it "draws nothing if it is not the first day" do
-      draw_booking(@calendar, @booking1, Date.today + 1.day).should be_nil
-    end
-
-    it "draws an entry if it is not the first day of a booking, but it is the start date of the calendar" do
-      draw_booking(@calendar, @booking2, @calendar.days.first).should have_selector(:div, :class => div_class(@calendar, @booking2)) do |div|
-        div.should have_selector(:a)
-      end
     end
   end
 end
