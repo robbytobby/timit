@@ -25,6 +25,10 @@ class Booking < ActiveRecord::Base
     starts_at.to_date != ends_at.to_date
   end
 
+  def all_day?
+    all_day || (!book_before_ok? && !book_after_ok?)
+  end
+
   def number_of_days
     (ends_at.to_date - starts_at.to_date + 1).to_i
   end
@@ -53,10 +57,42 @@ class Booking < ActiveRecord::Base
     ends_at.end_of_day - ends_at < 1.hour
   end
 
+  def from_beginning_of_day?
+    starts_at - starts_at.beginning_of_day < 1.hour
+  end
+
   def leaves_time_till?(booking)
     return true if booking.nil?
     booking.starts_at - ends_at >= 1.hour
   end
+
+  def starts_long_after?(booking)
+    return true if booking.nil?
+    starts_at - booking.ends_at >= 1.hour
+  end
+
+  def next
+    Booking.where(:machine_id => machine_id).
+      where("starts_at > :time", :time => ends_at).
+      order(:starts_at).
+      first
+  end
+
+  def prev
+    Booking.where(:machine_id => machine_id).
+      where("ends_at <= :time", :time => starts_at).
+      order(:starts_at).
+      first
+  end
+
+  def book_after_ok?
+    leaves_time_till?(self.next) && !till_end_of_day?
+  end
+
+  def book_before_ok?
+    starts_long_after?(self.prev) && !from_beginning_of_day?
+  end
+
 
   private
   def end_after_start

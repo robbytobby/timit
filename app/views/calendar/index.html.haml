@@ -16,4 +16,4 @@
           = draw_spacer(@calendar, m.id, d)
           - @calendar.entries_for(m.id, d).each do |booking|
             = render :partial => 'calendar/booking', :object => booking, :locals => {:day => d}
-          //= new_booking(m,d) if @calendar.draw_new_booking_last?(m.id, d)
+          = new_booking(m,d) if @calendar.draw_new_booking_last?(m.id, d)

@@ -19,7 +19,7 @@ module CalendarHelper
     booking.days.each do |d| 
       next if d < calendar.days.first || d >= calendar.days.last
       if booking.last_day?(d)
-        add = booking.all_day ? calendar.max_entries(d) : 1
+        add = booking.all_day? ? calendar.max_entries(d) : 1
       else
         add = calendar.max_entries(d) - calendar.number_of_entries(booking.machine_id, d) + 1
       end
