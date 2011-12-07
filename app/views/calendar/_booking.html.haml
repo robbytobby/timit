@@ -1,4 +1,5 @@
 -if booking.first_day?(day) || day == @calendar.days.first
   %div{:class => div_class(@calendar, booking)}
     =link_to( booking.user.email, edit_booking_path(booking))
+  = new_booking(booking.machine, day) if @calendar.draw_new_booking?(booking, day)
 

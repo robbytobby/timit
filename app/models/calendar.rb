@@ -37,6 +37,25 @@ class Calendar
   def draw_new_booking_link?(machine_id, date)
     draw_new_booking_first?(machine_id, date) || draw_new_booking_last?(machine_id, date)
   end
+
+  def draw_new_booking?(booking, date)
+    if booking.ends_at?(date)
+      return false if booking.till_end_of_day?
+      return false if !booking.leaves_time_till?(next_booking(booking))
+      return true
+    end
+    return true
+    #buchung endet an diesem tag
+    #rest zum Tagesende ist größer als 1h
+    #nächst Buchung ist mehr als 1h weiter
+  end
+
+  def next_booking(booking)
+    Booking.where(:machine_id => booking.machine_id).
+      where("starts_at > :time", :time => booking.ends_at).
+      order(:starts_at).
+      first
+  end
   
   def number_of_entries(machine_id, date)
     n = entries_for(machine_id, date).size

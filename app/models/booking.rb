@@ -49,6 +49,15 @@ class Booking < ActiveRecord::Base
     end
   end
 
+  def till_end_of_day?
+    ends_at.end_of_day - ends_at < 1.hour
+  end
+
+  def leaves_time_till?(booking)
+    return true if booking.nil?
+    booking.starts_at - ends_at >= 1.hour
+  end
+
   private
   def end_after_start
     errors.add(:ends_at, :start_after_end) unless ends_at > starts_at
@@ -66,4 +75,5 @@ class Booking < ActiveRecord::Base
     conflicts = conflicts.where(condition, :start => starts_at, :end => ends_at)
     conflicts.each{|c| errors.add(attr, :date_conflicts, :from => c.human_start, :to => c.human_end)}
   end
+
 end
