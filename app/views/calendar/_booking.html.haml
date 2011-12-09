@@ -1,6 +1,6 @@
-= new_booking(booking.machine, day) if @calendar.draw_new_booking_after_mulitday?(booking, day)
+= new_booking(booking.machine, day, :after => booking) if @calendar.draw_new_booking_after_mulitday?(booking, day)
 -if @calendar.draw_booking?(booking, day)
   %div{:class => div_class(@calendar, booking)}
     = link_to( booking.user.email, edit_booking_path(booking))
-  = new_booking(booking.machine, day) if @calendar.draw_new_booking_after?(booking, day)
+  = new_booking(booking.machine, day, :after => booking) if @calendar.draw_new_booking_after?(booking, day)
 

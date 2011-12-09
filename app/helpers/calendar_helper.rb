@@ -27,8 +27,18 @@ module CalendarHelper
     "height-#{n}-#{m}"
   end
 
-  def new_booking(machine, day)
-    content_tag(:div, link_to('+', new_booking_path(:booking => {:machine_id => machine, :starts_at => day.to_datetime})), :class => "free")
+  def new_booking(machine, day, opts = {})
+    if opts[:after]
+      starts_at = opts[:after].ends_at
+    else
+      starts_at = day.to_datetime
+    end
+
+    next_booking = Booking.next(machine, starts_at)
+    ends_at = Booking.next(machine, starts_at).starts_at if Booking.next(machine, starts_at)
+    ends_at = starts_at + machine.max_duration if ends_at.nil? || ends_at > starts_at + machine.max_duration
+
+    content_tag(:div, link_to('+', new_booking_path(:booking => {:machine_id => machine, :starts_at => starts_at, :ends_at => ends_at, :user_id => current_user})), :class => "free")
   end
 
   def draw_spacer(calendar, machine_id, day)
