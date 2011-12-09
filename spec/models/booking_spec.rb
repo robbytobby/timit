@@ -34,6 +34,21 @@ describe Booking do
     @booking2.should_not be_multiday
   end
 
+  it "is classified allday if the space in front and after is not sufficient" do
+    @booking = FactoryGirl.create(:booking, :starts_at => "2011-10-17 00:59:00", :ends_at =>"2011-10-17 23:01:00")
+    @booking.should be_all_day
+  end
+
+  it "is not classified allday if the space in front is sufficient" do
+    @booking = FactoryGirl.create(:booking, :starts_at => "2011-10-17 01:00:00", :ends_at =>"2011-10-17 23:01:00")
+    @booking.should_not be_all_day
+  end
+
+  it "is not classified allday if the space after is sufficient" do
+    @booking = FactoryGirl.create(:booking, :starts_at => "2011-10-17 00:59:00", :ends_at =>"2011-10-17 22:59:00")
+    @booking.should_not be_all_day
+  end
+
   it "knows it's number of days" do
     FactoryGirl.build(:booking, :starts_at => "2011-10-17 17:34:14", :ends_at =>"2011-10-17 17:34:14").number_of_days.should == 1
     FactoryGirl.build(:booking, :starts_at => "2011-10-17 17:34:14", :ends_at =>"2011-10-18 17:34:14").number_of_days.should == 2
@@ -69,6 +84,52 @@ describe Booking do
     @booking.human_end(:long).should == I18n.l(@booking.ends_at.to_date, :format => :long)
   end
 
+  it "finds the next booking for that machine" do
+    @booking1 = FactoryGirl.create(:booking, :starts_at => "2011-12-01 00:00:00", :ends_at => "2011-12-01 00:02:00")
+    @booking2 = FactoryGirl.create(:booking, :starts_at => "2011-12-01 00:02:00", :ends_at => "2011-12-01 00:05:00")
+    @booking3 = FactoryGirl.create(:booking, :starts_at => "2011-12-03 00:02:02", :ends_at => "2011-12-04 00:03:00", :machine => @booking1.machine)
+    @booking1.next.should == @booking3
+  end
+
+  it "finds the previous booking for that machine" do
+    @booking1 = FactoryGirl.create(:booking, :starts_at => "2011-12-01 00:00:00", :ends_at => "2011-12-01 00:02:00")
+    @booking2 = FactoryGirl.create(:booking, :starts_at => "2011-11-30 00:02:00", :ends_at => "2011-11-30 00:05:00")
+    @booking3 = FactoryGirl.create(:booking, :starts_at => "2011-11-29 00:02:02", :ends_at => "2011-11-29 00:03:00", :machine => @booking1.machine)
+    @booking1.prev.should == @booking3
+  end
+
+  it "is okay to book after, if it ends more than one hour before midnight" do
+    @booking = FactoryGirl.create(:booking, :starts_at => "2011-12-01 00:00:00", :ends_at => "2011-12-01 00:02:00")
+    @booking.should be_book_after_ok
+  end
+
+  it "is not okay to book after, if it ends less than one hour before midnight" do
+    @booking = FactoryGirl.create(:booking, :starts_at => "2011-12-01 00:00:00", :ends_at => "2011-12-01 23:02:00")
+    @booking.should_not be_book_after_ok
+  end
+
+  it "is not okay to book after, if time till next booking is less than one hour" do
+    @booking = FactoryGirl.create(:booking, :starts_at => "2011-12-01 00:00:00", :ends_at => "2011-12-01 02:00:00")
+    FactoryGirl.create(:booking, :starts_at => "2011-12-01 02:59:00", :ends_at => "2011-12-01 05:00:00", :machine => @booking.machine)
+    @booking.should_not be_book_after_ok
+  end
+
+  it "is okay to book before, if it starts more than one hour after midnight" do
+    @booking = FactoryGirl.create(:booking, :starts_at => "2011-12-01 01:01:00", :ends_at => "2011-12-01 02:00:00")
+    @booking.should be_book_before_ok
+  end
+
+  it "is not okay to book before, if it starts less than one hour after midnight" do
+    @booking = FactoryGirl.create(:booking, :starts_at => "2011-12-01 00:59:00", :ends_at => "2011-12-01 03:00:00")
+    @booking.should_not be_book_before_ok
+  end
+
+  it "is not okay to book before, if time after previous booking is less than one hour" do
+    @booking = FactoryGirl.create(:booking, :starts_at => "2011-12-01 02:00:00", :ends_at => "2011-12-01 03:00:00")
+    FactoryGirl.create(:booking, :starts_at => "2011-12-01 00:00:00", :ends_at => "2011-12-01 01:01:00", :machine => @booking.machine)
+    @booking.should_not be_book_before_ok
+  end
+
   it "is not valid without user_id" do
     @booking.user_id = nil
     @booking.should_not be_valid
@@ -86,7 +147,7 @@ describe Booking do
 
   describe "does not overlap" do
     before :each do
-      @now = Time.now
+      @now = Time.now.beginning_of_day
       @old_booking = FactoryGirl.create(:booking, :starts_at => @now, :ends_at => @now + 6.hours)
     end
     
@@ -105,6 +166,11 @@ describe Booking do
         FactoryGirl.build(:booking, :starts_at => @now - 1.day, :ends_at => @now + 1.day).should be_valid
         FactoryGirl.build(:booking, :starts_at => @now - 1.day, :ends_at => @now + 1.day, :machine_id => @old_booking.machine_id).should_not be_valid
       end
+
+      it "is not valid if it is an all day booking and it dates include another booking" do
+        FactoryGirl.build(:booking, :starts_at => @now + 6.hours, :ends_at => @now + 7.hours, :all_day => true).should be_valid
+        FactoryGirl.build(:booking, :starts_at => @now + 6.hours, :ends_at => @now + 7.hours, :all_day => true, :machine => @old_booking.machine).should_not be_valid
+      end
     end
 
     describe "#existing booking" do
@@ -120,7 +186,7 @@ describe Booking do
         @booking.should_not be_valid
       end
 
-      it "#is not valid if its end lies in an existing booking for that machine" do
+      it "is not valid if its end lies in an existing booking for that machine" do
         @booking.starts_at = @now - 1.hour 
         @booking.ends_at = @now 
         @booking.should be_valid

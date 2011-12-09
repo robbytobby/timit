@@ -6,10 +6,8 @@ module CalendarHelper
   def div_class(calendar, booking)
     klass = "booked"
     klass << " #{div_height(calendar, booking)}"
-    if booking.multiday?
-      klass << " multiday"
-      klass << " all_day" unless calendar.draw_new_booking_link?(booking.machine_id, booking.starts_at.to_date)
-    end
+    klass << " multiday" if booking.multiday?
+    klass << " all_day" if booking.all_day?
     klass
   end
 
@@ -18,7 +16,7 @@ module CalendarHelper
     m = 0
     booking.days.each do |d| 
       next if d < calendar.days.first || d >= calendar.days.last
-      if booking.last_day?(d)
+      if booking.ends_at?(d)
         add = booking.all_day? ? calendar.max_entries(d) : 1
       else
         add = calendar.max_entries(d) - calendar.number_of_entries(booking.machine_id, d) + 1
@@ -35,6 +33,6 @@ module CalendarHelper
 
   def draw_spacer(calendar, machine_id, day)
     first = @calendar.entries_for(machine_id, day).first 
-    content_tag(:div, '', :class => 'spacer') if first && first.multiday? && first.days.last == day
+    content_tag(:div, '', :class => 'spacer') if first && first.multiday? && first.ends_at?(day) && !first.all_day?
   end
 end

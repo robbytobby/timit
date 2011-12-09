@@ -19,38 +19,29 @@ class Calendar
   end
 
   def draw_new_booking_first?(machine_id, date)
-    if first = entries_for(machine_id, date).first
-      #TODO book_before_ok?
-      return false if !first.starts_at?(date) || first.starts_at - date.to_datetime < 1.hour
-      return false if first.all_day
-    end
+    first = entries_for(machine_id, date).first
+    return false if first && (first.all_day || !first.starts_at?(date) || !first.book_before_ok?)
     return true
   end
 
-  def draw_new_booking_last?(machine_id, date)
-    if b = entries_for(machine_id, date).last
-      return false if ! b.multiday?
-      return true if b.ends_at?(date) && !b.all_day && b.book_after_ok?
-    end
-    return false
-  end
-
-  def draw_new_booking_link?(machine_id, date)
-    draw_new_booking_first?(machine_id, date) || draw_new_booking_last?(machine_id, date)
-  end
-
-  def draw_new_booking?(booking, date)
+  def draw_new_booking_after?(booking, date)
     return true if booking.ends_at?(date) && booking.book_after_ok?
     return false
+  end
+
+  def draw_new_booking_after_mulitday?(booking, date)
+    return true if booking.multiday? && !booking.all_day? && booking.ends_at?(date) && booking.book_after_ok?
+    return false
+  end
+
+  def draw_booking?(booking, date)
+    booking.starts_at?(date) || date == days.first
   end
 
   def number_of_entries(machine_id, date)
     n = 0
     n += 1 if draw_new_booking_first?(machine_id, date)
-    entries_for(machine_id, date).each do |b|
-      n += 1
-      n += 1 if b.book_after_ok? && b.ends_at?(date)
-    end
+    entries_for(machine_id, date).each{ |b| n += draw_new_booking_after?(b, date) ? 2 : 1 }
     n
   end
 

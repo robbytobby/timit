@@ -37,9 +37,10 @@ describe CalendarHelper do
 
   describe "div_class" do
     before :each do
-      @booking1 = FactoryGirl.create(:booking, :starts_at => Time.now, :ends_at => Time.now + 1.hour)
-      @booking2 = FactoryGirl.create(:booking, :starts_at => Time.now, :ends_at => Time.now + 1.day)
-      @booking3 = FactoryGirl.create(:booking, :starts_at => Time.now, :ends_at => Time.now + 1.day, :all_day => true)
+      @booking1 = FactoryGirl.create(:booking, :starts_at => '2011-12-1 02:00:00', :ends_at => '2011-12-1 03:00:00')
+      @booking2 = FactoryGirl.create(:booking, :starts_at => '2011-12-1 02:00:00', :ends_at => '2011-12-2 02:00:00')
+      @booking3 = FactoryGirl.create(:booking, :starts_at => '2011-12-1 02:00:00', :ends_at => '2011-12-2 02:00:00', :all_day => true)
+      @calendar = Calendar.new('2011-12-1'.to_date)
     end
 
     it "delivers a string" do
@@ -62,8 +63,8 @@ describe CalendarHelper do
 
     it "defines the height of a div" do
       helper.div_class(@calendar, @booking1).should include("height-1-0")
-      helper.div_class(@calendar, @booking2).should include("height-2-0")
-      helper.div_class(@calendar, @booking3).should include("height-4-2")
+      helper.div_class(@calendar, @booking2).should include("height-3-1")
+      helper.div_class(@calendar, @booking3).should include("height-5-3")
     end
   end
 

@@ -7,6 +7,8 @@ class Booking < ActiveRecord::Base
   validate :end_after_start
   validate :no_overlaps
 
+  before_validation :adjust_time_to_all_day
+
   def includes?(date)
     starts_at.to_date <= date && ends_at.to_date >= date
   end
@@ -26,7 +28,7 @@ class Booking < ActiveRecord::Base
   end
 
   def all_day?
-    all_day || (!book_before_ok? && !book_after_ok?)
+    all_day || (from_beginning_of_day? && till_end_of_day?)
   end
 
   def number_of_days
@@ -73,7 +75,7 @@ class Booking < ActiveRecord::Base
 
   def next
     Booking.where(:machine_id => machine_id).
-      where("starts_at > :time", :time => ends_at).
+      where("starts_at >= :time", :time => ends_at).
       order(:starts_at).
       first
   end
@@ -110,6 +112,13 @@ class Booking < ActiveRecord::Base
     conflicts = conflicts.where("id != :id", :id => id) unless self.new_record?
     conflicts = conflicts.where(condition, :start => starts_at, :end => ends_at)
     conflicts.each{|c| errors.add(attr, :date_conflicts, :from => c.human_start, :to => c.human_end)}
+  end
+
+  def adjust_time_to_all_day
+    if all_day
+      self.starts_at = starts_at.beginning_of_day
+      self.ends_at = ends_at.end_of_day
+    end
   end
 
 end
