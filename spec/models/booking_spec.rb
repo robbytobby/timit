@@ -236,4 +236,6 @@ describe Booking do
       it{ should be_able_to :manage, Booking}
     end
   end
+
+  it "has a maximum of bookings per day"
 end

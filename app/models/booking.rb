@@ -123,6 +123,10 @@ class Booking < ActiveRecord::Base
       self.starts_at = starts_at.beginning_of_day
       self.ends_at = ends_at.end_of_day
     end
+
+    if ends_at == ends_at.beginning_of_day
+      self.ends_at = ends_at - 1.minute
+    end
   end
 
 end

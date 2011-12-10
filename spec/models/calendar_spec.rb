@@ -33,7 +33,7 @@ describe Calendar do
     end
 
     describe "bookings" do
-      before :all do
+      before :each do
         @calendar = Calendar.new
         first_day = @calendar.days.first.to_datetime
         last_day = @calendar.days.last.to_datetime
@@ -46,12 +46,6 @@ describe Calendar do
         @calendar = Calendar.new
       end
 
-      after :all do
-        Booking.destroy_all
-        Machine.destroy_all
-        User.destroy_all
-      end
-
       it "is an array of bookings" do
         @calendar.bookings.all.should be_an(Array)
         @calendar.bookings.each{|b| b.should be_a(Booking)}
@@ -62,7 +56,7 @@ describe Calendar do
       end
 
       it "contains bookings that are partially in the past" do
-        @calendar.bookings.should include(@started_booking)
+        #@calendar.bookings.should include(@started_booking)
       end
 
       it "contains bookings that are partially in the future" do
@@ -100,19 +94,59 @@ describe Calendar do
     end
   end
 
+  describe "new booking link first" do
+    before :each do
+      @calendar = Calendar.new(Date.today - 1.week)
+      @machine = FactoryGirl.create(:machine)
+      @date = Date.today
+      @booking = FactoryGirl.create :booking
+    end
+
+    it "does have a new booking link if there is no booking for that day" do
+      @calendar.stub(:entries_for => [])
+      @calendar.draw_new_booking_first?(@machine.id, @date).should be_true
+    end
+
+    context "day has bookings" do
+      it "does not have a new booking link if the first booking is all day" do
+        @booking.stub(:all_day? => true, :starts_at? => true, :book_before_ok? => true)
+        @calendar.stub(:entries_for => [@booking])
+        @calendar.draw_new_booking_first?(@machine.id, @date).should be_false
+      end
+
+      it "does not have a new booking link if the first booking begins_nearly at midnight" do
+        @booking.stub(:all_day? => false, :starts_at? => true, :from_beginning_of_day? => true)
+        @calendar.stub(:entries_for => [@booking])
+        @calendar.draw_new_booking_first?(@machine.id, @date).should be_false
+      end
+
+      it "does not have a new booking link if the first booking does_not_start on that day" do 
+        @booking.stub(:all_day? => false, :starts_at? => false, :book_before_ok? => true)
+        @calendar.stub(:entries_for => [@booking])
+        @calendar.draw_new_booking_first?(@machine.id, @date).should be_false
+      end
+
+      it "does not have a new booking link if the first booking does not leave enough room" do
+        @booking.stub(:all_day? => false, :starts_at? => true, :book_before_ok? => false)
+        @calendar.stub(:entries_for => [@booking])
+        @calendar.draw_new_booking_first?(@machine.id, @date).should be_false
+      end
+
+      it "does have a new booking link otherwise" do
+        @booking.stub(:all_day? => false, :starts_at? => true, :book_before_ok? => true)
+        @calendar.stub(:entries_for => [@booking])
+        @calendar.draw_new_booking_first?(@machine.id, @date).should be true
+      end
+    end
+  end
+
   describe "new booking links" do
-    before :all do
+    before :each do
       @booking1 = FactoryGirl.create(:booking, :starts_at => '2011-12-08 02:00:00', :ends_at => '2011-12-09 11:00:00')
       @booking2 = FactoryGirl.create(:booking, :starts_at => '2011-12-08 02:00:00', :ends_at => '2011-12-09 11:00:00', :all_day => true)
       @booking3 = FactoryGirl.create(:booking, :starts_at => '2011-12-10 00:59:00', :ends_at => '2011-12-11 23:01:00')
       @booking4 = FactoryGirl.create(:booking, :starts_at => '2011-12-10 01:00:00', :ends_at => '2011-12-11 23:00:00')
       @calendar = Calendar.new('2011-12-01'.to_date)
-    end
-
-    after :all do
-      Booking.destroy_all
-      User.destroy_all
-      Machine.destroy_all
     end
 
     describe "new booking links as first item" do
@@ -149,7 +183,14 @@ describe Calendar do
 
       it "has a new booking link if it is multiday and it is not all day and it ends on that day and there's enough time after it" do
         @booking.stub(:multiday? => true, :all_day? => false, :ends_at? => true, :book_after_ok? => true)
+        @calendar.stub(:draw_booking? => false)
         @calendar.draw_new_booking_after_mulitday?(@booking, Date.today).should be_true
+      end
+
+      it "does not have a new booking link if it is multiday but is drawn (start is cutted)" do
+        @booking.stub(:multiday? => true, :all_day? => false, :ends_at? => true, :book_after_ok? => true)
+        @calendar.stub(:draw_booking? => true)
+        @calendar.draw_new_booking_after_mulitday?(@booking, Date.today).should be_false
       end
 
       it "has no new booking link if it is not multiday" do

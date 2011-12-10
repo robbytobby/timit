@@ -51,7 +51,7 @@ body.bp
         padding: $booking_padding
         margin: $booking_margin 0
         +border-radius($radius)
-        &.booked
+        &.booking
           border: $booking_border
           background-color: $booking_color
           position: relative
@@ -61,12 +61,19 @@ body.bp
           padding-top: $booking_padding + $booking_border_width
           padding-bottom: $booking_padding + $booking_border_width
           position: relative
+        &.end
+          +border-top-radius(0)
+        &.start
+          margin-top: $booking_margin
+          +border-bottom-radius(0)
         &.multiday
           margin-top: 0
           position: absolute
           overflow: hidden
-          &.all_day
-            margin-top: $booking_margin
+        &.all_day
+          margin-top: $booking_margin
+        &.from_midnight
+          margin-top: $booking_margin
         @for $i from 1 through 60
           @for $j from 0 through $i
             &.height-#{$i}-#{$j}

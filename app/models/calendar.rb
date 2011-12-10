@@ -20,7 +20,7 @@ class Calendar
 
   def draw_new_booking_first?(machine_id, date)
     first = entries_for(machine_id, date).first
-    return false if first && (first.all_day || !first.starts_at?(date) || !first.book_before_ok?)
+    return false if first && (first.all_day? || !first.starts_at?(date) || !first.book_before_ok?)
     return true
   end
 
@@ -30,6 +30,7 @@ class Calendar
   end
 
   def draw_new_booking_after_mulitday?(booking, date)
+    return false if draw_booking?(booking,date)
     return true if booking.multiday? && !booking.all_day? && booking.ends_at?(date) && booking.book_after_ok?
     return false
   end

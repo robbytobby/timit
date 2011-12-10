@@ -47,10 +47,6 @@ describe CalendarHelper do
       helper.div_class(@calendar, @booking1).should be_a(String)
     end
 
-    it "contains 'booked'" do
-      helper.div_class(@calendar, @booking1).should include("booked")
-    end
-
     it "labels multiday bookings" do
       helper.div_class(@calendar, @booking2).should include("multiday")
       helper.div_class(@calendar, @booking1).should_not include("multiday")
@@ -71,14 +67,37 @@ describe CalendarHelper do
   describe "new_booking" do
     before :each do
       @machine = FactoryGirl.create(:machine)
+      @user = FactoryGirl.create :approved_user
     end
+
+    def current_user
+      @user
+    end
+
 
     it "creates a link to a new booking for a given date and machine" do
       new_booking(@machine, Date.today).should have_selector(:div) do |div|
-        div.should have_selector(:a, :href => new_booking_path(:booking => {:machine_id => @machine, :starts_at => Date.today.to_datetime}))
+        div.should have_selector(:a, :href => new_booking_path(:booking => {:machine_id => @machine,
+                                                               :starts_at => Date.today.to_datetime,
+                                                               :ends_at => Date.today.to_datetime + @machine.max_duration,
+                                                               :user_id => current_user.id}))
       end
     end
+
+    it "creates a link to a new booking for a given date and machine with corect start if after is given" do
+      @machine.stub(:max_duration => 1.week)
+      @booking = FactoryGirl.create(:booking, :starts_at => '2011-12-01 00:00:00' , :ends_at => '2011-12-01 02:00:00')
+      new_booking(@machine, Date.today, :after => @booking).should have_selector(:div) do |div|
+        div.should have_selector(:a, :href => new_booking_path(:booking => {:machine_id => @machine,
+                                                               :starts_at => '2011-12-01 02:00:00 UTC',
+                                                               :ends_at => '2011-12-08 02:00:00 UTC',
+                                                               :user_id => current_user.id}))
+      end
+    end
+
+  
   end
+
 
   describe "draw_spacer" do
     before :each do

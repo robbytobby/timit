@@ -11,7 +11,7 @@
     %tr{:class => row_class(@calendar, d)}
       %td.date= t('date.abbr_day_names')[d.wday] + ', ' +  l(d)
       - @calendar.machines.each do |m|
-        %td 
+        %td{:class => "machine-#{m.id}"} 
           = new_booking(m,d) if @calendar.draw_new_booking_first?(m.id, d)
           = draw_spacer(@calendar, m.id, d)
           - @calendar.entries_for(m.id, d).each do |booking|
