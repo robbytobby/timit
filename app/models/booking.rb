@@ -3,7 +3,9 @@ class Booking < ActiveRecord::Base
   belongs_to :machine
 
   validates_presence_of :user_id
+  validates_numericality_of :user_id, :only_integer => true
   validates_presence_of :machine_id
+  validates_numericality_of :machine_id, :only_integer => true
   validate :end_after_start
   validate :no_overlaps
 

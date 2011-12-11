@@ -42,13 +42,9 @@ describe "Calendar" do
           tr.should have_selector("td:nth-child(#{i+2})>div", :count => opts["machine#{i+1}".to_sym].count)
           tr.should have_selector("td:nth-child(#{i+2}).machine-#{i+1}") do |td|
             opts["machine#{i+1}".to_sym].each_with_index do |div, j|
-              if div == 'spacer'
-                td.should have_selector('div:nth-child(1).spacer')
-              elsif div == 'free'
-                td.should have_selector("div:nth-child(#{j+1}).free")
-              elsif div.is_a?(Hash)
-                td.should have_selector("div:nth-child(#{j+1})", :id => div[:id], :class => div[:class])
-              end
+              td.should have_selector("div:nth-child(#{j+1}).spacer") if div == 'spacer'
+              td.should have_selector("div:nth-child(#{j+1}).free") if div == 'free'
+              td.should have_selector("div:nth-child(#{j+1})", :id => div[:id], :class => div[:class]) if div.is_a?(Hash)
             end
             td.should_not have_selector('div.spacer') if !opts["machine#{i+1}".to_sym].include?('spacer')
             td.should_not have_selector('div.free') if !opts["machine#{i+1}".to_sym].include?('free')
@@ -57,7 +53,7 @@ describe "Calendar" do
       end
     end
     
-    it "renders bookings and new links correcty" do
+    it "renders bookings and new links correctly" do
       FactoryGirl.create(:machine, :id => 1)
       FactoryGirl.create(:machine, :id => 2)
       FactoryGirl.create(:machine, :id => 3)
