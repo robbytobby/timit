@@ -4,7 +4,7 @@ describe Machine do
   before(:all){FactoryGirl.create(:machine)}
   after(:all){Machine.destroy_all}
 
-  it {should have_many(:bookings)}
+  it {should have_many(:bookings).dependent(:destroy)}
 
   describe "validations" do
     it {should validate_presence_of(:name)}

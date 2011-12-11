@@ -8,6 +8,16 @@ describe User do
   end
   subject{@user}
 
+  it {should have_many(:bookings).dependent(:destroy)}
+
+  [:first_name, :last_name, :phone, :email, :password_confirmation, :password_confirmation, :remember_me].each do |attr|
+    it {should allow_mass_assignment_of(attr)}
+  end
+
+  (User.attribute_names.map{|a| a.to_sym} - [:first_name, :last_name, :phone, :email, :password_confirmation, :password_confirmation, :remember_me]).each do |attr|
+    it {should_not allow_mass_assignment_of(attr)}
+  end
+
   it "has a defined set of roles" do
     User.roles.should == [ "unprivileged", "teaching", "admin" ]
   end

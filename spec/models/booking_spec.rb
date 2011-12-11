@@ -14,6 +14,8 @@ describe Booking do
   subject{booking}
 
   it { should be_valid }
+  it { should belong_to(:user) }
+  it { should belong_to(:machine) }
 
   describe "days" do
     it("is a Range") { booking.days.class.should == Range }
