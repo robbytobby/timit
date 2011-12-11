@@ -6,7 +6,8 @@ describe "Calendar" do
   end
 
   after :all do
-    @user.destroy
+    User.destroy_all
+    Machine.destroy_all
   end
 
   before :each do
@@ -31,6 +32,28 @@ describe "Calendar" do
       @calendar = assigns(:calendar)
       response.body.should have_selector(:h2) do |h2|
         h2.should contain(I18n.l(@calendar.days.first))
+      end
+    end
+
+    def layout_check(table, opts)
+      table.should have_selector("tr:nth-child(#{opts[:row][:number]})", :class => opts[:row][:class]) do |tr|
+        tr.should have_selector('td:nth-child(1)', :class => 'date', :content => opts[:row][:date])
+        Machine.all.each_with_index do |machine, i|
+          tr.should have_selector("td:nth-child(#{i+2})>div", :count => opts["machine#{i+1}".to_sym].count)
+          tr.should have_selector("td:nth-child(#{i+2}).machine-#{i+1}") do |td|
+            opts["machine#{i+1}".to_sym].each_with_index do |div, j|
+              if div == 'spacer'
+                td.should have_selector('div:nth-child(1).spacer')
+              elsif div == 'free'
+                td.should have_selector("div:nth-child(#{j+1}).free")
+              elsif div.is_a?(Hash)
+                td.should have_selector("div:nth-child(#{j+1})", :id => div[:id], :class => div[:class])
+              end
+            end
+            td.should_not have_selector('div.spacer') if !opts["machine#{i+1}".to_sym].include?('spacer')
+            td.should_not have_selector('div.free') if !opts["machine#{i+1}".to_sym].include?('free')
+          end
+        end
       end
     end
     
@@ -90,807 +113,148 @@ describe "Calendar" do
 
       response.body.should have_selector(:table, :class => 'calendar') do |table|
         table.should have_selector('tr:nth-child(1)') do |tr|
-          Machine.all.each do |machine|
-            tr.should have_selector(:th, :content => machine.name)
-          end
+          Machine.all.each{|machine| tr.should have_selector(:th, :content => machine.name)}
         end
-        table.should have_selector('tr:nth-child(2)', :class => 'day6 odd height-2') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Sa, 10.12.2011")
-          tr.should have_selector('td:nth-child(2)>div', :count => 2)
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1)', :id => 'booking_118', :class => 'booking end height-1-0')
-            td.should have_selector('div:nth-child(2).free')
-          end
-          tr.should have_selector('td:nth-child(3)>div', :count => 1)
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(4)>div', :count => 1)
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector(:div, :class => 'booking end from_midnight height-3-1 multiday', :id => 'booking_109' )
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(5)>div', :count => 1)
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector(:div, :class => 'all_day booking from_midnight height-10-6 multiday', :id => 'booking_132' )
-            td.should_not have_selector('div.free')
-          end
-        end
-        table.should have_selector('tr:nth-child(3)', :class => 'day0 even height-2') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "So, 11.12.2011")
-          tr.should have_selector('td:nth-child(2)>div', :count => 1)
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(3)>div', :count => 1)
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(4)>div', :count => 2)
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should have_selector('div:nth-child(1).spacer')
-            td.should have_selector('div:nth-child(2).free')
-            td.should_not have_selector('div.booking')
-          end
-          tr.should_not have_selector('td:nth-child(5)>div')
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-        end
-        table.should have_selector('tr:nth-child(4)', :class => 'day1 odd height-5') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Mo, 12.12.2011")
-          tr.should have_selector('td:nth-child(2)>div', :count => 5)
-          tr.should have_selector('td:nth-child(2)', :class => 'machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1)', :class => 'free')
-            td.should have_selector('div:nth-child(2)', :class => 'booking height-1-0', :id => 'booking_90' )
-            td.should have_selector('div:nth-child(3)', :class => 'booking height-1-0', :id => 'booking_108' )
-            td.should have_selector('div:nth-child(4)', :class => 'booking height-1-0', :id => 'booking_93' )
-            td.should have_selector('div:nth-child(5)', :class => 'free')
-          end
-          tr.should have_selector('td:nth-child(3)>div', :count => 2)
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(2)', :class => 'booking height-6-3 multiday', :id => 'booking_95' )
-            td.should have_selector('div:nth-child(1).free')
-          end
-          tr.should have_selector('td:nth-child(4)>div', :count => 2)
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1)', :class => 'booking from_midnight height-1-0', :id => 'booking_101' )
-            td.should have_selector('div:nth-child(2)', :class => 'booking height-4-3', :id => 'booking_135' )
-            td.should_not have_selector('div.free')
-          end
-          tr.should_not have_selector('td:nth-child(5)>div')
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-        end
-
-        table.should have_selector('tr:nth-child(5)', :class => 'day2 even height-1') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Di, 13.12.2011")
-          tr.should have_selector('td:nth-child(2)>div', :count => 1)
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1)', :class => 'all_day booking from_midnight height-1-0', :id => 'booking_92' )
-            td.should_not have_selector('div.free')
-          end
-          tr.should_not have_selector('td:nth-child(3)>div')
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(4)>div', :count => 1)
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1)', :class =>'booking from_midnight height-11-7 multiday' , :id => 'booking_96' )
-            td.should_not have_selector('div.free')
-          end
-          tr.should_not have_selector('td:nth-child(5)>div')
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-        end
-
-        table.should have_selector('tr:nth-child(6)', :class => 'day3 odd height-8') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Mi, 14.12.2011")
-          tr.should have_selector('td:nth-child(2)>div', :count => 3 )
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1)', :class => 'booking from_midnight height-1-0', :id => 'booking_114' )
-            td.should have_selector('div:nth-child(2).free')
-            td.should have_selector('div:nth-child(3)', :class => 'booking height-8-5 multiday', :id => 'booking_105' )
-          end
-          tr.should have_selector('td:nth-child(3)>div', :count => 8 )
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should have_selector('div:nth-child(1).spacer')
-            td.should have_selector('div:nth-child(2)', :class => 'booking height-1-0', :id => 'booking_120' )
-            td.should have_selector('div:nth-child(3).free')
-            td.should have_selector('div:nth-child(4)', :class => 'booking height-1-0', :id => 'booking_121' )
-            td.should have_selector('div:nth-child(5).free')
-            td.should have_selector('div:nth-child(6)', :class => 'booking height-1-0', :id => 'booking_123' )
-            td.should have_selector('div:nth-child(7)', :class => 'booking height-1-0', :id => 'booking_100' )
-            td.should have_selector('div:nth-child(8)', :class => 'booking height-3-0 multiday', :id => 'booking_111' )
-          end
-          tr.should_not have_selector('td:nth-child(4)>div')
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(5)>div', :count => 6)
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1)', :class => 'booking from_midnight height-1-0', :id => 'booking_97' )
-            td.should have_selector('div:nth-child(2).free')
-            td.should have_selector('div:nth-child(3)', :class => 'booking height-1-0', :id => 'booking_98' )
-            td.should have_selector('div:nth-child(4)', :class => 'booking height-1-0', :id => 'booking_99' )
-            td.should have_selector('div:nth-child(5).free')
-            td.should have_selector('div:nth-child(6)', :class => 'booking height-3-2', :id => 'booking_122' )
-          end
-        end
-
-        table.should have_selector('tr:nth-child(7)', :class => 'day4 even height-1') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Do, 15.12.2011")
-          tr.should_not have_selector('td:nth-child(2)>div')
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should_not have_selector('td:nth-child(3)>div')
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should_not have_selector('td:nth-child(4)>div')
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(5)>div', :count => 1)
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(1).free')
-          end
-        end
-
-        table.should have_selector('tr:nth-child(8)', :class => 'day5 odd height-4') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Fr, 16.12.2011")
-          tr.should have_selector('td:nth-child(2)>div', :count => 3)
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should have_selector('div:nth-child(1).spacer')
-            td.should have_selector('div:nth-child(2).free')
-            td.should have_selector('div:nth-child(3)', :class => 'booking height-13-5 multiday', :id => 'booking_107' )
-          end
-          tr.should have_selector('td:nth-child(3)>div', :count => 2)
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should have_selector('div:nth-child(1).spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(2).free')
-          end
-          tr.should have_selector('td:nth-child(4)>div', :count => 4)
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should have_selector('div:nth-child(1).spacer')
-            td.should have_selector('div:nth-child(2)', :class => 'booking height-1-0', :id => 'booking_119' )
-            td.should have_selector('div:nth-child(3)', :class => 'booking height-1-0', :id => 'booking_104' )
-            td.should have_selector('div:nth-child(4).free')
-          end
-          tr.should have_selector('td:nth-child(5)>div', :count => 1)
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(1).free')
-          end
-        end
-
-        table.should have_selector('tr:nth-child(9)', :class => 'day6 even height-1') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Sa, 17.12.2011")
-          tr.should_not have_selector('td:nth-child(2)>div')
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(3)>div', :count => 1)
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1)', :class => 'all_day booking from_midnight height-1-0', :id => 'booking_110' )
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(4)>div', :count => 1)
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(1).free')
-          end
-          tr.should have_selector('td:nth-child(5)>div', :count => 1)
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1)', :class => 'booking from_midnight height-2-0 multiday', :id => 'booking_106' )
-            td.should_not have_selector('div.free')
-          end
-        end
-
-        table.should have_selector('tr:nth-child(10)', :class => 'day0 odd height-2') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "So, 18.12.2011")
-          tr.should_not have_selector('td:nth-child(2)>div')
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(3)>div', :count => 1)
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1)', :class => 'all_day booking from_midnight height-2-1', :id => 'booking_102' )
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(4)>div', :count => 1)
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(1).free')
-          end
-          tr.should have_selector('td:nth-child(5)>div', :count => 2)
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should have_selector('div:nth-child(1).spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(2).free')
-          end
-        end
-
-        table.should have_selector('tr:nth-child(11)', :class => 'day1 even height-1') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Mo, 19.12.2011")
-          tr.should_not have_selector('td:nth-child(2)>div')
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(3)>div', :count => 1)
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(1).free')
-          end
-          tr.should have_selector('td:nth-child(4)>div', :count => 1)
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1)', :class => 'all_day booking from_midnight height-11-4 multiday', :id => 'booking_115' )
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(5)>div', :count => 1)
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1).free')
-          end
-        end
-
-        table.should have_selector('tr:nth-child(12)', :class => 'day2 odd height-3') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Di, 20.12.2011")
-          tr.should_not have_selector('td:nth-child(2)>div')
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(3)>div', :count => 1)
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(1).free')
-          end
-          tr.should_not have_selector('td:nth-child(4)>div')
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(5)>div', :count => 3)
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1).free')
-            td.should have_selector('div:nth-child(2)', :class => 'booking height-1-0', :id => 'booking_124' )
-            td.should have_selector('div:nth-child(3)', :class => 'booking height-10-2 multiday', :id => 'booking_134' )
-          end
-        end
-
-        table.should have_selector('tr:nth-child(13)', :class => 'day3 even height-2') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Mi, 21.12.2011")
-          tr.should_not have_selector('td:nth-child(2)>div')
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(3)>div', :count => 2)
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1).free')
-            td.should have_selector('div:nth-child(2)', :class => 'booking height-9-2 multiday', :id => 'booking_116' )
-          end
-          tr.should_not have_selector('td:nth-child(4)>div')
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should_not have_selector('td:nth-child(5)>div')
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-        end
-
-        table.should have_selector('tr:nth-child(14)', :class => 'day4 odd height-1') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Do, 22.12.2011")
-          tr.should_not have_selector('td:nth-child(2)>div')
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should_not have_selector('td:nth-child(3)>div')
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should_not have_selector('td:nth-child(4)>div')
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should_not have_selector('td:nth-child(5)>div')
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-        end
-
-        table.should have_selector('tr:nth-child(15)', :class => 'day5 even height-2') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Fr, 23.12.2011")
-          tr.should have_selector('td:nth-child(2)>div', :count => 2 )
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should have_selector('div:nth-child(1).spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(2).free')
-          end
-          tr.should_not have_selector('td:nth-child(3)>div')
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should_not have_selector('td:nth-child(4)>div')
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should_not have_selector('td:nth-child(5)>div')
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-        end
-
-        table.should have_selector('tr:nth-child(16)', :class => 'day6 odd height-1') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Sa, 24.12.2011")
-          tr.should have_selector('td:nth-child(2)>div', :count => 1)
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1)', :class => 'all_day booking from_midnight height-2-0 multiday', :id => 'booking_117' )
-            td.should_not have_selector('div.free')
-          end
-          tr.should_not have_selector('td:nth-child(3)>div')
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should_not have_selector('td:nth-child(4)>div')
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should_not have_selector('td:nth-child(5)>div')
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-        end
-
-        table.should have_selector('tr:nth-child(17)', :class => 'day0 even height-1') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "So, 25.12.2011")
-          tr.should_not have_selector('td:nth-child(2)>div')
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should_not have_selector('td:nth-child(3)>div')
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should_not have_selector('td:nth-child(4)>div')
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should_not have_selector('td:nth-child(5)>div')
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-        end
-
-        table.should have_selector('tr:nth-child(18)', :class => 'day1 odd height-1') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Mo, 26.12.2011")
-          tr.should have_selector('td:nth-child(2)>div', :count => 1)
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(1).free')
-          end
-          tr.should_not have_selector('td:nth-child(3)>div')
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(4)>div', :count => 1)
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(1).free')
-          end
-          tr.should_not have_selector('td:nth-child(5)>div')
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-        end
-
-        table.should have_selector('tr:nth-child(19)', :class => 'day2 even height-2') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Di, 27.12.2011")
-          tr.should have_selector('td:nth-child(2)>div', :count => 2)
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1).free')
-            td.should have_selector('div:nth-child(2)', :class => 'booking height-11-4 multiday', :id => 'booking_133' )
-          end
-          tr.should have_selector('td:nth-child(3)>div', :count => 1)
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should have_selector('div:nth-child(1).spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(4)>div', :count => 1)
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1)', :class => 'all_day booking from_midnight height-11-5 multiday', :id => 'booking_136' )
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(5)>div', :count => 2)
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should have_selector('div:nth-child(1).spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(2).free')
-          end
-        end
-
-        table.should have_selector('tr:nth-child(20)', :class => 'day3 odd height-2') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Mi, 28.12.2011")
-          tr.should_not have_selector('td:nth-child(2)>div')
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(3)>div', :count => 1)
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(1).free')
-          end
-          tr.should_not have_selector('td:nth-child(4)>div')
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(5)>div', :count => 2)
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1).free')
-            td.should have_selector('div:nth-child(2)', :class => 'booking height-2-0 multiday', :id => 'booking_131' )
-          end
-        end
-
-        table.should have_selector('tr:nth-child(21)', :class => 'day4 even height-2') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Do, 29.12.2011")
-          tr.should_not have_selector('td:nth-child(2)>div')
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(3)>div', :count => 1)
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(1).free')
-          end
-          tr.should_not have_selector('td:nth-child(4)>div')
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(5)>div', :count => 2)
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should have_selector('div:nth-child(1).spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(2).free')
-          end
-        end
-
-        table.should have_selector('tr:nth-child(22)', :class => 'day5 odd height-1') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Fr, 30.12.2011")
-          tr.should_not have_selector('td:nth-child(2)>div')
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(3)>div', :count => 1)
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(1).free')
-          end
-          tr.should_not have_selector('td:nth-child(4)>div')
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(5)>div', :count => 1)
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(1).free')
-          end
-        end
-
-        table.should have_selector('tr:nth-child(23)', :class => 'day6 even height-1') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Sa, 31.12.2011")
-          tr.should_not have_selector('td:nth-child(2)>div')
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(3)>div', :count => 1)
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(1).free')
-          end
-          tr.should_not have_selector('td:nth-child(4)>div')
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(5)>div', :count => 1)
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(1).free')
-          end
-        end
-
-        table.should have_selector('tr:nth-child(24)', :class => 'day0 odd height-3') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "So, 01.01.2012")
-          tr.should_not have_selector('td:nth-child(2)>div')
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(3)>div', :count => 1)
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1)', :class => 'booking from_midnight height-9-3 multiday', :id => 'booking_130' )
-            td.should_not have_selector('div.free')
-          end
-          tr.should_not have_selector('td:nth-child(4)>div')
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(5)>div', :count => 3)
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1).free')
-            td.should have_selector('div:nth-child(2)', :class => 'booking height-1-0', :id => 'booking_137' )
-            td.should have_selector('div:nth-child(3).free')
-          end
-        end
-
-       table.should have_selector('tr:nth-child(25)', :class => 'day1 even height-1') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Mo, 02.01.2012")
-          tr.should have_selector('td:nth-child(2)>div', :count => 1)
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should have_selector('div:nth-child(1).spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should_not have_selector('td:nth-child(3)>div')
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(4)>div', :count => 1)
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(1).free')
-          end
-          tr.should have_selector('td:nth-child(5)>div', :count => 1)
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1)', :class => 'all_day booking from_midnight height-8-3 multiday', :id => 'booking_129' )
-            td.should_not have_selector('div.free')
-          end
-        end
-
-       table.should have_selector('tr:nth-child(26)', :class => 'day2 odd height-1') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Di, 03.01.2012")
-          tr.should have_selector('td:nth-child(2)>div', :count => 1)
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(1).free')
-          end
-          tr.should_not have_selector('td:nth-child(3)>div')
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(4)>div', :count => 1)
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(1).free')
-          end
-          tr.should_not have_selector('td:nth-child(5)>div')
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-        end
-
-       table.should have_selector('tr:nth-child(27)', :class => 'day3 even height-1') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Mi, 04.01.2012")
-          tr.should have_selector('td:nth-child(2)>div', :count => 1)
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(1).free')
-          end
-          tr.should_not have_selector('td:nth-child(3)>div')
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(4)>div', :count => 1)
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(1).free')
-          end
-          tr.should_not have_selector('td:nth-child(5)>div')
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-        end
-
-       table.should have_selector('tr:nth-child(28)', :class => 'day4 odd height-2') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Do, 05.01.2012")
-          tr.should have_selector('td:nth-child(2)>div', :count => 2)
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1).free')
-            td.should have_selector('div:nth-child(2)', :class => 'booking height-2-0 multiday', :id => 'booking_125')
-          end
-          tr.should_not have_selector('td:nth-child(3)>div')
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(4)>div', :count => 1)
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should have_selector('div:nth-child(1).free')
-          end
-          tr.should_not have_selector('td:nth-child(5)>div')
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-        end
-
-       table.should have_selector('tr:nth-child(29)', :class => 'day5 even height-3') do |tr|
-          tr.should have_selector('td:nth-child(1)', :class => 'date', :content => "Fr, 06.01.2012")
-          tr.should have_selector('td:nth-child(2)>div', :count => 2)
-          tr.should have_selector('td:nth-child(2).machine-1') do |td|
-            td.should have_selector('div:nth-child(1).spacer')
-            td.should have_selector('div:nth-child(2)', :class => 'booking height-2-1', :id => 'booking_128' )
-            td.should_not have_selector('div.free')
-          end
-          tr.should have_selector('td:nth-child(3)>div', :count => 3)
-          tr.should have_selector('td:nth-child(3).machine-2') do |td|
-            td.should have_selector('div:nth-child(1).spacer')
-            td.should have_selector('div:nth-child(2).free')
-            td.should have_selector('div:nth-child(3)', :class => 'booking height-1-0 multiday start', :id => 'booking_127' )
-          end
-          tr.should have_selector('td:nth-child(4)>div', :count => 1)
-          tr.should have_selector('td:nth-child(4).machine-3') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should have_selector('div:nth-child(1)', :class => 'all_day booking from_midnight height-3-2 multiday start', :id => 'booking_126' )
-            td.should_not have_selector('div.free')
-          end
-          tr.should_not have_selector('td:nth-child(5)>div')
-          tr.should have_selector('td:nth-child(5).machine-4') do |td|
-            td.should_not have_selector('div.spacer')
-            td.should_not have_selector('div.booking')
-            td.should_not have_selector('div.free')
-          end
-        end
+        layout_check(table, :row => {:number => 2, :class => 'day6 odd height-2', :date => "Sa, 10.12.2011"}, 
+                     :machine1 => [{:id => 'booking_118', :class => 'booking end height-1-0'}, 'free'],
+                     :machine2 => ['free'],
+                     :machine3 => [{:id => 'booking_109', :class => 'booking end from_midnight height-3-1 multiday' }],
+                     :machine4 => [{:class => 'all_day booking from_midnight height-10-6 multiday', :id => 'booking_132'}])
+        layout_check(table, :row => {:number => 3, :class => 'day0 even height-2', :date => "So, 11.12.2011"}, 
+                     :machine1 => ['free'], 
+                     :machine2 => ['free'], 
+                     :machine3 => ['spacer', 'free'], 
+                     :machine4 => [])
+        layout_check(table, :row => {:number => 4, :class => 'day1 odd height-5', :date => "Mo, 12.12.2011"}, 
+                     :machine1 => ['free', {:class => 'booking height-1-0', :id => 'booking_90'}, {:class => 'booking height-1-0', :id => 'booking_108'}, {:class => 'booking height-1-0', :id => 'booking_93'}, 'free'],
+                     :machine2 => ['free', {:class => 'booking height-6-3 multiday', :id => 'booking_95'}],
+                     :machine3 => [{:class => 'booking from_midnight height-1-0', :id => 'booking_101'}, {:class => 'booking height-4-3', :id => 'booking_135'}],
+                     :machine4 => [])
+        layout_check(table, :row => {:number => 5, :class => 'day2 even height-1', :date => "Di, 13.12.2011"}, 
+                     :machine1 => [{:class => 'all_day booking from_midnight height-1-0', :id => 'booking_92'}],
+                     :machine2 => [],
+                     :machine3 => [{:class =>'booking from_midnight height-11-7 multiday' , :id => 'booking_96'}],
+                     :machine4 => [])
+        layout_check(table, :row => {:number => 6, :class => 'day3 odd height-8', :date => "Mi, 14.12.2011"}, 
+                     :machine1 => [{:class => 'booking from_midnight height-1-0', :id => 'booking_114'}, 'free', {:class => 'booking height-8-5 multiday', :id => 'booking_105'}],
+                     :machine2 => ['spacer', {:class => 'booking height-1-0', :id => 'booking_120'}, 'free', {:class => 'booking height-1-0', :id => 'booking_121'}, 'free', {:class => 'booking height-1-0', :id => 'booking_123'}, {:class => 'booking height-1-0', :id => 'booking_100'}, {:class => 'booking height-3-0 multiday', :id => 'booking_111'}],
+                     :machine3 => [],
+                     :machine4 => [{:class => 'booking from_midnight height-1-0', :id => 'booking_97'}, 'free', {:class => 'booking height-1-0', :id => 'booking_98'}, {:class => 'booking height-1-0', :id => 'booking_99'}, 'free', {:class => 'booking height-3-2', :id => 'booking_122'}])
+        layout_check(table, :row => {:number => 7 , :class => 'day4 even height-1', :date => "Do, 15.12.2011"}, 
+                     :machine1 => [],
+                     :machine2 => [],
+                     :machine3 => [],
+                     :machine4 => ['free'])
+        layout_check(table, :row => {:number => 8, :class => 'day5 odd height-4', :date => "Fr, 16.12.2011"}, 
+                     :machine1 => ['spacer', 'free', {:class => 'booking height-13-5 multiday', :id => 'booking_107'}],
+                     :machine2 => ['spacer', 'free'],
+                     :machine3 => ['spacer', {:class => 'booking height-1-0', :id => 'booking_119'}, {:class => 'booking height-1-0', :id => 'booking_104'}, 'free'],
+                     :machine4 => ['free'])
+        layout_check(table, :row => {:number => 9, :class => 'day6 even height-1', :date => "Sa, 17.12.2011"}, 
+                     :machine1 => [],
+                     :machine2 => [{:class => 'all_day booking from_midnight height-1-0', :id => 'booking_110'}],
+                     :machine3 => ['free'],
+                     :machine4 => [{:class => 'booking from_midnight height-2-0 multiday', :id => 'booking_106'}])
+        layout_check(table, :row => {:number => 10 , :class => 'day0 odd height-2', :date => "So, 18.12.2011"}, 
+                     :machine1 => [],
+                     :machine2 => [{:class => 'all_day booking from_midnight height-2-1', :id => 'booking_102'}],
+                     :machine3 => ['free'],
+                     :machine4 => ['spacer', 'free'])
+        layout_check(table, :row => {:number => 11 , :class => 'day1 even height-1', :date => "Mo, 19.12.2011"}, 
+                     :machine1 => [],
+                     :machine2 => ['free'],
+                     :machine3 => [{:class => 'all_day booking from_midnight height-11-4 multiday', :id => 'booking_115'}],
+                     :machine4 => ['free'])
+        layout_check(table, :row => {:number => 12 , :class => 'day2 odd height-3', :date => "Di, 20.12.2011"}, 
+                     :machine1 => [],
+                     :machine2 => ['free'],
+                     :machine3 => [],
+                     :machine4 => ['free', {:class => 'booking height-1-0', :id => 'booking_124'}, {:class => 'booking height-10-2 multiday', :id => 'booking_134'}])
+        layout_check(table, :row => {:number => 13 , :class => 'day3 even height-2', :date => "Mi, 21.12.2011"}, 
+                     :machine1 => [],
+                     :machine2 => ['free', {:class => 'booking height-9-2 multiday', :id => 'booking_116'}],
+                     :machine3 => [],
+                     :machine4 => [])
+        layout_check(table, :row => {:number => 14, :class => 'day4 odd height-1', :date => "Do, 22.12.2011"}, 
+                     :machine1 => [],
+                     :machine2 => [],
+                     :machine3 => [],
+                     :machine4 => [])
+        layout_check(table, :row => {:number => 15, :class => 'day5 even height-2', :date => "Fr, 23.12.2011"}, 
+                     :machine1 => ['spacer', 'free'],
+                     :machine2 => [],
+                     :machine3 => [],
+                     :machine4 => [])
+        layout_check(table, :row => {:number => 16, :class => 'day6 odd height-1', :date => "Sa, 24.12.2011"}, 
+                     :machine1 => [{:class => 'all_day booking from_midnight height-2-0 multiday', :id => 'booking_117'}],
+                     :machine2 => [],
+                     :machine3 => [],
+                     :machine4 => [])
+        layout_check(table, :row => {:number => 17, :class => 'day0 even height-1', :date => "So, 25.12.2011"}, 
+                     :machine1 => [],
+                     :machine2 => [],
+                     :machine3 => [],
+                     :machine4 => [])
+        layout_check(table, :row => {:number => 18, :class => 'day1 odd height-1', :date => "Mo, 26.12.2011"}, 
+                     :machine1 => ['free'],
+                     :machine2 => [],
+                     :machine3 => ['free'],
+                     :machine4 => [])
+        layout_check(table, :row => {:number => 19, :class => 'day2 even height-2', :date => "Di, 27.12.2011"}, 
+                     :machine1 => ['free', { :class => 'booking height-11-4 multiday', :id => 'booking_133'}],
+                     :machine2 => ['spacer'],
+                     :machine3 => [{:class => 'all_day booking from_midnight height-11-5 multiday', :id => 'booking_136'}],
+                     :machine4 => ['spacer', 'free'])
+        layout_check(table, :row => {:number => 20, :class => 'day3 odd height-2', :date => "Mi, 28.12.2011"}, 
+                     :machine1 => [],
+                     :machine2 => ['free'],
+                     :machine3 => [],
+                     :machine4 => ['free', {:class => 'booking height-2-0 multiday', :id => 'booking_131'}])
+        layout_check(table, :row => {:number => 21, :class => 'day4 even height-2', :date => "Do, 29.12.2011"}, 
+                     :machine1 => [],
+                     :machine2 => ['free'],
+                     :machine3 => [],
+                     :machine4 => ['spacer', 'free'])
+        layout_check(table, :row => {:number => 22, :class => 'day5 odd height-1', :date => "Fr, 30.12.2011"}, 
+                     :machine1 => [],
+                     :machine2 => ['free'],
+                     :machine3 => [],
+                     :machine4 => ['free'])
+        layout_check(table, :row => {:number => 23, :class => 'day6 even height-1', :date => "Sa, 31.12.2011"}, 
+                     :machine1 => [],
+                     :machine2 => ['free'],
+                     :machine3 => [],
+                     :machine4 => ['free'])
+        layout_check(table, :row => {:number => 24, :class => 'day0 odd height-3', :date => "So, 01.01.2012"}, 
+                     :machine1 => [],
+                     :machine2 => [{:class => 'booking from_midnight height-9-3 multiday', :id => 'booking_130'}],
+                     :machine3 => [],
+                     :machine4 => ['free', {:class => 'booking height-1-0', :id => 'booking_137'}, 'free'])
+        layout_check(table, :row => {:number => 25, :class => 'day1 even height-1', :date => "Mo, 02.01.2012"}, 
+                     :machine1 => ['spacer'],
+                     :machine2 => [],
+                     :machine3 => ['free'],
+                     :machine4 => [{:class => 'all_day booking from_midnight height-8-3 multiday', :id => 'booking_129'}])
+        layout_check(table, :row => {:number => 26, :class => 'day2 odd height-1', :date => "Di, 03.01.2012"}, 
+                     :machine1 => ['free'],
+                     :machine2 => [],
+                     :machine3 => ['free'],
+                     :machine4 => [])
+        layout_check(table, :row => {:number => 27, :class => 'day3 even height-1', :date => "Mi, 04.01.2012"}, 
+                     :machine1 => ['free'],
+                     :machine2 => [],
+                     :machine3 => ['free'],
+                     :machine4 => [])
+        layout_check(table, :row => {:number => 28, :class => 'day4 odd height-2', :date => "Do, 05.01.2012"}, 
+                     :machine1 => ['free', {:class => 'booking height-2-0 multiday', :id => 'booking_125'}],
+                     :machine2 => [],
+                     :machine3 => ['free'],
+                     :machine4 => [])
+        layout_check(table, :row => {:number => 29, :class => 'day5 even height-3', :date => "Fr, 06.01.2012"}, 
+                     :machine1 => ['spacer', {:class => 'booking height-2-1', :id => 'booking_128'}],
+                     :machine2 => ['spacer', 'free', {:class => 'booking height-1-0 multiday start', :id => 'booking_127'}],
+                     :machine3 => [{:class => 'all_day booking from_midnight height-3-2 multiday start', :id => 'booking_126'}],
+                     :machine4 => [])
       end
     end
   end
