@@ -60,6 +60,7 @@ group :development, :test do
  gem 'simplecov', :require => false
  gem 'spork', '> 0.9.0.rc'
  gem 'guard-spork'
+ gem 'shoulda-matchers'
 end
 group :test do
   # Pretty printed test output
