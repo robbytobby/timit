@@ -4,41 +4,40 @@ describe Calendar do
   before :each do
     @calendar = Calendar.new
   end
+  subject{@calendar}
 
-  it "has the private methods :bookings=, :days=, :machines=" do
+  describe "has the private methods :bookings=, :days=, :machines=" do
     [:bookings=, :days=, :machines=].each do |symbol|
-      @calendar.private_methods.should include(symbol)
-      @calendar.public_methods.should_not include(symbol)
+      its(:private_methods){should include(symbol)}
+      its(:public_methods){should_not include(symbol)}
     end
   end
 
-  it "has the public methods :bookings, :days, :machines" do
+  describe "has the public methods :bookings, :days, :machines" do
     [:bookings, :days, :machines].each do |symbol|
-      @calendar.private_methods.should_not include(symbol)
-      @calendar.public_methods.should include(symbol)
+      its(:private_methods){ should_not include(symbol) }
+      its(:public_methods){ should include(symbol) }
     end
   end
 
   describe "initialization" do
-    it "has today as defaults for start and end date" do
-      @calendar.days.first.class.should == Date
-      @calendar.days.last.class.should == Date
-      @calendar.days.first.should < @calendar.days.last
+    describe "default start and end" do
+      it("starts today"){subject.days.first.should == Date.today}
+      it("ends in 4 weeks"){subject.days.last.should == Date.today + 4.weeks}
     end
 
-    it "may be set up for a given time span" do
-      @calendar = Calendar.new(Date.today + 3.days, Date.today + 5.days)
-      @calendar.days.first.should == Date.today + 3.days
-      @calendar.days.last.should == Date.today + 5.days
+    describe "may be set up for a given time span" do
+      subject{Calendar.new(Date.today + 3.days, Date.today + 5.days)}
+      it("respects the given start date"){subject.days.first.should == Date.today + 3.days}
+      it("respects the given end date"){subject.days.last.should == Date.today + 5.days}
     end
 
     describe "bookings" do
       before :each do
-        @calendar = Calendar.new
         first_day = @calendar.days.first.to_datetime
         last_day = @calendar.days.last.to_datetime
         @to_early_booking = FactoryGirl.create(:booking, :starts_at => first_day - 1.day, :ends_at =>  first_day - 1.day + 1.second)
-        @started_booking = FactoryGirl.create(:booking, :starts_at => first_day - 3.days, :ends_at =>  first_day)
+        @started_booking = FactoryGirl.create(:booking, :starts_at => first_day - 3.days, :ends_at =>  first_day + 1.minute)
         @today_booking = FactoryGirl.create(:booking, :starts_at => first_day, :ends_at => first_day + 1.second)
         @future_booking = FactoryGirl.create(:booking, :starts_at => last_day, :ends_at => last_day + 1.second)
         @future_booking2 = FactoryGirl.create(:booking, :starts_at => last_day - 2.days, :ends_at => last_day + 2.days)
@@ -46,50 +45,26 @@ describe Calendar do
         @calendar = Calendar.new
       end
 
-      it "is an array of bookings" do
-        @calendar.bookings.all.should be_an(Array)
-        @calendar.bookings.each{|b| b.should be_a(Booking)}
-      end
-
-      it "contains bookings with booking_start < calendar_end and Booking_end > calendar_start" do
-        @calendar.bookings.should include(@today_booking, @future_booking)
-      end
-
-      it "contains bookings that are partially in the past" do
-        #@calendar.bookings.should include(@started_booking)
-      end
-
-      it "contains bookings that are partially in the future" do
-        @calendar.bookings.should include(@future_booking2)
-      end
-
-      it "does not contain bookings entirely in the past" do
-        @calendar.bookings.should_not include(@to_early_booking)
-      end
-
-      it "does not contain bookings entirely in the future" do
-        @calendar.bookings.should_not include(@to_late_booking)
-      end
+      it("is an array"){subject.bookings.all.should be_an(Array)}
+      Calendar.new.bookings.each{ |b| it("is an array of bookings"){b.should be_a(Booking)} }
+      its(:bookings){should include(@today_booking, @future_booking)}
+      its(:bookings){should include(@future_booking2)}
+      its(:bookings){should include(@started_booking)}
+      its(:bookings){should_not include(@to_early_booking)}
+      its(:bookings){should_not include(@to_late_booking)}
     end
 
     describe "machines" do
-      before :all do
-        @machine1, @machine2, @machine3 = FactoryGirl.create_list(:machine, 3)
-      end
+      before(:all){@machine1, @machine2, @machine3 = FactoryGirl.create_list(:machine, 3)}
+      after(:all){Machine.destroy_all}
+      subject{Calendar.new}
 
-      after :all do
-        Machine.destroy_all
-      end
+      it("defaults to all machines"){subject.machines.should include(@machine1, @machine2, @machine3)}
 
-      it "defaults to all machines" do
-        @calendar = Calendar.new
-        @calendar.machines.should include(@machine1, @machine2, @machine3)
-      end
-
-      it "may be restricted to selected machines" do
-        @calendar = Calendar.new(nil, nil,[@machine1.id, @machine2.id])
-        @calendar.machines.should include(@machine1, @machine2)
-        @calendar.machines.should_not include(@machine3)
+      describe "may be restricted to selected machines" do
+        subject{Calendar.new(nil, nil,[@machine1.id, @machine2.id])}
+        its(:machines){should include(@machine1, @machine2)}
+        its(:machines){should_not include(@machine3)}
       end
     end
   end
