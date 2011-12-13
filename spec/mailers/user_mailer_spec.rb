@@ -116,38 +116,32 @@ describe UserMailer do
 
   describe "sign_up_notification" do
     before :each do
-      @user = FactoryGirl.create(:approved_user)
-      @admin = FactoryGirl.create(:admin_user)
+      @user = FactoryGirl.create(:user)
+      @admins = FactoryGirl.create_list(:admin_user, 2)
       @mail = UserMailer.sign_up_notification(@user)
     end
 
     it "has the correct sender" do
-      pending 'after cancan integration'
-      @mail.from.should == 'timit@physchem.uni-freiburg.de'
+      @mail.from.should == [Devise.mailer_sender]
     end
 
     it "has the address of all admins" do
-      pending 'after cancan integration'
-      @mail.to.should == @admins.join(', ')
+      @mail.to.should == @admins.map{|a| a.email}
     end
 
     it "has the approval change subject" do
-      pending 'after cancan integration'
       @mail.subject.should == I18n.t('user_mailer.sign_up_notification.subject')
     end
 
     it "has the right encoding" do
-      pending 'after cancan integration'
       @mail.charset.should == 'UTF-8'
     end
 
     it "comes as multipart email" do
-      pending 'after cancan integration'
       @mail.content_type.should contain('multipart/alternative')
     end
 
-    it "has a destroy body" do
-      pending 'after cancan integration'
+    it "has a sign up notification body" do
       @mail.parts.each do |body|
         body.should have_content(@user.user_name)
         #TODO: andere Inhalte

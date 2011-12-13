@@ -14,10 +14,10 @@ class UserMailer < ActionMailer::Base
     mail(:to => user.mail_name, :from => admin.mail_name, :subject => t('user_mailer.destroy_mail.subject'))
   end
 
-  def sign_up_notification(user)
-    #TODO: after cancan 
-    #@user = user
-    #mail(:to => @admins.join(', '), :from => 'timit@physchem.uni-freiburg.de', :subject => t('user_mailer.sign_up_notification.subject'))
+  def sign_up_notification(user, admin = User.find_by_email('christian.wittekindt@physchem.uni-freiburg.de'))
+    @user = user
+    @to = (User.where(:role => 'admin', :approved => true)).map{|a| a.email }
+    mail(:to => @to, :from => Devise.mailer_sender, :subject => t('user_mailer.sign_up_notification.subject'))
   end
 end
 

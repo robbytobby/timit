@@ -35,7 +35,9 @@ module CalendarHelper
       starts_at = opts[:after]  ? opts[:after].ends_at : day.to_datetime
       next_booking = Booking.next(machine, starts_at)
       ends_at = next_booking.starts_at if next_booking
-      ends_at = starts_at + machine.max_duration if ends_at.nil? || ends_at > starts_at + machine.max_duration
+      max_duration = machine.real_max_duration 
+      max_duration ||= 1.week
+      ends_at = starts_at + max_duration if ends_at.nil? || ends_at > starts_at + max_duration
 
       content_tag(:div, link_to('+', new_booking_path(:booking => {:machine_id => machine, :starts_at => starts_at, :ends_at => ends_at, :user_id => current_user})), :class => "free")
     else

@@ -2,7 +2,8 @@
 
 FactoryGirl.define do
   factory :machine do
-      sequence(:name){|n| "Name#{n}"}
-      description "Text"
-    end
+    sequence(:name){|n| "Name#{n}"}
+    max_duration ""
+    description "Text"
+  end
 end

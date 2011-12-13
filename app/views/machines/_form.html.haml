@@ -2,6 +2,8 @@
   =f.inputs do
     = f.input :name, :input_html => {:size => 52 }
     = f.input :description, :input_html => { :rows => 5, :cols => 50 }
+    = f.input :max_duration, :as => :string
+    = f.input :max_duration_unit, :as => :select, :collection => Machine.time_units.map{|unit| [t('time_units.' + unit.to_s), unit.to_s]}
   = f.buttons do
     = f.commit_button
     %li.button

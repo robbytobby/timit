@@ -117,7 +117,8 @@ describe "Bookings" do
 
     describe "GET new" do
       it "shows the new booking form for all users" do
-        User.roles.each{|r| access_check(r, true){get new_booking_path} }
+        @machine = FactoryGirl.create(:machine)
+        User.roles.each{|r| access_check(r, true){get new_booking_path, :booking => {:machine_id => @machine.id}} }
       end
 
       it "shows the right content"

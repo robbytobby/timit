@@ -18,6 +18,7 @@ class BookingsController < ApplicationController
   end
 
   def new
+    redirect_to(calendar_path, notice: t('controller.bookings.machine_needed')) and return unless @booking.machine
     respond_to do |format|
       format.html 
       format.json { render json: @booking }

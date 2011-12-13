@@ -6,6 +6,7 @@ class Booking < ActiveRecord::Base
   validates_numericality_of :user_id, :only_integer => true
   validates_presence_of :machine_id
   validates_numericality_of :machine_id, :only_integer => true
+  validate :not_to_long
   validate :end_after_start
   validate :no_overlaps
 
@@ -118,6 +119,13 @@ class Booking < ActiveRecord::Base
     conflicts = conflicts.where("id != :id", :id => id) unless self.new_record?
     conflicts = conflicts.where(condition, :start => starts_at, :end => ends_at)
     conflicts.each{|c| errors.add(attr, :date_conflicts, :from => c.human_start, :to => c.human_end)}
+  end
+
+  def not_to_long
+    if machine && machine.max_duration
+      duration = ends_at - starts_at
+      errors.add(:ends_at, :to_long, :max => I18n.t('human_time_units.' + machine.max_duration_unit, :count => machine.max_duration)) if duration > machine.real_max_duration
+    end
   end
 
   def adjust_time_to_all_day

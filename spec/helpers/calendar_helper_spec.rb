@@ -67,6 +67,7 @@ describe CalendarHelper do
   describe "new_booking" do
     before :each do
       @machine = FactoryGirl.create(:machine)
+      @machine2 = FactoryGirl.create(:machine, :max_duration => '3', :max_duration_unit => 'day')
       @user = FactoryGirl.create :approved_user
     end
 
@@ -79,13 +80,22 @@ describe CalendarHelper do
       new_booking(@machine, Date.today).should have_selector(:div) do |div|
         div.should have_selector(:a, :href => new_booking_path(:booking => {:machine_id => @machine,
                                                                :starts_at => Date.today.to_datetime,
-                                                               :ends_at => Date.today.to_datetime + @machine.max_duration,
+                                                               :ends_at => Date.today.to_datetime + 1.week,
+                                                               :user_id => current_user.id}))
+      end
+    end
+
+    it "creates a link to a new booking for a given date and machine and respects the maximum duration" do
+      new_booking(@machine2, Date.today).should have_selector(:div) do |div|
+        div.should have_selector(:a, :href => new_booking_path(:booking => {:machine_id => @machine2,
+                                                               :starts_at => Date.today.to_datetime,
+                                                               :ends_at => Date.today.to_datetime + @machine2.real_max_duration,
                                                                :user_id => current_user.id}))
       end
     end
 
     it "creates a link to a new booking for a given date and machine with corect start if after is given" do
-      @machine.stub(:max_duration => 1.week)
+      @machine = FactoryGirl.create(:machine, :max_duration => 1, :max_duration_unit => 'week')
       @booking = FactoryGirl.create(:booking, :starts_at => '2011-12-01 00:00:00' , :ends_at => '2011-12-01 02:00:00')
       new_booking(@machine, Date.today, :after => @booking).should have_selector(:div) do |div|
         div.should have_selector(:a, :href => new_booking_path(:booking => {:machine_id => @machine,

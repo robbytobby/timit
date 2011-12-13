@@ -1,0 +1,7 @@
+%p
+  = t '.hi'
+%p
+  = t '.new_signup', :name => @user.name
+%p
+  = t '.to_activate'
+  = link_to t('.activate', :name => @user.name), users_url

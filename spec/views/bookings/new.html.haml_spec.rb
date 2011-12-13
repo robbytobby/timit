@@ -1,12 +1,9 @@
 require 'spec_helper'
 
 describe "bookings/new.html.haml" do
+  include Devise::TestHelpers
   before(:each) do
-    assign(:booking, stub_model(Booking,
-      :all_day => false,
-      :user_id => 1,
-      :machine_id => 1
-    ).as_new_record)
+    assign(:booking, FactoryGirl.build(:booking))
   end
 
   it "renders new booking form" do

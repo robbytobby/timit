@@ -38,3 +38,8 @@ de:
           attributes:
             role:
               undefined: "ist nicht definiert"
+      models:
+        booking:
+          attributes:
+            ends_at:
+              to_long: "Buchung ist zu lang (Maximal: %{max})"

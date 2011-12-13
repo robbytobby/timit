@@ -66,6 +66,17 @@ describe BookingsController do
         get :new
         session[:return_to].should == 'http://www.test'
       end
+
+      it "renders the template if a machine is selected" do
+        @machine = FactoryGirl.create(:machine)
+        get :new, :booking => {:machine_id => @machine.id}
+        response.should render_template :new
+      end
+
+      it "redirect_to the calendar if no machine si selected" do
+        get :new
+        response.should redirect_to calendar_path
+      end
     end
 
     describe "GET edit" do

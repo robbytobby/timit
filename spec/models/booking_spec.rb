@@ -118,6 +118,12 @@ describe Booking do
     it {should_not accept_values_for(:user_id, nil, 'ab', '', ' ')}
     it {should_not accept_values_for(:machine_id, nil, 'ab', '', ' ')}
     it {should_not accept_values_for(:ends_at, booking.starts_at - 1.minute, booking.starts_at - 1.day)}
+    it "does not accept bookings exceeding the maximum" do
+      @machine = FactoryGirl.create(:machine, :max_duration => 2, :max_duration_unit => 'day')
+      @now = DateTime.now
+      @booking = FactoryGirl.build(:booking, :machine => @machine, :starts_at => @now, :ends_at => @now + @machine.real_max_duration + 1.minute)
+      @booking.should_not be_valid
+    end
 
     describe "bookings may not overlap" do
       before :each do

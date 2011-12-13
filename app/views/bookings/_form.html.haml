@@ -1,25 +1,15 @@
-= form_for @booking do |f|
-  -if @booking.errors.any?
-    #error_explanation
-      %h2= "#{pluralize(@booking.errors.count, "error")} prohibited this booking from being saved:"
-      %ul
-        - @booking.errors.full_messages.each do |msg|
-          %li= msg
-
-  .field
-    = f.label :starts_at
-    = f.datetime_select :starts_at
-  .field
-    = f.label :ends_at
-    = f.datetime_select :ends_at
-  .field
-    = f.label :all_day
-    = f.check_box :all_day
-  .field
-    = f.label :user_id
-    = f.number_field :user_id
-  .field
-    = f.label :machine_id
-    = f.number_field :machine_id
-  .actions
-    = f.submit 'Save'
+= semantic_form_for @booking do |f|
+  = f.inputs do
+    = f.input :starts_at
+    = f.input :ends_at
+    = f.input :all_day, :as => :boolean
+    - if can? :manage, Booking
+      = f.input :user_id, :as => :select, :collection => User.order(:last_name)
+      = f.input :machine_id, :as => :select, :collection => Machine.order(:name)
+    - else
+      = f.input :user_id, :as => :hidden
+      = f.input :machine_id, :as => :hidden
+  = f.buttons do
+    = f.commit_button
+    %li.button
+      = link_to t('formtastic.actions.cancel'), calendar_path

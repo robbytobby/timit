@@ -20,4 +20,5 @@ de:
         success: 'Dein Account ist nun gelöscht'
     bookings:
       success: 'Buchung erfolgreich %{action}.'
+      machine_needed: 'Eine Maschine muß ausgewählt sein'
          

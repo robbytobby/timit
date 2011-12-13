@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe "bookings/edit.html.haml" do
+  include Devise::TestHelpers
   before(:each) do
     @booking = assign(:booking, stub_model(Booking,
       :all_day => false,
