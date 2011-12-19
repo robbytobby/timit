@@ -1,0 +1,15 @@
+defaults: &defaults
+  calendar:
+    max_machines:  5
+
+production:
+  <<: *defaults
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+
+    

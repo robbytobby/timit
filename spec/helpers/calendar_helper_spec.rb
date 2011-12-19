@@ -25,8 +25,8 @@ describe CalendarHelper do
     end
 
     it "cycles odd and even rows" do
-      helper.row_class(@calendar, Date.today).should include("odd")
       helper.row_class(@calendar, Date.today).should include("even")
+      helper.row_class(@calendar, Date.today).should include("odd")
     end
 
     it "defines the row_height" do

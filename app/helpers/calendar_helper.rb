@@ -1,6 +1,8 @@
 module CalendarHelper
   def row_class(calendar, day)
-    "day#{day.wday} #{cycle('odd', 'even')} height-#{calendar.max_entries(day)}"
+    klass = "day#{day.wday} #{cycle('even', 'odd')} height-#{calendar.max_entries(day)}"
+    klass << " last" if day == calendar.days.last - 1.day
+    klass 
   end
 
   def div_class(calendar, booking)
@@ -58,4 +60,19 @@ module CalendarHelper
     @calendar.machines.each{|m| opts[:machines][m.id] = 1}
     link_to name, calendar_path(opts), html
   end
+
+  def prev_machine_link?
+    @calendar.machine_offset > 0
+  end
+
+  def next_machine_link?(machine, index)
+    add = APPLICATION['calendar']['max_machines'] - 1
+    index == @calendar.machine_offset + add && @calendar.machines.size > @calendar.machine_offset + add && machine != @calendar.machines.last
+  end
+
+  def draw_machine?(i)
+    i >= @calendar.machine_offset && i < @calendar.machine_offset + APPLICATION['calendar']['max_machines'] 
+  end
+
+    
 end

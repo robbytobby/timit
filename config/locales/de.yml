@@ -9,6 +9,7 @@ de:
   confirm: "Bist du dir sicher, dass du %{name} %{action} willst?"
   mail_to: "email schreiben"
   show: "anzeigen"
+  save: "speichern"
   time_units:
     week: "Woche"
     day: "Tag"
@@ -94,6 +95,8 @@ de:
       next_period: '>>'
       prev_period: '<<'
       heading: "%{start} - %{end}"
+    machines:
+      select_machines: 'Anzuzeigende Maschinen'
   bookings:
     new:
       new_booking_for: 'Neue Buchung für %{machine}'

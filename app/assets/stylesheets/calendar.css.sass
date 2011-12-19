@@ -7,12 +7,13 @@ $radius: 4px
 $booking_color: #bbccee
 
 $date_width: 90px
-$column_width: 169px
+$column_width: 165px
 $column_vertical_padding: 4px
 $machine_width: $column_width - 2 * $column_vertical_padding - 2 * $booking_border_width
 $table_border_width: 1px
 $table_thick_border: $table_border_width solid black
-$table_thin_border: $table_border_width dotted gray
+$table_medium_border: $table_border_width solid gray
+$table_thin_border: $table_border_width solid #bebebe
 
 $font-size: 12px
 $line-height: $font-size / 3 * 4
@@ -26,28 +27,61 @@ $dh: $line-height + 2 * ($booking_padding + $booking_border_width)
 body.bp
   h2.calendar
     margin-left: $date_width - 8px 
+  div
+    &.select-machines
+      margin: 0px 10px 10px 10px
+    &.machine_select
+      display: block
+      float: left
+      margin-right: 20px
+      width: 200px
+    &.calendar
+      +border-radius(20px)
+      &.outer
+        border: $table_medium_border
+        border-color: #0066cc
+      &.inner
+        padding: 5px 0 0 0
+        background-color: white
+        border-top: $table_thin_border
+        border-bottom: $table_thin_border
+      &.middle
+        background-color: #e5ecf9
+        border: $table_thin_border
+        border-color: #0066cc
+        margin: 0 -1px
+        
+    &.up, &.down
+      padding: 0
+      border: none
+      text-align: center
+      margin: 0
   table.calendar
+    margin-bottom: 0
+    border-collapse: collapse
     a
       &.next_machine_link
         float: right
       &.prev_machine_link
         float: right
-    border-collapse: collapse
     tr
       &.day0 td
         border-bottom: $table_thick_border
       @for $i from 1 through 10
         &.height-#{$i}
           height: $dh * $i + ($i + 1) * $booking_margin + $table_border_width
+      &.last td
+        border-bottom: none
     th
       border-bottom: $table_thin_border
     td
       +font_def
-      border-right: $table_thin_border
+      border-left: $table_thin_border
       border-bottom: $table_thin_border
       padding: 0 $column_vertical_padding
       vertical-align: top
       &.date
+        border-left: none
         white-space: nowrap
         width: $date_width
         font-weight: bold
