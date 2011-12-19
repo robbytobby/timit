@@ -2,16 +2,18 @@ class Calendar
   attr_accessor :bookings
   attr_accessor :days
   attr_accessor :machines
+  attr_accessor :machine_offset
   private :machines=, :days=, :bookings=
 
-  def initialize(starts = nil, ends = nil, machine_ids = nil)
+  def initialize(starts = nil, ends = nil, machine_ids = [], machine_offset = 0)
     starts ||= Date.today
     ends ||= (starts.to_date + 4.weeks)
+    self.machine_offset = machine_offset.to_i ||= 0
     self.bookings = Booking.where("starts_at <= :ends and ends_at >= :starts", 
                                   :ends => ends.to_datetime, 
                                   :starts => starts.to_datetime).order(:starts_at)
     self.days = starts.to_date...ends.to_date
-    self.machines = machine_ids ? Machine.order(:id).find(machine_ids) : Machine.order(:id)
+    self.machines = machine_ids.any? ? Machine.order(:id).find(machine_ids) : Machine.order(:id)
   end
 
   def entries_for(machine_id, date)

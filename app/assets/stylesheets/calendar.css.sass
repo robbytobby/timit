@@ -24,7 +24,14 @@ $dh: $line-height + 2 * ($booking_padding + $booking_border_width)
   line-height: $line-height
 
 body.bp
+  h2.calendar
+    margin-left: $date_width - 8px 
   table.calendar
+    a
+      &.next_machine_link
+        float: right
+      &.prev_machine_link
+        float: right
     border-collapse: collapse
     tr
       &.day0 td

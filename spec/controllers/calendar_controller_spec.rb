@@ -21,7 +21,7 @@ describe CalendarController do
       describe "GET index" do
         it "assigns a new calendar" do
           params = {:start_date => Date.today.to_s, :end_date => (Date.today + 4.weeks).to_s}
-          Calendar.should_receive(:new).with(params[:start_date], params[:end_date], nil)
+          Calendar.should_receive(:new).with(params[:start_date], params[:end_date], nil, nil)
           get :index, params
         end
 
@@ -52,6 +52,21 @@ describe CalendarController do
           @calendar = assigns(:calendar)
           @calendar.days.first.should == Date.today
           @calendar.days.last.should == (Date.today + 1.weeks)
+        end
+        
+        it "respects the choice of machines" do
+          @machines = FactoryGirl.create_list(:machine, 5)
+          get :index, :machines => [@machines[0].id, @machines[2].id, @machines[4].id]
+          @calendar = assigns(:calendar)
+          @calendar.machines.should include(@machines[0], @machines[2], @machines[4])
+          @calendar.machines.should_not include(@machines[1], @machines[3], @machines[5])
+        end
+
+        it "respects an offset for machines" do
+          @machines = FactoryGirl.create_list(:machine, 7)
+          get :index, :machine_offset => 1
+          @calendar = assigns(:calendar)
+          @calendar.machine_offset.should == 1
         end
       end
     end

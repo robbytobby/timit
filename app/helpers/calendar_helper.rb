@@ -50,4 +50,12 @@ module CalendarHelper
     first = @calendar.entries_for(machine_id, day).first 
     content_tag(:div, '', :class => 'spacer') if first && first.multiday? && first.ends_at?(day) && !first.all_day? 
   end
+
+  def calendar_link(name, opts = {}, html = {})
+    opts[:machine_offset] ||= @calendar.machine_offset
+    opts[:start_date] ||= @calendar.days.first
+    opts[:machines] = {}
+    @calendar.machines.each{|m| opts[:machines][m.id] = 1}
+    link_to name, calendar_path(opts), html
+  end
 end

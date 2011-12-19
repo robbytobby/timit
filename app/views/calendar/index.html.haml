@@ -1,18 +1,31 @@
-%h2
-  = link_to t('.prev_period'), calendar_path(:start_date => @calendar.prev)
+%div.select-machines
+  = form_tag '/calendar', :method => :get
+  - Machine.order(:id).each do |m|
+    = check_box_tag "machines[#{m.id}]", 1, @calendar.machines.include?(m)
+    = hidden_field_tag :start_date, @calendar.days.first
+    = label_tag m.name
+
+  = submit_tag
+%h2.calendar
+  = calendar_link t('.prev_period'), :start_date => @calendar.prev 
   = t('.heading', :start => l(@calendar.days.first), :end => l(@calendar.days.last - 1.day))
-  = link_to t('.next_period'), calendar_path(:start_date => @calendar.next)
+  = calendar_link t('.next_period'), :start_date => @calendar.next
 %table.calendar
   %tr
     %th
-    -@calendar.machines.each do |m|
-      %th= m.name
+      = calendar_link '<<', {:machine_offset => @calendar.machine_offset - 1},  :class => 'prev_machine_link' if  @calendar.machine_offset > 0
+    -@calendar.machines.each_with_index do |m, i|
+      - if i >= @calendar.machine_offset && i < @calendar.machine_offset + 4
+        %th
+          = m.name  
+          = calendar_link '>>', {:machine_offset => @calendar.machine_offset + 1}, :class => 'next_machine_link' if i == @calendar.machine_offset + 3 && @calendar.machines.size > @calendar.machine_offset + 3 && m != @calendar.machines.last
   - @calendar.days.each do |d|
     %tr{:class => row_class(@calendar, d)}
       %td.date= t('date.abbr_day_names')[d.wday] + ', ' +  l(d)
-      - @calendar.machines.each do |m|
-        %td{:class => "machine-#{m.id}"} 
-          = new_booking(m,d) if @calendar.draw_new_booking_first?(m.id, d)
-          = draw_spacer(@calendar, m.id, d)
-          - @calendar.entries_for(m.id, d).each do |booking|
-            = render :partial => 'calendar/booking', :object => booking, :locals => {:day => d}
+      - @calendar.machines.each_with_index do |m, i|
+        - if i >= @calendar.machine_offset && i < @calendar.machine_offset + 4
+          %td{:class => "machine-#{m.id}"} 
+            = new_booking(m,d) if @calendar.draw_new_booking_first?(m.id, d)
+            = draw_spacer(@calendar, m.id, d)
+            - @calendar.entries_for(m.id, d).each do |booking|
+              = render :partial => 'calendar/booking', :object => booking, :locals => {:day => d}

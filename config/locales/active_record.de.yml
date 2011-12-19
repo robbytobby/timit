@@ -13,6 +13,7 @@ de:
       machine: 
         name: 'Name'
         description: 'Beschreibung'
+        max_duration: 'Maximale Buchungsdauer'
       user:
         email: 'E-Mail'
         password: 'Passwort'
