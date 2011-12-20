@@ -28,6 +28,43 @@ describe "Calendar" do
       response.body.should have_selector(:a, :href => calendar_path(:start_date => @calendar.prev, :machines => {@machine.id => 1}) )
     end
 
+    it "has a form to select the machines to be shown" do
+      @machines = FactoryGirl.create_list(:machine, 7)
+      get calendar_path
+      response.body.should have_selector(:form) do |form|
+        @machines.each do |m|
+          form.should have_selector(:div, :class => 'machine_select') do |div|
+            div.should have_selector(:input, :id => "machines_#{m.id}", :value => '1', :name => "machines[#{m.id}]")
+            div.should have_selector(:label, :content => m.name)
+          end
+        end
+        form.should have_selector(:input, :id => "start_date", :type => "hidden", :name => "start_date")
+        form.should have_selector(:div, :class => 'clear')
+        form.should have_selector(:input, :type => "submit", :value => "speichern", :name => "commit")
+      end
+    end
+
+    it "has links to next machines if necessary" do
+      @machines = FactoryGirl.create_list(:machine, 7)
+      get calendar_path
+      response.body.should have_selector(:a, :class => 'next_machine_link')
+      response.body.should_not have_selector(:a, :class => 'previous_machine_link')
+    end
+
+    it "has links to previous machines if necessary" do
+      @machines = FactoryGirl.create_list(:machine, 7)
+      get calendar_path(:machine_offset => 2)
+      response.body.should_not have_selector(:a, :class => 'next_machine_link')
+      response.body.should have_selector(:a, :class => 'prev_machine_link')
+    end
+
+    it "has links to next and previous machines if necessary" do
+      @machines = FactoryGirl.create_list(:machine, 7)
+      get calendar_path(:machine_offset => 1)
+      response.body.should have_selector(:a, :class => 'next_machine_link')
+      response.body.should have_selector(:a, :class => 'prev_machine_link')
+    end
+
     def layout_check(table, opts)
       table.should have_selector("tr:nth-child(#{opts[:row][:number]})", :class => opts[:row][:class]) do |tr|
         tr.should have_selector('td:nth-child(1)', :class => 'date', :content => opts[:row][:date])

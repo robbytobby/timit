@@ -5,8 +5,6 @@
     = calendar_link content_tag(:div, image_tag('icons/up.svg', :size => '64x32'), :class => :up), :start_date => @calendar.prev
     %div.calendar.inner
       %table.calendar
-        //%tr
-        //  %td.up{:colspan => 6}
         %tr
           %th
             = calendar_link image_tag('icons/go-previous.svg', :size => '16x16'), {:machine_offset => @calendar.machine_offset - 1},  :class => 'prev_machine_link' if prev_machine_link?
