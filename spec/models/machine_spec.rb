@@ -4,11 +4,16 @@ describe Machine do
   before(:each){FactoryGirl.create(:machine)}
 
   it {should have_many(:bookings).dependent(:destroy)}
+  it {should have_many(:options).dependent(:destroy)}
 
   describe "validations" do
     it {should validate_presence_of(:name)}
     it {should validate_uniqueness_of(:name)}
     it {should strip_attributes([:name, :description])}
+
+    it "should not be valid" do
+      FactoryGirl.build(:machine, :name => '').should_not be_valid
+    end
 
     it "is valid if it has a maximum duration and unit" do
       @machine = FactoryGirl.create(:machine, :max_duration => 3, :max_duration_unit => 'day')

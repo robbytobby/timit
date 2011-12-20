@@ -7,6 +7,13 @@
     %li
       %b= t('activerecord.attributes.machine.description') + ':'
       = @machine.description
+    %li
+      %b= t('activerecord.attributes.machine.options') + ':'
+      %ul
+        - @machine.options.each do |o|
+          %li= o.name
+          
+      
 = link_to t('edit'), edit_machine_path(@machine)
 \|
 = link_to t('back'), machines_path

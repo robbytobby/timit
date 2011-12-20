@@ -31,6 +31,7 @@ class MachinesController < ApplicationController
 
   # GET /machines/1/edit
   def edit
+    @machine.options.build
   end
 
   # POST /machines

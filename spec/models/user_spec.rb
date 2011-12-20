@@ -38,7 +38,7 @@ describe User do
   its(:mail_name){should== "#{@user.user_name} <#{@user.email}>"}
   its(:user_name){should == @user.name}
   it "has a short user name" do
-    @user.user_name(:short).should ==  @user.first_name[0] + '. ' + @user.last_name
+    @user.user_name(:short).should ==  @user.first_name[0] + '. ' + @user.last_name[0..15]
   end
 
   describe "send_welcome_email" do

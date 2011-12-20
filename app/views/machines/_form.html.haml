@@ -6,6 +6,10 @@
       = f.label :max_duration, :class => :label
       = f.text_field :max_duration, :size => 2
       = f.select :max_duration_unit, Machine.time_units.map{|unit| [t('time_units.' + unit.to_s), unit.to_s]}
+    %li
+      %h3= t 'activerecord.attributes.machine.options'
+    = f.inputs :for => :options, :name => 'Option #%i' do |o|
+      = o.input :name
   = f.buttons do
     = f.commit_button
     %li.button
