@@ -3,7 +3,7 @@
   %div[booking]{:class => div_class(@calendar, booking)}
     = link_to booking.user.user_name(:short), user_path(booking.user)
     -if can?(:edit, booking) && booking.ends_at.to_date >= Date.today
-      = link_to image_tag('icons/png16/edit.png'), edit_booking_path(booking)
-      = link_to image_tag('icons/png16/destroy.png'), booking_path(booking), :method => :delete
+      = link_to image_tag('icons/png16/edit.png'), edit_booking_path(booking), :title => t('edit')
+      = link_to image_tag('icons/png16/destroy.png'), booking_path(booking), :confirm => t('confirm', :action => t('delete'), :name => "#{t('activerecord.models.booking')} # #{booking.id}"), :title => t('delete'), :method => :delete
   = new_booking(booking.machine, day, :after => booking) if @calendar.draw_new_booking_after?(booking, day)
 
