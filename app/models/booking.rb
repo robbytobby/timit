@@ -1,6 +1,7 @@
 class Booking < ActiveRecord::Base
   belongs_to :user
   belongs_to :machine
+  has_and_belongs_to_many :options
 
   validates_presence_of :user_id
   validates_numericality_of :user_id, :only_integer => true

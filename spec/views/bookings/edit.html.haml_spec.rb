@@ -3,11 +3,7 @@ require 'spec_helper'
 describe "bookings/edit.html.haml" do
   include Devise::TestHelpers
   before(:each) do
-    @booking = assign(:booking, stub_model(Booking,
-      :all_day => false,
-      :user_id => 1,
-      :machine_id => 1
-    ))
+    @booking = assign(:booking, FactoryGirl.build(:booking))
   end
 
   it "renders the edit booking form" do

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111220131628) do
+ActiveRecord::Schema.define(:version => 20111220140720) do
 
   create_table "machines", :force => true do |t|
     t.string   "name"
@@ -76,6 +76,15 @@ ActiveRecord::Schema.define(:version => 20111220131628) do
     t.index ["option_group_id"], :name => "index_options_on_option_group_id"
     t.foreign_key ["machine_id"], "machines", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "options_machine_id_fkey"
     t.foreign_key ["option_group_id"], "option_groups", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "options_option_group_id_fkey"
+  end
+
+  create_table "bookings_options", :id => false, :force => true do |t|
+    t.integer "booking_id"
+    t.integer "option_id"
+    t.index ["booking_id"], :name => "index_bookings_options_on_booking_id"
+    t.index ["option_id"], :name => "index_bookings_options_on_option_id"
+    t.foreign_key ["booking_id"], "bookings", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "bookings_options_booking_id_fkey"
+    t.foreign_key ["option_id"], "options", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "bookings_options_option_id_fkey"
   end
 
 end

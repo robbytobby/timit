@@ -9,6 +9,12 @@
     - else
       = f.input :user_id, :as => :hidden
       = f.input :machine_id, :as => :hidden
+  = f.inputs do
+    - if @booking.machine.options.any?
+      %h3= t('.options')
+      - @booking.machine.options.group_by(&:option_group).each do |group, options|
+        %h4= group.name
+        = f.input :options, :collection => options, :required => !group.optional, :input_html => {:multiple => !group.exclusive} 
   = f.buttons do
     = f.commit_button
     %li.button

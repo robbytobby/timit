@@ -16,6 +16,7 @@ describe Booking do
   it { should be_valid }
   it { should belong_to(:user) }
   it { should belong_to(:machine) }
+  it { should have_and_belong_to_many(:options) }
 
   describe "days" do
     it("is a Range") { booking.days.class.should == Range }
