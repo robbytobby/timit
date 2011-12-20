@@ -11,9 +11,10 @@
       #header
         %h1
           TiMiT
-          #current_user
-            %b= t '.logged_in_as'
-            = current_user.user_name
+          -if current_user
+            #current_user
+              %b= t '.logged_in_as'
+              = current_user.user_name
         #topmenu
           = render :partial => 'layouts/topmenu'
       #content
