@@ -1,4 +1,5 @@
 class Option < ActiveRecord::Base
   belongs_to :machine
-  validates_presence_of :name
+  belongs_to :option_group
+  validates_presence_of :name, :machine_id, :option_group_id
 end

@@ -10,8 +10,11 @@
     %li
       %b= t('activerecord.attributes.machine.options') + ':'
       %ul
-        - @machine.options.each do |o|
-          %li= o.name
+        - @machine.options.group_by(&:option_group).each do |group, option|
+          %li= group.name
+          %ul
+            - option.each do |o|
+              %li= o.name.html_safe
           
       
 = link_to t('edit'), edit_machine_path(@machine)

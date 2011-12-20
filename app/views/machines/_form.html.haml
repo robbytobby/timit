@@ -10,6 +10,7 @@
       %h3= t 'activerecord.attributes.machine.options'
     = f.inputs :for => :options, :name => 'Option #%i' do |o|
       = o.input :name
+      = o.input :option_group
   = f.buttons do
     = f.commit_button
     %li.button

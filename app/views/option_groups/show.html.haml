@@ -1,0 +1,15 @@
+%p#notice= notice
+
+%p
+  %b Name:
+  = @option_group.name
+%p
+  %b Exclusive:
+  = @option_group.exclusive
+%p
+  %b Optional:
+  = @option_group.optional
+
+= link_to 'Edit', edit_option_group_path(@option_group)
+\|
+= link_to 'Back', option_groups_path

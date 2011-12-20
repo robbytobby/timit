@@ -1,4 +1,6 @@
 Timit::Application.routes.draw do
+  resources :option_groups
+
   resources :bookings
 
   devise_for :users, :controllers => {:registrations => "registrations"}, :path_prefix => 'devise'

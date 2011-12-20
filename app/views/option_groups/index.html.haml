@@ -1,0 +1,23 @@
+%h1 Listing option_groups
+
+%table
+  %tr
+    %th Name
+    %th Exclusive
+    %th Optional
+    %th
+    %th
+    %th
+
+  - @option_groups.each do |option_group|
+    %tr
+      %td= option_group.name
+      %td= option_group.exclusive
+      %td= option_group.optional
+      %td= link_to 'Show', option_group
+      %td= link_to 'Edit', edit_option_group_path(option_group)
+      %td= link_to 'Destroy', option_group, :confirm => 'Are you sure?', :method => :delete
+
+%br
+
+= link_to 'New Option group', new_option_group_path

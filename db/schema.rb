@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111213163851) do
+ActiveRecord::Schema.define(:version => 20111220131628) do
 
   create_table "machines", :force => true do |t|
     t.string   "name"
@@ -56,6 +56,26 @@ ActiveRecord::Schema.define(:version => 20111213163851) do
     t.index ["user_id"], :name => "index_bookings_on_user_id"
     t.foreign_key ["user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "bookings_user_id_fkey"
     t.foreign_key ["machine_id"], "machines", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "bookings_machine_id_fkey"
+  end
+
+  create_table "option_groups", :force => true do |t|
+    t.string   "name"
+    t.boolean  "exclusive",  :default => false
+    t.boolean  "optional",   :default => true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "options", :force => true do |t|
+    t.integer  "machine_id"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "option_group_id"
+    t.index ["machine_id"], :name => "index_options_on_machine_id"
+    t.index ["option_group_id"], :name => "index_options_on_option_group_id"
+    t.foreign_key ["machine_id"], "machines", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "options_machine_id_fkey"
+    t.foreign_key ["option_group_id"], "option_groups", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "options_option_group_id_fkey"
   end
 
 end
