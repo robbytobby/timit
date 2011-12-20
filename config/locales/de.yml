@@ -55,6 +55,8 @@ de:
       sign_out: "abmelden"
       forgot_your_password?: "Passwort vergessen?"
       edit_account: "Mein Account"
+    application:
+      logged_in_as: 'Angemeldet als:'
   machines:
     index:
       new: 'neues Gerät'

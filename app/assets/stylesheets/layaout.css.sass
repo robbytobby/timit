@@ -6,6 +6,15 @@ body.bp
   +blueprint-interaction
   textarea
     height: auto
+  table
+    border-collapse: collapse
+    th
+      border-bottom: 1px  dotted gray
+    tr
+      &:hover
+        td
+          background-color: #dedede
+  
 
 body.two-col
   #container
@@ -61,14 +70,13 @@ body.two-col
   border-bottom: 2px solid #a0a0a0
   padding-bottom: 25px
 
+#current_user
+  float: right
+  font-size: 0.4em
+
 .clear
   clear: both
 
 .nowrap
   white-space: nowrap
-
-table
-  border-collapse: collapse
-  th
-    border-bottom: 1px  dotted gray
 
