@@ -8,13 +8,13 @@
     %th
   - @machines.each do |machine|
     %tr{:class => cycle('odd', 'even')}
-      %td
+      %td.nowrap
         = link_to machine.name, machine, :title => t('show')
       %td
         = machine.description
-      %td
+      %td.nowrap
         = machine.human_max_duration
-      %td
+      %td.nowrap
         -if can? :manage, Machine
           = link_to image_tag('icons/png16/destroy.png', :size => '16x16') ,
                     machine, :confirm => t('confirm', :action => t('delete'), :name => machine.name), :title => t('delete'),
