@@ -35,7 +35,11 @@ describe User do
   it { should_not accept_values_for(:role, 'test', 'blah', 'gotcha')}
   its(:name) { should == @user.first_name + ' ' + @user.last_name }
 
-  its(:mail_name){should  == "#{@user.user_name} <#{@user.email}>"}
+  its(:mail_name){should== "#{@user.user_name} <#{@user.email}>"}
+  its(:user_name){should == @user.name}
+  it "has a short user name" do
+    @user.user_name(:short).should ==  @user.first_name[0] + '. ' + @user.last_name
+  end
 
   describe "send_welcome_email" do
     before(:each) do

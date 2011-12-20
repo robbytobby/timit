@@ -25,8 +25,14 @@ class User < ActiveRecord::Base
     end 
   end
 
-  def user_name
-    name
+  def user_name(format = :long)
+    if format == :long
+      name
+    elsif format == :short
+      first_name[0] + '. ' + last_name
+    else
+      raise "unknown format #{format} for user_name"
+    end
   end
 
   def name
