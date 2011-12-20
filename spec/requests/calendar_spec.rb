@@ -24,8 +24,8 @@ describe "Calendar" do
       @machine = FactoryGirl.create(:machine)
       get calendar_path
       @calendar = assigns(:calendar)
-      response.body.should have_selector(:a, :href => calendar_path(:start_date => @calendar.next, :machine_offset => 0, :machines => {@machine.id => 1}) )
-      response.body.should have_selector(:a, :href => calendar_path(:start_date => @calendar.prev, :machine_offset => 0, :machines => {@machine.id => 1}) )
+      response.body.should have_selector(:a, :href => calendar_path(:start_date => @calendar.next, :machines => {@machine.id => 1}) )
+      response.body.should have_selector(:a, :href => calendar_path(:start_date => @calendar.prev, :machines => {@machine.id => 1}) )
     end
 
     def layout_check(table, opts)

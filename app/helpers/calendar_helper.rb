@@ -58,6 +58,7 @@ module CalendarHelper
     opts[:start_date] ||= @calendar.days.first
     opts[:machines] = {}
     @calendar.machines.each{|m| opts[:machines][m.id] = 1}
+    opts.delete_if{|key, value| value.blank? || value == 0}
     link_to name, calendar_path(opts), html
   end
 
@@ -73,6 +74,4 @@ module CalendarHelper
   def draw_machine?(i)
     i >= @calendar.machine_offset && i < @calendar.machine_offset + APPLICATION['calendar']['max_machines'] 
   end
-
-    
 end
