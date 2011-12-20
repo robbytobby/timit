@@ -32,7 +32,7 @@ class BookingsController < ApplicationController
   def create
     respond_to do |format|
       if @booking.save
-        format.html { redirect_back_or_default(calendar_path, notice: t('controller.bookings.success', :action => t('created'))) }
+        format.html { redirect_back_or_default(calendar_path, notice: t('controller.success.create', :thing => I18n.t('activerecord.models.booking'))) } 
         format.json { render json: @booking, status: :created, location: @booking }
       else
         format.html { render action: "new" }
@@ -44,7 +44,7 @@ class BookingsController < ApplicationController
   def update
     respond_to do |format|
       if @booking.update_attributes(params[:booking])
-        format.html { redirect_back_or_default(calendar_path, notice: 'Booking was successfully updated.') }
+        format.html { redirect_back_or_default(calendar_path, notice: t('controller.success.update', :thing => I18n.t('activerecord.models.booking'))) }
         format.json { head :ok }
       else
         format.html { render action: "edit" }
@@ -56,7 +56,7 @@ class BookingsController < ApplicationController
   def destroy
     @booking.destroy
     respond_to do |format|
-      format.html { redirect_back_or_default(calendar_path, notice: 'Booking was successfully deleted.') }
+      format.html { redirect_back_or_default(calendar_path, notice: t('controller.success.destroy', :thing => I18n.t('activerecord.models.booking'))) }
       format.json { head :ok }
     end
   end
