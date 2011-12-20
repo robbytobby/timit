@@ -11,10 +11,11 @@ de:
   show: "anzeigen"
   save: "speichern"
   time_units:
-    week: "Woche"
-    day: "Tag"
-    hour: "Stunde"
-    minute: "Minute"
+    week: "Woche(n)"
+    day: "Tag(e)"
+    hour: "Stunde(n)"
+    minute: "Minute(n)"
+    unlimited: "unbegrenzt"
   human_time_units:
     week:
       one: "1 Woche"

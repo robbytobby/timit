@@ -1,28 +1,24 @@
 %table
   %tr
-    -if can? :manage, Booking
-      %th
     %th= t('activerecord.attributes.booking.id')
     %th= t('activerecord.models.user')
     %th= t('activerecord.models.machine')
     %th= t('activerecord.attributes.booking.starts_at')
     %th= t('activerecord.attributes.booking.ends_at')
-    %th
+    -if can? :manage, Booking
+      %th
 
   - @bookings.each do |booking|
     %tr{:class => cycle('odd', 'even')}
+      %td= link_to booking.id, booking
+      %td= link_to booking.user.user_name, booking.user
+      %td= link_to booking.machine.name, booking.machine
+      %td= booking.human_start
+      %td= booking.human_end
       -if can? :manage, Booking
         %td
           = link_to image_tag('icons/png16/destroy.png', :size => '16x16') ,
             booking, :confirm => t('confirm', :action => t('delete'), :name => "#{t('activerecord.models.booking')} # #{booking.id}"), :title => t('delete'),
                     :method => :delete
           = link_to image_tag('icons/png16/edit.png', :size => '16x16'), edit_booking_path(booking), :title => t('edit')
-      %td= link_to booking.id, booking
-      %td= link_to booking.user.user_name, booking.user
-      %td= link_to booking.machine.name, booking.machine
-      %td= booking.human_start
-      %td= booking.human_end
-
-%p
-  = link_to 'new', new_booking_path
 

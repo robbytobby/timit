@@ -3,7 +3,7 @@ class Calendar
   attr_accessor :days
   attr_accessor :machines
   attr_accessor :machine_offset
-  private :machines=, :days=, :bookings=
+  private :machines=, :days=, :bookings=, :machine_offset=
 
   def initialize(starts = nil, ends = nil, machine_ids = [], machine_offset = 0)
     starts ||= Date.today

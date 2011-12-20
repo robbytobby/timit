@@ -36,8 +36,19 @@ describe Machine do
         @machine.real_max_duration.should == 6.send(unit)
       end
     end
-
   end
 
+  describe "human_max_duration" do
+    it "returns unlimited if max_duration is not set" do
+      @machine = FactoryGirl.create(:machine)
+      @machine.human_max_duration.should == I18n.t('time_units.unlimited')
+    end
 
+    Machine.time_units.each do |unit|
+      it "returns a combined value: duration + unit" do
+        @machine = FactoryGirl.create(:machine, :max_duration => 6 , :max_duration_unit => unit.to_s)
+        @machine.human_max_duration.should == I18n.t("human_time_units.#{@machine.max_duration_unit}", :count => @machine.max_duration)
+      end
+    end
+  end
 end

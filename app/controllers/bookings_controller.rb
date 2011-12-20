@@ -4,6 +4,7 @@ class BookingsController < ApplicationController
   before_filter :store_location, :only => [:new, :edit, :destroy]
 
   def index
+    @bookings = Booking.order(:starts_at)
     respond_to do |format|
       format.html 
       format.json { render json: @bookings }

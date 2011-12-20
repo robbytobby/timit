@@ -15,6 +15,14 @@ class Machine < ActiveRecord::Base
     max_duration.send(max_duration_unit) if max_duration
   end
 
+  def human_max_duration
+    if max_duration
+      I18n.t("human_time_units.#{max_duration_unit}", :count => max_duration)
+    else
+      I18n.t("time_units.unlimited")
+    end
+  end
+
   protected
   def unit_required?
     max_duration != nil

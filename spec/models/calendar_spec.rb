@@ -6,15 +6,15 @@ describe Calendar do
   end
   subject{@calendar}
 
-  describe "has the private methods :bookings=, :days=, :machines=" do
-    [:bookings=, :days=, :machines=].each do |symbol|
+  describe "has the private methods :bookings=, :days=, :machine_offset=" do
+    [:bookings=, :days=, :machines=, :machine_offset=].each do |symbol|
       its(:private_methods){should include(symbol)}
       its(:public_methods){should_not include(symbol)}
     end
   end
 
-  describe "has the public methods :bookings, :days, :machines" do
-    [:bookings, :days, :machines].each do |symbol|
+  describe "has the public methods :bookings, :days, :machines, :machine_offset" do
+    [:bookings, :days, :machines, :machine_offset].each do |symbol|
       its(:private_methods){ should_not include(symbol) }
       its(:public_methods){ should include(symbol) }
     end
