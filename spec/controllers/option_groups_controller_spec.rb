@@ -23,15 +23,18 @@ describe OptionGroupsController do
   # This should return the minimal set of attributes required to create a valid
   # OptionGroup. As you add validations to OptionGroup, be sure to
   # update the return value of this method accordingly.
+  before :each do
+    @option_group = FactoryGirl.create(:option_group)
+  end
+
   def valid_attributes
-    {}
+    FactoryGirl.attributes_for(:option_group)
   end
 
   describe "GET index" do
     it "assigns all option_groups as @option_groups" do
-      option_group = OptionGroup.create! valid_attributes
       get :index
-      assigns(:option_groups).should eq([option_group])
+      assigns(:option_groups).should eq([@option_group])
     end
   end
 

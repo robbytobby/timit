@@ -10,6 +10,8 @@ class Booking < ActiveRecord::Base
   validate :not_to_long
   validate :end_after_start
   validate :no_overlaps
+  validate :non_optional_options
+  validate :exclusive_options
 
   before_validation :adjust_time_to_all_day
 
@@ -140,4 +142,17 @@ class Booking < ActiveRecord::Base
     end
   end
 
+  def non_optional_options
+    return unless machine
+    machine.options.group_by(&:option_group).each do |group, opts|
+      errors.add(:base, :one_necessary, :name => group.name) unless group.optional || (options & opts).any? 
+    end
+  end
+
+  def exclusive_options
+    return unless machine
+    machine.options.group_by(&:option_group).each do |group, opts|
+      errors.add(:base, :to_many, :name => group.name) if group.exclusive && (options & opts).many?
+    end
+  end
 end

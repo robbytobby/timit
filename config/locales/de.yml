@@ -10,6 +10,8 @@ de:
   mail_to: "email schreiben"
   show: "anzeigen"
   save: "speichern"
+  please_choose: "bitte wählen"
+  none: "keine/r"
   time_units:
     week: "Woche(n)"
     day: "Tag(e)"
@@ -103,6 +105,8 @@ de:
   bookings:
     new:
       new_booking_for: 'Neue Buchung für %{machine}'
+    form:
+      options: 'Optionen'
   user_mailer:
     welcome_email:
       subject: "Dein neuer Account für TiMiT"

@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :option_group do
-      name "MyString"
+      sequence(:name){|n| "Group-#{n}"}
       exclusive false
       optional false
     end

@@ -15,6 +15,10 @@
 %p
   %b Machine:
   = @booking.machine_id
+%p
+  %b Options:
+  - @booking.options.each do |o|
+    = o.name
 
 = link_to 'Edit', edit_booking_path(@booking)
 \|

@@ -2,7 +2,8 @@
 
 FactoryGirl.define do
   factory :option do
-      machine_id ""
-      name "MyString"
+      sequence(:name){|n| "Option-#{n}"}
+      association :machine
+      association :option_group
     end
 end

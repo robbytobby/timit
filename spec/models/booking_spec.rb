@@ -220,4 +220,37 @@ describe Booking do
   end
 
   it "has a maximum of bookings per day"
+
+  describe "booking options" do
+    before :each do
+      @machine = FactoryGirl.create(:machine)
+      @group1 = FactoryGirl.create(:option_group, :exclusive => true, :optional => true)
+      @group2 = FactoryGirl.create(:option_group, :exclusive => true, :optional => false)
+      @group3 = FactoryGirl.create(:option_group, :exclusive => false, :optional => true)
+      @group4 = FactoryGirl.create(:option_group, :exclusive => false, :optional => false)
+      [@group1, @group2, @group3, @group4].each do |group|
+        FactoryGirl.create_list(:option, 3, :option_group => group, :machine => @machine)
+      end
+    end
+
+    it "is not valid if no option in a non-optional group is checked" do
+      @booking = FactoryGirl.build(:booking, :machine => @machine)
+      @booking.should_not be_valid
+    end
+
+    it "is valid if one option of each non-optional group is checked" do
+      @booking = FactoryGirl.build(:booking, :machine => @machine, :options => [@group2.options[0], @group4.options[0]])
+      @booking.should be_valid
+    end
+
+    it "is not valid if more than one option of an exclusive group is given" do
+      @booking = FactoryGirl.build(:booking, :machine => @machine, :options => [@group2.options[0], @group4.options[0], @group3.options].flatten)
+      @booking.should be_valid
+    end
+
+    it "is valid if more than one option of an non exclusive group is given" do
+      @booking = FactoryGirl.build(:booking, :machine => @machine, :options => [@group2.options[0], @group4.options[0], @group1.options].flatten)
+      @booking.should_not be_valid
+    end
+  end
 end
