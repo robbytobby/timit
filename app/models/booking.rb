@@ -12,6 +12,10 @@ class Booking < ActiveRecord::Base
   validate :no_overlaps
   validate :non_optional_options
   validate :exclusive_options
+  validates_numericality_of :temperature, :only_integer => true, :allow_blank => true
+  validates :temperature, :presence => {:if => lambda{|b| b.machine ? b.machine.needs_temperature : false} }
+  validates :sample, :presence => {:if => lambda{|b| b.machine ? b.machine.needs_sample : false} }
+
 
   before_validation :adjust_time_to_all_day
 

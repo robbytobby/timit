@@ -116,8 +116,10 @@ describe Booking do
   end
 
   describe "validations" do
+    it {should validate_numericality_of(:temperature) }
     it {should_not accept_values_for(:user_id, nil, 'ab', '', ' ')}
-    it {should_not accept_values_for(:machine_id, nil, 'ab', '', ' ')}
+    it {should validate_presence_of(:machine_id)}
+    it {should validate_numericality_of(:machine_id)}
     it {should_not accept_values_for(:ends_at, booking.starts_at - 1.minute, booking.starts_at - 1.day)}
     it "does not accept bookings exceeding the maximum" do
       @machine = FactoryGirl.create(:machine, :max_duration => 2, :max_duration_unit => 'day')
@@ -185,6 +187,18 @@ describe Booking do
           @booking.should_not be_valid
         end
       end
+    end
+
+    it "is not valid without temperature if machine needs temperature"  do
+      @machine = FactoryGirl.create(:machine, :needs_temperature => true)
+      @booking = FactoryGirl.build(:booking, :machine => @machine)
+      @booking.should_not be_valid
+    end
+
+    it "is not valid without sample if machine needs sample" do
+      @machine = FactoryGirl.create(:machine, :needs_sample => true)
+      @booking = FactoryGirl.build(:booking, :machine => @machine)
+      @booking.should_not be_valid
     end
   end
 

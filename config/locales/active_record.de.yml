@@ -11,6 +11,9 @@ de:
         ends_at: 'Ende'
         all_day: 'ganzer Tag'
         id: '#'
+        temperature: 'Temperatur [K]'
+        sample: 'Probe'
+        comment: 'Kommentar'
       machine: 
         name: 'Name'
         description: 'Beschreibung'

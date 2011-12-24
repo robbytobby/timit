@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111224114238) do
+ActiveRecord::Schema.define(:version => 20111224123504) do
 
   create_table "machines", :force => true do |t|
     t.string   "name"
@@ -20,6 +20,8 @@ ActiveRecord::Schema.define(:version => 20111224114238) do
     t.datetime "updated_at"
     t.integer  "max_duration"
     t.string   "max_duration_unit"
+    t.boolean  "needs_temperature", :default => false
+    t.boolean  "needs_sample",      :default => false
   end
 
   create_table "users", :force => true do |t|
@@ -52,6 +54,9 @@ ActiveRecord::Schema.define(:version => 20111224114238) do
     t.integer  "machine_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "comment"
+    t.integer  "temperature"
+    t.string   "sample"
     t.index ["machine_id"], :name => "index_bookings_on_machine_id"
     t.index ["user_id"], :name => "index_bookings_on_user_id"
     t.foreign_key ["user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "bookings_user_id_fkey"

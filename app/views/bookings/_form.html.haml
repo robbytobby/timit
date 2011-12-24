@@ -3,12 +3,15 @@
     = f.input :starts_at
     = f.input :ends_at
     = f.input :all_day, :as => :boolean
+    = f.input :temperature, :as => :string, :label => t('activerecord.attributes.booking.temperature')
+    = f.input :sample
     - if can? :manage, Booking
       = f.input :user_id, :as => :select, :collection => User.order(:last_name)
       = f.input :machine_id, :as => :select, :collection => Machine.order(:name)
     - else
       = f.input :user_id, :as => :hidden
       = f.input :machine_id, :as => :hidden
+    = f.input :comment, :input_html => { :class => 'autogrow', :rows => 5, :cols => 33}
   = f.inputs do
     - if @booking.machine.option_groups.any?
       %h3= t('.options')
