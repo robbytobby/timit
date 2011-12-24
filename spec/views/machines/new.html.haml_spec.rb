@@ -2,10 +2,8 @@ require 'spec_helper'
 
 describe "machines/new.html.haml" do
   before(:each) do
-    assign(:machine, stub_model(Machine,
-      :name => "MyString",
-      :description => "MyText"
-    ).as_new_record)
+    assign(:options, FactoryGirl.build_list(:option, 3) )
+    assign(:machine, FactoryGirl.build(:machine) )
   end
 
   it "renders new machine form" do

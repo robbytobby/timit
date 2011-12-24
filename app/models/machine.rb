@@ -8,7 +8,7 @@ class Machine < ActiveRecord::Base
   has_many :bookings, :dependent => :destroy
   has_many :options, :dependent => :destroy
   has_many :option_groups, :through => :options, :uniq => true
-  accepts_nested_attributes_for :options, :reject_if => :all_blank
+ # accepts_nested_attributes_for :options, :reject_if => :all_blank
 
   def self.time_units
     @@time_units

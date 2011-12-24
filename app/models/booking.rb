@@ -105,6 +105,10 @@ class Booking < ActiveRecord::Base
     starts_long_after?(self.prev) && !from_beginning_of_day?
   end
 
+  def group_errors(group)
+    errors[:base].collect{|e| e if e.match(/#{group.name}/)}.compact || []
+  end
+
 
   private
   def end_after_start

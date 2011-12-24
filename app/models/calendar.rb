@@ -13,7 +13,7 @@ class Calendar
                                   :ends => ends.to_datetime, 
                                   :starts => starts.to_datetime).order(:starts_at)
     self.days = starts.to_date...ends.to_date
-    self.machines = machine_ids.any? ? Machine.order(:id).find(machine_ids) : Machine.order(:id)
+    self.machines = machine_ids.any? ? Machine.order(:name).find(machine_ids) : Machine.order(:name)
   end
 
   def entries_for(machine_id, date)

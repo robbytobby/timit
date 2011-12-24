@@ -2,10 +2,8 @@ require 'spec_helper'
 
 describe "machines/edit.html.haml" do
   before(:each) do
-    @machine = assign(:machine, stub_model(Machine,
-      :name => "MyString",
-      :description => "MyText"
-    ))
+    @options = assign(:options, FactoryGirl.create_list(:option, 3))
+    @machine = assign(:machine, FactoryGirl.create(:machine))
   end
 
   it "renders the edit machine form" do

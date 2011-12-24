@@ -3,4 +3,5 @@ class OptionGroup < ActiveRecord::Base
   validates_presence_of :name
   validates_inclusion_of :optional, :in => [true, false]
   validates_inclusion_of :exclusive, :in => [true, false]
+  accepts_nested_attributes_for :options, :reject_if => :all_blank
 end

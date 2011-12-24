@@ -49,6 +49,7 @@ de:
   layouts:
     topmenu:
       machines: 'Geräte'
+      options: 'Optionen'
       users: 'User'
       calendar: 'Kalender'
       bookings: 'Buchungen'

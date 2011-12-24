@@ -5,6 +5,7 @@ class MachinesController < ApplicationController
   # GET /machines
   # GET /machines.json
   def index
+    @machines = Machine.order(:name)
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @machines }
@@ -23,6 +24,7 @@ class MachinesController < ApplicationController
   # GET /machines/new
   # GET /machines/new.json
   def new
+    @options = Option.order(:name)
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @machine }
@@ -31,7 +33,7 @@ class MachinesController < ApplicationController
 
   # GET /machines/1/edit
   def edit
-    @machine.options.build
+    @options = Option.order(:name)
   end
 
   # POST /machines

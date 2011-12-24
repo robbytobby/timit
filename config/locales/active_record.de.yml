@@ -4,6 +4,7 @@ de:
       machine: 'Gerät'
       user: 'User'
       booking: 'Buchung'
+      options: 'Optionen'
     attributes:
       booking:
         starts_at: 'Beginn'
@@ -34,6 +35,11 @@ de:
         current_sign_in_ip: 'IP des letzten Logins'
         current_sign_in_at: 'letzter Login am'
         sign_in_count: 'Anzahl der Logins'
+      option_group:
+        name: 'Name'
+        group: 'Gruppe'
+        exclusive: 'exclusiv'
+        optional: 'optional'
     errors:
       models:
         user:

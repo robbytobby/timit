@@ -60,6 +60,7 @@ describe Calendar do
       subject{Calendar.new}
 
       it("defaults to all machines"){subject.machines.should include(@machine1, @machine2, @machine3)}
+      it("machines are ordered by name"){subject.machines.should == Machine.order(:name).all}
 
       describe "may be restricted to selected machines" do
         subject{Calendar.new(nil, nil,[@machine1.id, @machine2.id])}

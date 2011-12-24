@@ -8,9 +8,9 @@
       = f.select :max_duration_unit, Machine.time_units.map{|unit| [t('time_units.' + unit.to_s), unit.to_s]}
     %li
       %h3= t 'activerecord.attributes.machine.options'
-    = f.inputs :for => :options, :name => 'Option #%i' do |o|
-      = o.input :name
-      = o.input :option_group
+      - if @options.any?
+        - @options.group_by(&:option_group).each do |group, options|
+          = f.input :options, :collection => options, :as => :check_boxes, :label => group.name
   = f.buttons do
     = f.commit_button
     %li.button

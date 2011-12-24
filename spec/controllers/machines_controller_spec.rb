@@ -9,6 +9,7 @@ describe MachinesController do
   
   before :each do
     @machine = FactoryGirl.create(:machine)
+    @machines = FactoryGirl.create_list(:machine, 3)
   end
 
   context "without user logged in" do
@@ -75,7 +76,7 @@ describe MachinesController do
     describe "GET index" do
       it "assigns all machines as @machines" do
         get :index
-        assigns(:machines).should eq([@machine])
+        assigns(:machines).should == Machine.order(:name).all
       end
     end
   

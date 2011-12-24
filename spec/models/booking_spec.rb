@@ -224,11 +224,14 @@ describe Booking do
   describe "booking options" do
     before :each do
       @machine = FactoryGirl.create(:machine)
-      @group1 = FactoryGirl.create(:option_group, :exclusive => true, :optional => true)
-      @group2 = FactoryGirl.create(:option_group, :exclusive => true, :optional => false)
-      @group3 = FactoryGirl.create(:option_group, :exclusive => false, :optional => true)
-      @group4 = FactoryGirl.create(:option_group, :exclusive => false, :optional => false)
-      [@group1, @group2, @group3, @group4].each do |group|
+      @groups = [
+        @group1 = FactoryGirl.create(:option_group, :exclusive => true, :optional => true),
+        @group2 = FactoryGirl.create(:option_group, :exclusive => true, :optional => false),
+        @group3 = FactoryGirl.create(:option_group, :exclusive => false, :optional => true),
+        @group4 = FactoryGirl.create(:option_group, :exclusive => false, :optional => false)
+      ]
+      
+      @groups.each do |group|
         FactoryGirl.create_list(:option, 3, :option_group => group, :machine => @machine)
       end
     end
@@ -236,21 +239,35 @@ describe Booking do
     it "is not valid if no option in a non-optional group is checked" do
       @booking = FactoryGirl.build(:booking, :machine => @machine)
       @booking.should_not be_valid
+      @groups.each do |group|
+        @booking.group_errors(group).send(group.optional ? :should : :should_not, be_empty)
+      end
     end
 
     it "is valid if one option of each non-optional group is checked" do
       @booking = FactoryGirl.build(:booking, :machine => @machine, :options => [@group2.options[0], @group4.options[0]])
       @booking.should be_valid
+      @groups.each do |group|
+        @booking.group_errors(group).should be_empty
+      end
     end
 
-    it "is not valid if more than one option of an exclusive group is given" do
+    it "is valid if no more than one option of an exclusive group is given" do
       @booking = FactoryGirl.build(:booking, :machine => @machine, :options => [@group2.options[0], @group4.options[0], @group3.options].flatten)
       @booking.should be_valid
+      @booking.group_errors(@group1).should be_empty
+      @booking.group_errors(@group2).should be_empty
+      @booking.group_errors(@group3).should be_empty
+      @booking.group_errors(@group4).should be_empty
     end
 
-    it "is valid if more than one option of an non exclusive group is given" do
+    it "is not valid if more than one option of an non exclusive group is given" do
       @booking = FactoryGirl.build(:booking, :machine => @machine, :options => [@group2.options[0], @group4.options[0], @group1.options].flatten)
       @booking.should_not be_valid
+      @booking.group_errors(@group1).should_not be_empty
+      @booking.group_errors(@group2).should be_empty
+      @booking.group_errors(@group3).should be_empty
+      @booking.group_errors(@group4).should be_empty
     end
   end
 end

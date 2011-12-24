@@ -27,6 +27,11 @@ describe User do
     it { @approved_user.should be_active_for_authentication}
   end
 
+  describe "inactive_message" do
+    its(:inactive_message){should == :not_approved}
+    it{ @approved_user.inactive_message.should == :inactive}
+  end
+
   it { should_not accept_values_for(:first_name, nil, '', ' ') }
   it { should_not accept_values_for(:last_name, nil, '', ' ') }
   it { should_not accept_values_for(:phone, nil, '', ' ', '1a3', 'abc') }
@@ -37,8 +42,13 @@ describe User do
 
   its(:mail_name){should== "#{@user.user_name} <#{@user.email}>"}
   its(:user_name){should == @user.name}
+
   it "has a short user name" do
     @user.user_name(:short).should ==  @user.first_name[0] + '. ' + @user.last_name[0..15]
+  end
+  
+  it "raises an error if user_name gets an unknown format" do
+    lambda{@user.user_name(:bla)}.should raise_error
   end
 
   describe "send_welcome_email" do

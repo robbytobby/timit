@@ -1,23 +1,26 @@
-%h1 Listing option_groups
-
-%table
+%table.option_groups
   %tr
-    %th Name
-    %th Exclusive
-    %th Optional
     %th
-    %th
+      = link_to image_tag('icons/png16/add.png'), new_option_group_path if can? :create, OptionGroup
+      = t('activerecord.attributes.option_group.group')
+    %th= t('activerecord.models.options')
     %th
 
   - @option_groups.each do |option_group|
-    %tr
-      %td= option_group.name
-      %td= option_group.exclusive
-      %td= option_group.optional
-      %td= link_to 'Show', option_group
-      %td= link_to 'Edit', edit_option_group_path(option_group)
-      %td= link_to 'Destroy', option_group, :confirm => 'Are you sure?', :method => :delete
+    %tr{:class => cycle('even', 'odd')}
+      %td
+        = link_to option_group.name, option_group
+        = option_group.exclusive ? t('activerecord.attributes.option_group.exclusive') : ''
+        = option_group.optional ? t('activerecord.attributes.option_group.optional') : ''
+      %td
+        %ul
+          - option_group.options.each do |option|
+            %li= option.name
+      -if can? :manage, Booking
+        %td
+          = link_to image_tag('icons/png16/destroy.png', :size => '16x16') ,
+            option_group, :confirm => t('confirm', :action => t('delete'), :name => "#{t('activerecord.models.option_group')} #{option_group.name}"), :title => t('delete'), :method => :delete
+          = link_to image_tag('icons/png16/edit.png', :size => '16x16'), edit_option_group_path(option_group), :title => t('edit')
 
 %br
 
-= link_to 'New Option group', new_option_group_path

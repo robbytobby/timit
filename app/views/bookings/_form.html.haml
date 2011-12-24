@@ -13,17 +13,16 @@
     - if @booking.machine.option_groups.any?
       %h3= t('.options')
       - @booking.machine.options.group_by(&:option_group).each do |group, options|
-        %div{:class => @booking.errors[:base] && @booking.errors[:base].any?{|e| e.match(/#{group.name}/)} ? 'error' : ''}
+        %div{:class => @booking.group_errors(group).any? ? 'error' : ''}
           = f.input :options, :as => group.exclusive ? :select : :check_boxes,
                               :collection => options,
                               :required => !group.optional, 
                               :label => group.name, 
                               :include_blank => group.optional ? t('none') : t('please_choose'),
                               :input_html => {:multiple => !group.exclusive} 
-          - errors = @booking.errors[:base].collect{|e| e if e.match(/#{group.name}/)}
           %p.inline-errors
-            -@booking.errors[:base].collect{|e| e if e.match(/#{group.name}/)}.compact.each do |error|
-              = error
+            - @booking.group_errors(group).each do |e|
+              = e
             
   = f.buttons do
     = f.commit_button
