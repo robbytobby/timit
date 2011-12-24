@@ -2,6 +2,7 @@ class Option < ActiveRecord::Base
   belongs_to :machine
   belongs_to :option_group
   has_and_belongs_to_many :bookings
+  has_and_belongs_to_many :machines
   validates_presence_of :name, :option_group_id
 
   def name

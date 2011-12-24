@@ -232,7 +232,8 @@ describe Booking do
       ]
       
       @groups.each do |group|
-        FactoryGirl.create_list(:option, 3, :option_group => group, :machine => @machine)
+        FactoryGirl.create_list(:option, 3, :option_group => group)
+        group.options.each{|o| @machine.options << o}
       end
     end
 
