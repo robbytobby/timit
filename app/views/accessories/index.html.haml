@@ -1,0 +1,23 @@
+%h1 Listing accessories
+
+%table
+  %tr
+    %th Name
+    %th Option
+    %th Quantity
+    %th
+    %th
+    %th
+
+  - @accessories.each do |accessory|
+    %tr
+      %td= accessory.name
+      %td= accessory.option_id
+      %td= accessory.quantity
+      %td= link_to 'Show', accessory
+      %td= link_to 'Edit', edit_accessory_path(accessory)
+      %td= link_to 'Destroy', accessory, :confirm => 'Are you sure?', :method => :delete
+
+%br
+
+= link_to 'New Accessory', new_accessory_path

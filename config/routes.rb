@@ -1,4 +1,6 @@
 Timit::Application.routes.draw do
+  resources :accessories
+
   resources :option_groups
 
   resources :bookings
