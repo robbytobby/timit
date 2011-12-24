@@ -4,8 +4,8 @@
     = f.input :exclusive, :as => :boolean
     = f.input :optional, :as => :boolean
   - unless @option_group.new_record?
-    %h3= t 'activerecord.attributes.machine.options'
-    = f.inputs :for => :options do |o|
+    = f.inputs :for => :options, :name => (t('activerecord.models.option') + ' %i'), :class => 'option' do |o|
       = o.input :name
+      = o.input :message, :as => :string
     = f.buttons do
       = f.commit_button

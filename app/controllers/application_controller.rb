@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
+  before_filter :authenticate_user! 
   
   private
   # Overwriting the sign_out redirect path method
@@ -15,6 +16,15 @@ class ApplicationController < ActionController::Base
     redirect_to(session[:return_to] || default, opts)
   end
 
+  #def wrap_in_transaction
+  #  ActiveRecord::Base.transaction do
+  #    begin
+  #      yield
+  #    ensure
+  #      raise ActiveRecord::Rollback
+  #    end
+  #  end
+  #end
 
   rescue_from CanCan::AccessDenied do |exception|
     flash[:error] = exception.message

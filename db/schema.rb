@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111224123504) do
+ActiveRecord::Schema.define(:version => 20111224140305) do
 
   create_table "machines", :force => true do |t|
     t.string   "name"
@@ -76,6 +76,7 @@ ActiveRecord::Schema.define(:version => 20111224123504) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "option_group_id"
+    t.text     "message"
     t.index ["option_group_id"], :name => "index_options_on_option_group_id"
     t.foreign_key ["option_group_id"], "option_groups", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "options_option_group_id_fkey"
   end

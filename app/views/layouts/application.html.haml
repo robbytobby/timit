@@ -19,5 +19,5 @@
           = render :partial => 'layouts/topmenu'
       #content
         - flash.each do |name, msg|
-          %div{:class => name}= msg
+          %div{:class => name}= simple_format(msg)
         = yield

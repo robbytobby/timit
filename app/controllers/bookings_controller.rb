@@ -1,7 +1,7 @@
 class BookingsController < ApplicationController
-  before_filter :authenticate_user! 
   load_and_authorize_resource
-  before_filter :store_location, :only => [:new, :edit, :destroy]
+  before_filter :store_location, only: [:new, :edit, :destroy]
+  after_filter :show_messages, only: [:create, :update]
 
   def index
     @bookings = Booking.order(:starts_at)
@@ -58,6 +58,14 @@ class BookingsController < ApplicationController
     respond_to do |format|
       format.html { redirect_back_or_default(calendar_path, notice: t('controller.success.destroy', :thing => I18n.t('activerecord.models.booking'))) }
       format.json { head :ok }
+    end
+  end
+
+  private
+  def show_messages
+    @booking.options.each do |option|
+      flash[:notice] ||= ''
+      flash[:notice] += "\n" + option.message unless option.message.blank?
     end
   end
 end

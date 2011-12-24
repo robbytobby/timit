@@ -5,6 +5,7 @@ de:
       user: 'User'
       booking: 'Buchung'
       options: 'Optionen'
+      option: 'Option'
     attributes:
       booking:
         starts_at: 'Beginn'
@@ -43,6 +44,9 @@ de:
         group: 'Gruppe'
         exclusive: 'exclusiv'
         optional: 'optional'
+      option: 
+        name: 'Name'
+        message: 'Hinweis'
     errors:
       models:
         user:

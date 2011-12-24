@@ -149,6 +149,29 @@ describe "Bookings" do
     end
 
     describe "POST /bookings" do
+      describe "messages" do
+        before :each do
+          session_for :unprivileged
+          @option_group = FactoryGirl.create(:option_group, optional: true)
+          @option = FactoryGirl.create(:option, message: 'Message', option_group: @option_group)
+          @machine = FactoryGirl.create(:machine, options: [@option])
+        end
+
+        it "gives hints for checked booking options" do
+          post bookings_path, :booking => FactoryGirl.build(:booking, user: @current_user, machine: @machine).attributes.merge(option_ids: [@option.id])
+          follow_redirect!
+          response.body.should have_selector('div.notice') do |div|
+            div.should contain('Message')
+          end
+        end
+
+        it "does not give hints for checked booking options" do
+          post bookings_path, :booking => FactoryGirl.build(:booking, user: @current_user, machine: @machine).attributes.merge(option_ids: [])
+          follow_redirect!
+          response.body.should_not contain('Message')
+        end
+      end
+
       context "as an unprivileged user" do
         it "creates bookings for the current_user" do
           access_check(:unprivileged, true, {:success => lambda{redirect_to(calendar_url)}}){post bookings_path, :booking => FactoryGirl.build(:booking, :user_id => @current_user.id).attributes}

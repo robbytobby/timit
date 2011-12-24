@@ -1,4 +1,5 @@
 class RegistrationsController < Devise::RegistrationsController
+  skip_before_filter :authenticate_user!
   after_filter :inform_admin, :only => :create
   protected
 
