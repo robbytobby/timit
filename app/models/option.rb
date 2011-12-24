@@ -4,6 +4,7 @@ class Option < ActiveRecord::Base
   has_and_belongs_to_many :bookings
   has_and_belongs_to_many :machines
   validates_presence_of :name, :option_group_id
+  validates_uniqueness_of :name
 
   def name
     read_attribute(:name).try(:html_safe)
