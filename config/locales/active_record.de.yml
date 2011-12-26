@@ -1,12 +1,17 @@
 de:
   activerecord:
     models:
+      accessory: 'Zubehör'
       machine: 'Gerät'
       user: 'User'
       booking: 'Buchung'
       options: 'Optionen'
       option: 'Option'
+      option_group: 'Gruppe'
     attributes:
+      accessory:
+        name: 'Name'
+        quantity: 'Anzahl'
       booking:
         starts_at: 'Beginn'
         ends_at: 'Ende'
@@ -47,6 +52,7 @@ de:
       option: 
         name: 'Name'
         message: 'Hinweis'
+        needed: 'Benötigt'
     errors:
       models:
         user:

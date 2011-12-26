@@ -41,15 +41,18 @@ de:
     day: "%{count}d"
     hour: "%{count}h"
     minute: "%{count}m"
+
   support:
     array:
       words_connector: ', '
       last_word_connector: ' und '
       two_words_connector: ' und '
+
   layouts:
     topmenu:
       machines: 'Geräte'
       options: 'Optionen'
+      accessories: 'Zubehör'
       users: 'User'
       calendar: 'Kalender'
       bookings: 'Buchungen'
@@ -60,6 +63,29 @@ de:
       edit_account: "Mein Account"
     application:
       logged_in_as: 'Angemeldet als:'
+
+  accessories:
+    index:
+      all_accessories: 'Zubehör'
+    new:
+      new: 'Neues Zubehör'
+    edit:
+      edit: 'Zubehör bearbeiten'
+
+  bookings:
+    new:
+      new_booking_for: 'Neue Buchung für %{machine}'
+    form:
+      options: 'Optionen'
+
+  calendar:
+    index:
+      next_period: '>>'
+      prev_period: '<<'
+      heading: "%{start} - %{end}"
+    machines:
+      select_machines: 'Anzuzeigende Maschinen'
+
   machines:
     index:
       new: 'neues Gerät'
@@ -67,6 +93,21 @@ de:
       description: 'Beschreibung'
     edit:
       heading: 'Gerät bearbeiten'
+  
+  option_groups:
+    new:
+      new: 'Neue Gruppe'
+
+  registrations:
+    new:
+      sign_up: "Zugang beantragen"
+    edit:
+      my_account: "Mein Account"
+      leave_blank: "Laß dieses Feld leer, wenn du das Passwort nicht ändern willst."
+      needed_for_update: "Dein aktuelles Passwort wird benötigt um deine Änderungen zu bestätigen"
+      cancel_my_account: "Account löschen"
+      unhappy?: "Der Account wird nicht mehr gebraucht? Oder hast du dieses Programm einfach nur satt?"
+
   users:
     show:
       personal: 'persönliche Daten:'
@@ -87,27 +128,7 @@ de:
       heading: 'User %{name} bearbeiten'
     new:
       heading: 'Neuer User'
-  registrations:
-    new:
-      sign_up: "Zugang beantragen"
-    edit:
-      my_account: "Mein Account"
-      leave_blank: "Laß dieses Feld leer, wenn du das Passwort nicht ändern willst."
-      needed_for_update: "Dein aktuelles Passwort wird benötigt um deine Änderungen zu bestätigen"
-      cancel_my_account: "Account löschen"
-      unhappy?: "Der Account wird nicht mehr gebraucht? Oder hast du dieses Programm einfach nur satt?"
-  calendar:
-    index:
-      next_period: '>>'
-      prev_period: '<<'
-      heading: "%{start} - %{end}"
-    machines:
-      select_machines: 'Anzuzeigende Maschinen'
-  bookings:
-    new:
-      new_booking_for: 'Neue Buchung für %{machine}'
-    form:
-      options: 'Optionen'
+
   user_mailer:
     welcome_email:
       subject: "Dein neuer Account für TiMiT"

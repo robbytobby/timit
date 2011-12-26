@@ -2,8 +2,7 @@
 
 FactoryGirl.define do
   factory :accessory do
-      name "MyString"
-      option_id 1
+      sequence(:name){|n| "Name#{n}"}
       quantity 1
     end
 end

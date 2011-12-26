@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(:version => 20111224163910) do
   create_table "accessories", :force => true do |t|
     t.string   "name"
     t.integer  "option_id"
-    t.integer  "quantity"
+    t.integer  "quantity",   :default => 1
     t.datetime "created_at"
     t.datetime "updated_at"
   end

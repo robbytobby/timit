@@ -32,7 +32,7 @@ class OptionGroupsController < ApplicationController
 
   # GET /option_groups/1/edit
   def edit
-    @option_group.options.build
+    @option_group.options.build(:needed => [])
   end
 
   # POST /option_groups
@@ -40,7 +40,7 @@ class OptionGroupsController < ApplicationController
   def create
     respond_to do |format|
       if @option_group.save
-        format.html { redirect_to option_groups_path, notice: 'Option group was successfully created.' }
+        format.html { redirect_to option_groups_path, notice: t('controller.success.create', :thing => t('activerecord.models.option_group')) }
         format.json { render json: @option_group, status: :created, location: @option_group }
       else
         format.html { render action: "new" }
@@ -54,7 +54,7 @@ class OptionGroupsController < ApplicationController
   def update
     respond_to do |format|
       if @option_group.update_attributes(params[:option_group])
-        format.html { redirect_to option_groups_path, notice: 'Option group was successfully updated.' }
+        format.html { redirect_to option_groups_path, notice: t('controller.success.update', :thing => t('activerecord.models.option_group')) }
         format.json { head :ok }
       else
         format.html { render action: "edit" }
@@ -69,7 +69,7 @@ class OptionGroupsController < ApplicationController
     @option_group.destroy
 
     respond_to do |format|
-      format.html { redirect_to option_groups_url }
+      format.html { redirect_to option_groups_url, notice: t('controller.success.destroy', :thing => t('activerecord.models.option_group')) }
       format.json { head :ok }
     end
   end

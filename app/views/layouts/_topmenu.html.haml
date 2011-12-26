@@ -4,6 +4,7 @@
     -if can? :manage, Machine
       %li= link_to t('.machines'), machines_path 
       %li= link_to t('.options'), option_groups_path
+      %li= link_to t('.accessories'), accessories_path
     -if can? :manage, User
       %li= link_to t('.users'), users_path
     -if can? :manage, Booking

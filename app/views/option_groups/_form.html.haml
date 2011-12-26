@@ -6,6 +6,7 @@
   - unless @option_group.new_record?
     = f.inputs :for => :options, :name => (t('activerecord.models.option') + ' %i'), :class => 'option' do |o|
       = o.input :name
+      = o.input :needed
       = o.input :message, :as => :string
-    = f.buttons do
-      = f.commit_button
+  = f.buttons do
+    = f.commit_button

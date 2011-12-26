@@ -284,5 +284,48 @@ describe Booking do
       @booking.group_errors(@group3).should be_empty
       @booking.group_errors(@group4).should be_empty
     end
+
+    describe 'needed accessories' do
+      before :each do
+        @option_group = FactoryGirl.create(:option_group, :optional => true)
+        @option1 = FactoryGirl.create(:option, :option_group => @option_group, :needed => [FactoryGirl.create(:accessory, :quantity => 1)] )
+        @option2 = FactoryGirl.create(:option, :option_group => @option_group, :needed => [FactoryGirl.create(:accessory, :quantity => 2)] )
+        @machine1 = FactoryGirl.create(:machine, :options => [@option1, @option2])
+        @machine2 = FactoryGirl.create(:machine, :options => [@option1, @option2])
+      end
+
+      it "is valid if a needed accessory is available" do
+        @booking = FactoryGirl.build(:booking, :machine => @machine1, :options => [@option1])
+        @booking.should be_valid
+      end
+
+      it "is not valid if a needed accessory is not available" do
+        @booking2 = FactoryGirl.create(:booking, machine: @machine2, options: [@option1], starts_at: Time.now, ends_at: Time.now + 1.hour)
+        @booking = FactoryGirl.build(:booking, machine: @machine1, options: [@option1], starts_at: Time.now, ends_at: Time.now + 1.hour)
+        @booking.should_not be_valid
+      end
+
+      it "is valid if a needed accessory is available mutliple times, but booked less times" do
+        @booking2 = FactoryGirl.create(:booking, machine: @machine2, options: [@option2], starts_at: Time.now, ends_at: Time.now + 1.hour)
+        @booking = FactoryGirl.build(:booking, machine: @machine1, options: [@option2], starts_at: Time.now, ends_at: Time.now + 1.hour)
+        @booking.should be_valid
+      end
+
+      it "is not valid if a neede accessory is available n times and booked n times" do
+        @machine3 = FactoryGirl.create(:machine, :options => [@option1, @option2])
+        @booking3 = FactoryGirl.create(:booking, machine: @machine3, options: [@option2], starts_at: Time.now, ends_at: Time.now + 1.hour)
+        @booking2 = FactoryGirl.create(:booking, machine: @machine2, options: [@option2], starts_at: Time.now, ends_at: Time.now + 1.hour)
+        @booking = FactoryGirl.build(:booking, machine: @machine1, options: [@option2], starts_at: Time.now, ends_at: Time.now + 1.hour)
+        @booking.should_not be_valid
+      end
+
+      it "is  valid if a neede accessory is available n times, but not booked n times during the same period" do
+        @machine3 = FactoryGirl.create(:machine, :options => [@option1, @option2])
+        @booking3 = FactoryGirl.create(:booking, machine: @machine3, options: [@option2], starts_at: Time.now - 1.hour, ends_at: Time.now + 1.minute)
+        @booking2 = FactoryGirl.create(:booking, machine: @machine2, options: [@option2], starts_at: Time.now + 2.minutes, ends_at: Time.now + 1.hour)
+        @booking = FactoryGirl.build(:booking, machine: @machine1, options: [@option2], starts_at: Time.now, ends_at: Time.now + 1.hour)
+        @booking.should be_valid
+      end
+    end
   end
 end

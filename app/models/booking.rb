@@ -15,7 +15,7 @@ class Booking < ActiveRecord::Base
   validates_numericality_of :temperature, :only_integer => true, :allow_blank => true
   validates :temperature, :presence => {:if => lambda{|b| b.machine ? b.machine.needs_temperature : false} }
   validates :sample, :presence => {:if => lambda{|b| b.machine ? b.machine.needs_sample : false} }
-
+  validate :needed_accessories_available
 
   before_validation :adjust_time_to_all_day
 
@@ -113,6 +113,23 @@ class Booking < ActiveRecord::Base
     errors[:base].collect{|e| e if e.match(/#{group.name}/)}.compact || []
   end
 
+  def needed
+    options.collect{|o| o.needed}.flatten.compact
+  end
+
+  def time_range
+    starts_at...ends_at
+  end
+
+  def overlap(other)
+    overlap = nil
+    if time_range.cover?(other.starts_at) 
+      overlap = other.starts_at...(time_range.cover?(other.ends_at) ? other.ends_at : ends_at)
+    elsif other.time_range.cover?(starts_at)
+      overlap = starts_at...(other.time_range.cover?(ends_at) ? ends_at : other.ends_at)
+    end
+    overlap
+  end
 
   private
   def end_after_start
@@ -161,6 +178,24 @@ class Booking < ActiveRecord::Base
     return unless machine
     machine.options.group_by(&:option_group).each do |group, opts|
       errors.add(:base, :to_many, :name => group.name) if group.exclusive && (options & opts).many?
+    end
+  end
+
+  def same_time_bookings
+    rel = Booking.where( "(starts_at <= :start and ends_at > :start) OR 
+                         (starts_at < :end and ends_at > :end) OR 
+                         (starts_at >= :start and ends_at <= :end)",
+                         :start => starts_at, :end => ends_at)
+    rel = rel.where("id != :id", :id => id) unless self.new_record?
+    rel = rel.order(:starts_at)
+    rel
+  end
+
+  def needed_accessories_available
+    needed.each do |acc|
+      conflicts = same_time_bookings.collect{|b| b if b.needed.include?(acc)}.compact
+      errors.add(:base, :accessory_conflict) if conflicts.size >= acc.quantity
+      #freie oder gebuchte Zeiträume in der Meldung angeben
     end
   end
 end
