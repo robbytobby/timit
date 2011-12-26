@@ -122,11 +122,18 @@ class Booking < ActiveRecord::Base
   end
 
   def overlap(other)
+    return nil if other.nil?
+    return multi_overlaps(other) if other.is_a?(Array)
+
+    # Accept range of times or a booking
+    range = other.is_a?(Booking) ? other.time_range : other
+    raise "Booking#overlap Error: 'range' is not a Range, but #{range.class}" unless range.is_a?(Range)
+
     overlap = nil
-    if time_range.cover?(other.starts_at) 
-      overlap = other.starts_at...(time_range.cover?(other.ends_at) ? other.ends_at : ends_at)
-    elsif other.time_range.cover?(starts_at)
-      overlap = starts_at...(other.time_range.cover?(ends_at) ? ends_at : other.ends_at)
+    if time_range.cover?(range.begin) 
+      overlap = range.begin...(time_range.cover?(range.end) ? range.end : ends_at)
+    elsif range.cover?(starts_at)
+      overlap = starts_at...(range.cover?(ends_at) ? ends_at : range.end) 
     end
     overlap
   end
@@ -194,8 +201,26 @@ class Booking < ActiveRecord::Base
   def needed_accessories_available
     needed.each do |acc|
       conflicts = same_time_bookings.collect{|b| b if b.needed.include?(acc)}.compact
-      errors.add(:base, :accessory_conflict) if conflicts.size >= acc.quantity
+      overlaps = multi_overlaps(conflicts)
+      errors.add(:base, :accessory_conflict) if overlaps[acc.quantity]
       #freie oder gebuchte Zeiträume in der Meldung angeben
     end
   end
+
+  def multi_overlaps(others, overlaps = {0 => [time_range]})
+    overlaps.delete_if{|k,v| v.blank?}
+    return overlaps if others.empty?
+
+    # overlaps.dup does not work here, because the values stay the same objects! There's nothing like ".deep_dup"
+    result = {}
+    overlaps.each_pair{|k,v| result[k] = v.dup}
+
+    other = others.shift
+    overlaps.each_pair do |key, value|
+      value.each{ |range| (result[key+1] ||= []) << other.overlap(range) unless range.nil? }
+      result[key+1] = result[key+1].compact.uniq
+    end
+    multi_overlaps(others, result)
+  end
+
 end

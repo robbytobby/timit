@@ -328,4 +328,99 @@ describe Booking do
       end
     end
   end
+
+  describe "overlap" do
+    before :each do
+      @t = "2011-12-27 00:00:00".to_datetime
+      @booking1 = FactoryGirl.build(:booking, starts_at: @t,           ends_at: @t + 12.hours)
+      @booking2 = FactoryGirl.build(:booking, starts_at: @t - 6.hours, ends_at: @t + 6.hours)
+      @booking3 = FactoryGirl.build(:booking, starts_at: @t + 3.hours, ends_at: @t + 9.hours)
+      @booking4 = FactoryGirl.build(:booking, starts_at: @t - 3.hours, ends_at: @t + 15.hours)
+      @booking5 = FactoryGirl.build(:booking, starts_at: @t + 6.hours, ends_at: @t + 15.hours)
+      @booking6 = FactoryGirl.build(:booking, starts_at: @t - 2.days,  ends_at: @t - 1.day)
+      @booking7 = FactoryGirl.build(:booking, starts_at: @t + 2.days,  ends_at: @t + 3.days)
+    end
+
+    describe "returns the overlapping time with another Booking" do
+      it("example 1"){ @booking1.overlap(@booking2).should == (@t...(@t + 6.hours)) }
+      it("example 2"){ @booking2.overlap(@booking1).should == (@t...(@t + 6.hours)) }
+      it("example 3"){ @booking1.overlap(@booking3).should == ((@t + 3.hours)...(@t + 9.hours)) }
+      it("example 4"){ @booking3.overlap(@booking1).should == ((@t + 3.hours)...(@t + 9.hours)) }
+      it("example 5"){ @booking1.overlap(@booking4).should == ((@t + 0.hours)...(@t + 12.hours)) }
+      it("example 6"){ @booking4.overlap(@booking1).should == ((@t + 0.hours)...(@t + 12.hours)) }
+      it("example 7"){ @booking1.overlap(@booking5).should == ((@t + 6.hours)...(@t + 12.hours)) }
+      it("example 8"){ @booking5.overlap(@booking1).should == ((@t + 6.hours)...(@t + 12.hours)) }
+      it("example 9"){ @booking1.overlap(@booking6).should == nil }
+      it("example 10"){ @booking6.overlap(@booking1).should == nil }
+      it("example 11"){ @booking1.overlap(@booking7).should == nil }
+      it("example 12"){ @booking7.overlap(@booking1).should == nil }
+      it("example 13"){ @booking2.overlap(@booking5).should == nil }
+    end
+
+    describe "returns the overlapping time with a Range" do
+      it("example 1"){ @booking1.overlap((@t - 1.day)...@t).should == nil}
+      it("example 2"){ @booking1.overlap((@t - 1.hour)...(@t + 2.hours)).should == (@t...(@t + 2.hours)) }
+      it("example 3"){ @booking1.overlap((@t + 1.hour)...(@t + 3.hours)).should == ((@t + 1.hour)...(@t + 3.hours)) }
+      it("example 4"){ @booking1.overlap((@t + 4.hour)...(@t + 20.hours)).should == ((@t + 4.hours)...(@t + 12.hours)) }
+      it("example 5"){ @booking1.overlap((@t - 1.hour)...(@t + 22.hours)).should == (@t...(@t + 12.hours)) }
+    end
+
+    describe "handels overlap with multiple bookings" do
+      it("example 1"){ @booking1.overlap([@booking2, @booking3]).should == {
+        0 => [@booking1.time_range],
+        1 => [@booking1.overlap(@booking2), @booking1.overlap(@booking3)],
+        2 => [@booking1.overlap(@booking2.overlap(@booking3))] } }
+      it("example 2"){ @booking1.overlap([@booking2, @booking3, @booking4]).should == {
+        0 => [@booking1.time_range],
+        1 => [@booking1.overlap(@booking2), @booking1.overlap(@booking3), @booking1.overlap(@booking4)],
+        2 => [@booking1.overlap(@booking2.overlap(@booking3)), @booking1.overlap(@booking2.overlap(@booking4)), @booking1.overlap(@booking3.overlap(@booking4))],
+        3 => [@booking1.overlap(@booking2.overlap((@booking3).overlap(@booking4)))]} }
+      it("example 3"){ @booking1.overlap([@booking2, @booking3, @booking5, @booking6]).should == {
+        0 => [@booking1.time_range], 
+        1 => [@booking1.overlap(@booking2), @booking1.overlap(@booking3), @booking1.overlap(@booking5)],
+        2 => [@booking1.overlap(@booking2.overlap(@booking3)), @booking1.overlap(@booking3.overlap(@booking5))]
+         } }
+      it("example 4"){ @booking1.overlap([@booking3, @booking5, @booking6, @booking7]).should == {
+        0 => [@booking1.time_range], 
+        1 => [@booking1.overlap(@booking3), @booking1.overlap(@booking5), @booking1.overlap(@booking6)].compact,
+        2 => [@booking1.overlap(@booking3.overlap(@booking5)), @booking1.overlap(@booking3.overlap(@booking6)), @booking1.overlap(@booking5.overlap(@booking6))].compact
+         } }
+      it("example 6"){ @booking1.overlap([@booking2, @booking3, @booking4, @booking5, @booking6, @booking7]).should == {
+        0 => [@booking1.time_range],
+        1 => [@booking1.overlap(@booking2),
+              @booking1.overlap(@booking3), 
+              @booking1.overlap(@booking4), 
+              @booking1.overlap(@booking5), 
+              @booking1.overlap(@booking6), 
+              @booking1.overlap(@booking7)].compact,
+        2 => [@booking1.overlap(@booking2.overlap(@booking3)), 
+              @booking1.overlap(@booking2.overlap(@booking4)), 
+              @booking1.overlap(@booking2.overlap(@booking5)), 
+              @booking1.overlap(@booking2.overlap(@booking6)), 
+              @booking1.overlap(@booking2.overlap(@booking7)), 
+              @booking1.overlap(@booking3.overlap(@booking4)), 
+              @booking1.overlap(@booking3.overlap(@booking5)), 
+              @booking1.overlap(@booking3.overlap(@booking6)), 
+              @booking1.overlap(@booking3.overlap(@booking7)),
+              @booking1.overlap(@booking4.overlap(@booking5)), 
+              @booking1.overlap(@booking4.overlap(@booking6)), 
+              @booking1.overlap(@booking4.overlap(@booking7)),
+              @booking1.overlap(@booking5.overlap(@booking6)), 
+              @booking1.overlap(@booking5.overlap(@booking7)),
+              @booking1.overlap(@booking6.overlap(@booking7))].compact,
+        3 => [@booking1.overlap(@booking2.overlap((@booking3).overlap(@booking4))),
+              @booking1.overlap(@booking2.overlap((@booking3).overlap(@booking5))),
+              @booking1.overlap(@booking2.overlap((@booking3).overlap(@booking6))),
+              @booking1.overlap(@booking2.overlap((@booking3).overlap(@booking7))),
+              @booking1.overlap(@booking3.overlap((@booking4).overlap(@booking5))),
+              @booking1.overlap(@booking3.overlap((@booking4).overlap(@booking6))),
+              @booking1.overlap(@booking3.overlap((@booking4).overlap(@booking7))),
+              @booking1.overlap(@booking4.overlap((@booking5).overlap(@booking6))),
+              @booking1.overlap(@booking4.overlap((@booking5).overlap(@booking7))),
+              @booking1.overlap(@booking5.overlap((@booking6).overlap(@booking7))),
+              ].compact
+        } }
+
+    end
+  end
 end
