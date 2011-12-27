@@ -66,6 +66,6 @@ class BookingsController < ApplicationController
     @booking.options.each do |option|
       flash[:notice] ||= ''
       flash[:notice] += "\n" + option.message unless option.message.blank?
-    end
+    end if @booking.valid?
   end
 end

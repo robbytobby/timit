@@ -7,6 +7,7 @@ class Booking < ActiveRecord::Base
   validates_numericality_of :user_id, :only_integer => true
   validates_presence_of :machine_id
   validates_numericality_of :machine_id, :only_integer => true
+  validates_presence_of :starts_at, :ends_at
   validate :not_to_long
   validate :end_after_start
   validate :no_overlaps
@@ -20,7 +21,7 @@ class Booking < ActiveRecord::Base
   before_validation :adjust_time_to_all_day
 
   def includes?(date)
-    starts_at.to_date <= date && ends_at.to_date >= date
+    overlaps?(date.beginning_of_day...date.end_of_day)
   end
 
   def first_day?(date)
@@ -46,7 +47,11 @@ class Booking < ActiveRecord::Base
   end
 
   def days
-    starts_at.to_date..ends_at.to_date
+    if includes?(ends_at)
+      starts_at.to_date..ends_at.to_date
+    else
+      starts_at.to_date...ends_at.to_date
+    end
   end
 
   def human_start(format = :default)
@@ -110,7 +115,12 @@ class Booking < ActiveRecord::Base
   end
 
   def group_errors(group)
-    errors[:base].collect{|e| e if e.match(/#{group.name}/)}.compact || []
+    value = []
+    value << errors[:base].collect{|e| e if e.match(/#{group.name}/)}
+    group.options.each do |opt|
+      value << errors[:base].collect{|e| e if e.match(/#{opt.name}/)}
+    end
+    value.flatten.compact
   end
 
   def needed
@@ -119,6 +129,10 @@ class Booking < ActiveRecord::Base
 
   def time_range
     starts_at...ends_at
+  end
+
+  def overlaps?(other)
+    !overlap(other).blank?
   end
 
   def overlap(other)
@@ -140,37 +154,30 @@ class Booking < ActiveRecord::Base
 
   private
   def end_after_start
-    errors.add(:ends_at, :start_after_end) unless ends_at > starts_at
+    errors.add(:ends_at, :start_after_end) unless ends_at && starts_at && ends_at > starts_at
   end
 
   def no_overlaps
-    date_conflict(:starts_at, "starts_at <= :start and ends_at > :start")
-    date_conflict(:ends_at, "starts_at < :end and ends_at > :end")
-    date_conflict(:ends_at, "starts_at >= :start and ends_at <= :end")
+    same_time_bookings.where(:machine_id => machine_id).each do |conflict|
+      attribute = overlap(conflict).cover?(starts_at) ? :starts_at : :ends_at
+      errors.add(attribute, :date_conflicts, :from => conflict.human_start, :to => conflict.human_end)
+    end
   end
 
-  def date_conflict(attr, condition)
-    conflicts = Booking.where("machine_id = :machine", :machine => machine_id)
-    conflicts = conflicts.where("id != :id", :id => id) unless self.new_record?
-    conflicts = conflicts.where(condition, :start => starts_at, :end => ends_at)
-    conflicts.each{|c| errors.add(attr, :date_conflicts, :from => c.human_start, :to => c.human_end)}
+  def needed_accessories_available
+    needed.each do |acc|
+      conflicts = same_time_bookings.collect{|b| b if b.needed.include?(acc)}.compact
+      overlaps = multi_overlaps(conflicts)
+      overlaps[acc.quantity].each do |conflict|
+        errors.add(:base, :accessory_conflict, :name => acc.option.name, :from => I18n.l(conflict.begin), :to => I18n.l(conflict.end) )
+      end if overlaps[acc.quantity]
+    end
   end
 
   def not_to_long
     if machine && machine.max_duration
       duration = ends_at - starts_at
       errors.add(:ends_at, :to_long, :max => I18n.t('human_time_units.' + machine.max_duration_unit, :count => machine.max_duration)) if duration > machine.real_max_duration
-    end
-  end
-
-  def adjust_time_to_all_day
-    if all_day
-      self.starts_at = starts_at.beginning_of_day
-      self.ends_at = ends_at.end_of_day
-    end
-
-    if ends_at == ends_at.beginning_of_day
-      self.ends_at = ends_at - 1.minute
     end
   end
 
@@ -188,22 +195,10 @@ class Booking < ActiveRecord::Base
     end
   end
 
-  def same_time_bookings
-    rel = Booking.where( "(starts_at <= :start and ends_at > :start) OR 
-                         (starts_at < :end and ends_at > :end) OR 
-                         (starts_at >= :start and ends_at <= :end)",
-                         :start => starts_at, :end => ends_at)
-    rel = rel.where("id != :id", :id => id) unless self.new_record?
-    rel = rel.order(:starts_at)
-    rel
-  end
-
-  def needed_accessories_available
-    needed.each do |acc|
-      conflicts = same_time_bookings.collect{|b| b if b.needed.include?(acc)}.compact
-      overlaps = multi_overlaps(conflicts)
-      errors.add(:base, :accessory_conflict) if overlaps[acc.quantity]
-      #freie oder gebuchte Zeiträume in der Meldung angeben
+  def adjust_time_to_all_day
+    if all_day
+      self.starts_at = starts_at.beginning_of_day
+      self.ends_at = ends_at.end_of_day
     end
   end
 
@@ -221,6 +216,16 @@ class Booking < ActiveRecord::Base
       result[key+1] = result[key+1].compact.uniq
     end
     multi_overlaps(others, result)
+  end
+
+  def same_time_bookings
+    rel = Booking.where( "(starts_at <= :start and ends_at > :start) OR 
+                         (starts_at < :end and ends_at > :end) OR 
+                         (starts_at >= :start and ends_at <= :end)",
+                         :start => starts_at, :end => ends_at)
+    rel = rel.where("id != :id", :id => id) unless self.new_record?
+    rel = rel.order(:starts_at)
+    rel
   end
 
 end

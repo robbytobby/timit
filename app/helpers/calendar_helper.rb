@@ -10,7 +10,7 @@ module CalendarHelper
     klass << " #{div_height(calendar, booking)}"
     klass << " multiday" if booking.multiday? && !booking.ends_at?(calendar.days.first)
     klass << " all_day" if booking.all_day? 
-    klass << " from_midnight" if booking.from_beginning_of_day? || booking.includes?(calendar.days.first) && booking.multiday? && !booking.ends_at?(calendar.days.first)
+    klass << " from_midnight" if booking.from_beginning_of_day? ||  booking.starts_at.to_date < calendar.days.first && (booking.multiday? && !booking.ends_at?(calendar.days.first)) 
     klass << " end" if  booking.includes?(calendar.days.first) && booking.multiday? && !booking.starts_at?(calendar.days.first)
     klass << " start" if  booking.includes?(calendar.days.last - 1.day) && booking.multiday? && !booking.ends_at?(calendar.days.last - 1.day)
     klass
@@ -21,7 +21,7 @@ module CalendarHelper
     m = 0
     booking.days.each do |d| 
       next if d < calendar.days.first || d >= calendar.days.last
-      if booking.ends_at?(d) && !booking.till_end_of_day?
+      if booking.includes?(d) && booking.ends_at?(d) && !booking.till_end_of_day?
         add = booking.all_day? ? calendar.max_entries(d) : 1
       else
         add = calendar.max_entries(d) - calendar.number_of_entries(booking.machine_id, d) + 1

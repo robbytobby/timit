@@ -1,7 +1,7 @@
 = semantic_form_for @booking do |f|
   = f.inputs do
-    = f.input :starts_at
-    = f.input :ends_at
+    = f.input :starts_at, :include_blank => false
+    = f.input :ends_at, :include_blank => false
     = f.input :all_day, :as => :boolean
     = f.input :temperature, :as => :string, :label => t('activerecord.attributes.booking.temperature')
     = f.input :sample
@@ -15,7 +15,7 @@
   = f.inputs do
     - if @booking.machine.option_groups.any?
       %h3= t('.options')
-      - @booking.machine.options.group_by(&:option_group).each do |group, options|
+      - @booking.machine.options.sort_by{|o| o.option_group.name}.group_by(&:option_group).each do |group, options|
         %div{:class => @booking.group_errors(group).any? ? 'error' : ''}
           = f.input :options, :as => group.exclusive ? :select : :check_boxes,
                               :collection => options,
@@ -25,7 +25,8 @@
                               :input_html => {:multiple => !group.exclusive} 
           %p.inline-errors
             - @booking.group_errors(group).each do |e|
-              = e
+              = (e)
+              %br
             
   = f.buttons do
     = f.commit_button

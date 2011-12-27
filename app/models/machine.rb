@@ -6,8 +6,8 @@ class Machine < ActiveRecord::Base
   validates :max_duration_unit, :presence => {:if => :unit_required?}
   validates_inclusion_of :max_duration_unit, :in => @@time_units.map{|u| u.to_s}, :allow_nil => true
   has_many :bookings, :dependent => :destroy
-  has_and_belongs_to_many :options
-  has_many :option_groups, :through => :options, :uniq => true
+  has_and_belongs_to_many :options, :order => :name
+  has_many :option_groups, :order => :name, :through => :options, :uniq => true
  # accepts_nested_attributes_for :options, :reject_if => :all_blank
 
   def self.time_units

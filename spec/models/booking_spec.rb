@@ -25,6 +25,11 @@ describe Booking do
     ("2011-10-17".to_date.."2011-10-19".to_date).each{|d| it("includes #{d}") {should be_includes(d)} }
     it("do not include the day before") { should_not be_includes("2011-10-16".to_date) }
     it("do not include the day after") { should_not be_includes("2011-10-20".to_date) }
+    it "do not include the end day if ends_at 00:00" do
+      @booking = FactoryGirl.create(:booking, :starts_at => "2011-10-17 01:00:00", :ends_at => "2011-10-18 00:00:00" )
+      @booking.days.cover?("2011-10-18".to_date).should be_false
+      @booking.days.cover?("2011-10-17".to_date).should be_true
+    end
   end
 
   describe "first_day?" do
@@ -120,6 +125,8 @@ describe Booking do
     it {should_not accept_values_for(:user_id, nil, 'ab', '', ' ')}
     it {should validate_presence_of(:machine_id)}
     it {should validate_numericality_of(:machine_id)}
+    it {should validate_presence_of(:ends_at)}
+    it {should validate_presence_of(:starts_at)}
     it {should_not accept_values_for(:ends_at, booking.starts_at - 1.minute, booking.starts_at - 1.day)}
     it "does not accept bookings exceeding the maximum" do
       @machine = FactoryGirl.create(:machine, :max_duration => 2, :max_duration_unit => 'day')
@@ -152,6 +159,7 @@ describe Booking do
 
         it "is not valid if it is an all day booking and it dates include another booking" do
           FactoryGirl.build(:booking, :starts_at => @now + 6.hours, :ends_at => @now + 7.hours, :all_day => true).should be_valid
+          FactoryGirl.build(:booking, :starts_at => @now + 6.hours, :ends_at => @now + 7.hours, :machine => @old_booking.machine).should be_valid
           FactoryGirl.build(:booking, :starts_at => @now + 6.hours, :ends_at => @now + 7.hours, :all_day => true, :machine => @old_booking.machine).should_not be_valid
         end
       end

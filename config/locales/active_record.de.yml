@@ -64,5 +64,6 @@ de:
             ends_at:
               to_long: "Buchung ist zu lang (Maximal: %{max})"
             base:
-              to_many: "Aus der Gruppe %{name} darf nur eine Option ausgewählt sein"
-              one_necessary: "Eine Option aus der Gruppe %{name} muss ausgewählt sein"
+              to_many: "Aus der Gruppe '%{name}' darf nur eine Option ausgewählt sein"
+              one_necessary: "Eine Option aus der Gruppe '%{name}' muss ausgewählt sein"
+              accessory_conflict: "Die Option '%{name}' ist nicht verfügbar zwischen %{from} und %{to}"
