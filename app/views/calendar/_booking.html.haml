@@ -1,9 +1,17 @@
-= new_booking(booking.machine, day, :after => booking) if @calendar.draw_new_booking_after_mulitday?(booking, day) 
+- if @calendar.draw_new_booking_after_mulitday?(booking, day)
+  = render :partial => 'time', :object => booking.ends_at,:locals => {:klass => 'ends_at'}
+  = new_booking(booking.machine, day, :after => booking)
 -if @calendar.draw_booking?(booking, day)
+  -if booking.book_before_ok?
+    = render :partial => 'time', :object => booking.starts_at, :locals => {:klass => 'starts_at'}
   %div[booking]{:class => div_class(@calendar, booking)}
-    = link_to booking.user.user_name(:short), user_path(booking.user)
-    -if can?(:edit, booking) && booking.ends_at.to_date >= Date.today
-      = link_to image_tag('icons/png16/edit.png'), edit_booking_path(booking), :title => t('edit')
-      = link_to image_tag('icons/png16/destroy.png'), booking_path(booking), :confirm => t('confirm', :action => t('delete'), :name => "#{t('activerecord.models.booking')} # #{booking.id}"), :title => t('delete'), :method => :delete
-  = new_booking(booking.machine, day, :after => booking) if @calendar.draw_new_booking_after?(booking, day)
+    .booking_header
+      = link_to booking.user.user_name(:short), user_path(booking.user)
+      -if can?(:edit, booking) && booking.ends_at.to_date >= Date.today
+        = link_to image_tag('icons/png16/edit.png'), edit_booking_path(booking), :title => t('edit')
+        = link_to image_tag('icons/png16/destroy.png'), booking_path(booking), :confirm => t('confirm', :action => t('delete'), :name => "#{t('activerecord.models.booking')} # #{booking.id}"), :title => t('delete'), :method => :delete
+    = render :partial => 'booking_details', :locals => {:booking => booking}
+  -if @calendar.draw_new_booking_after?(booking, day)
+    = render :partial => 'time', :object => booking.ends_at, :locals => {:klass => 'ends_at'}
+    = new_booking(booking.machine, day, :after => booking)
 

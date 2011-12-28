@@ -1,0 +1,24 @@
+.details
+  %ul
+    %li 
+      %b
+        = booking.human_start + ' -'
+        = booking.human_end
+    -unless booking.sample.blank?
+      %li
+        %b= t('activerecord.attributes.booking.sample') + ':'
+        = booking.sample
+    -unless booking.temperature.blank?
+      %li
+        %b= t('.temp') + ':'
+        = booking.temperature.to_s + ' K'
+    -unless booking.comment.blank?
+      %li
+        %b= t('activerecord.attributes.booking.comment') + ':'
+        = booking.comment
+    - booking.options.group_by(&:option_group).each do |group, options|
+      %li
+        %b= group.name + ':'
+        = options.collect{|o| o.name}.join(', ')
+
+

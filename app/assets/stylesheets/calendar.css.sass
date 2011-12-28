@@ -1,23 +1,37 @@
 @import compass/css3
-$booking_border_width: 1px
-$booking_border: $booking_border_width solid blue
-$booking_padding: 2px
-$booking_margin: 4px
+@import compass/utilities
+@import compass/layout/stretching
+//configurable
 $radius: 4px
-$booking_color: #bbccee
+$font-size: 12px
+$line-height: $font-size / 3 * 4
+
+$base_color: #bbccee
+$darker-color: darken($base-color, 30%)
+$hover-color: lighten($base-color, 14%)
 
 $date_width: 90px
-$column_width: 165px
-$column_vertical_padding: 4px
-$machine_width: $column_width - 2 * $column_vertical_padding - 2 * $booking_border_width
+$time_width: 40px
+$time_right_offset: 4px
+
+$booking_color: $base_color
+$booking_border_width: 1px
+$booking_border: $booking_border_width solid $darker-color
+$booking_top_padding: 5px
+$booking_side_padding: 2px
+$booking_margin: 4px
+
 $table_border_width: 1px
 $table_thick_border: $table_border_width solid black
 $table_medium_border: $table_border_width solid gray
-$table_thin_border: $table_border_width solid #bebebe
+$table_thin_border: $table_border_width solid $darker-color
+$column_width: 165px
+$column_vertical_padding: 4px
 
-$font-size: 12px
-$line-height: $font-size / 3 * 4
-$dh: $line-height + 2 * ($booking_padding + $booking_border_width)
+//don't do nasty things here
+$dh: $line-height + 2 * ($booking_top_padding + $booking_border_width)
+$booking_padding: $booking_top_padding $booking_side_padding
+$machine_width: $column_width - 2 * $column_vertical_padding - 2 * $booking_border_width
 
 
 @mixin font_def
@@ -39,7 +53,7 @@ body.bp
       +border-radius(20px)
       &.outer
         border: $table_medium_border
-        border-color: #0066cc
+        border-color: $darker-color
       &.inner
         padding: 5px 0 0 0
         background-color: white
@@ -48,7 +62,7 @@ body.bp
       &.middle
         background-color: #e5ecf9
         border: $table_thin_border
-        border-color: #0066cc
+        border-color: $darker-color
         margin: 0 -1px
         
     &.up, &.down
@@ -85,9 +99,9 @@ body.bp
         white-space: nowrap
         width: $date_width
         font-weight: bold
-        padding-top: $booking_margin + $booking_padding + $booking_border_width
+        padding-top: $booking_margin + $booking_top_padding + $booking_border_width
       div
-        width: $machine_width - 2 * $booking_padding
+        width: $machine_width - 2 * $booking_side_padding
         +font_def
         padding: $booking_padding
         margin: $booking_margin 0
@@ -96,11 +110,27 @@ body.bp
           border: $booking_border
           background-color: $booking_color
           position: relative
+          overflow: hidden
+          &:hover
+            background-color: $darker-color
+            border-top-width: 2 * $booking_border_width
+            border-left-width: 4 * $booking_border_width
+            width: $machine_width - 2 * $booking_side_padding - 3 * $booking_border_width
+            overflow: visible
+            div.details
+              visibility: visible
+            div.booking_header
+              border-left-width: 4 * $booking_border_width
+              width: $machine_width - 2 *$booking_side_padding - 5 * $booking_border_width
+              background-color: $hover-color
+              margin-top: -($booking_top_padding )
+              padding-left: 3 * $booking_side_padding - 3 * $booking_border_width
+              padding-top: 1.5 * $booking_top_padding - 3 * $booking_border_width
         &.spacer
-          height: $dh - 2 * $booking_padding
+          height: $dh - 2 * $booking_top_padding
         &.free
-          padding-top: $booking_padding + $booking_border_width
-          padding-bottom: $booking_padding + $booking_border_width
+          padding-top: $booking_top_padding + $booking_border_width
+          padding-bottom: $booking_top_padding + $booking_border_width
           position: relative
         &.end
           +border-top-radius(0)
@@ -115,7 +145,56 @@ body.bp
           margin-top: $booking_margin
         &.from_midnight
           margin-top: $booking_margin
+        &.starts_at, &.ends_at
+          position: absolute
+          z-index: 10
+          padding: 0
+          margin: 0
+          margin-left: $column_width - 2 * ($booking_margin + $booking_border_width) - $time_width - $time_right_offset 
+        &.starts_at
+          margin-top: -14px
+        &.ends_at
+          margin-top: -12px
+        &.time
+          padding: 1px 0
+          background-color: white
+          border: $booking_border
+          border-color: #99aacc
+          text-align: center
+          width: $time_width
+          font-size: 0.9em
+          line-height: 1.0em
+        &.details
+          visibility: hidden
+          position: relative
+          margin-left: -$booking_side_padding - 4 * $booking_border_width
+          margin-top: -4px
+          border: $booking_border
+          border-width: 2 * $booking_border_width
+          border-left-width: 4 * $booking_border_width
+          border-bottom-width: 4 * $booking_border_width
+          width: $machine_width - 3 * $booking_side_padding - 2 * $booking_border_width
+          border-top: none
+          z-index: 100
+          background-color: $hover-color
+          +border-top-radius(0)
+          +border-bottom-radius(2 * $radius)
+          ul
+            margin: 0
+            li
+              font-size: 0.75em
+        &.booking_header
+          margin: 0
+          margin-left: -$booking_side_padding 
+          margin-top: -($booking_top_padding + 2 * $booking_border_width)
+          padding-left: 3 * $booking_side_padding
+          padding-top: 1.5 * $booking_top_padding
+          border: none
+          width: $machine_width - 2 *$booking_side_padding
+
         @for $i from 1 through 60
           @for $j from 0 through $i
             &.height-#{$i}-#{$j}
-              height: $dh * $i - 2 * ($booking_padding + $booking_border_width) + (2 * $i - $j - 2) * $booking_margin + ($i - $j - 1) * $table_border_width 
+              height: $dh * $i - 2 * ($booking_top_padding + $booking_border_width) + (2 * $i - $j - 2) * $booking_margin + ($i - $j - 1) * $table_border_width 
+              &:hover
+                height: $dh * $i - 2 * ($booking_top_padding + 1.5 * $booking_border_width) + (2 * $i - $j - 2) * $booking_margin + ($i - $j - 1) * $table_border_width 

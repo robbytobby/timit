@@ -83,6 +83,8 @@ de:
       next_period: '>>'
       prev_period: '<<'
       heading: "%{start} - %{end}"
+    booking_details:
+      temp: 'Temperatur'
     machines:
       select_machines: 'Anzuzeigende Maschinen'
 

@@ -103,7 +103,7 @@ class Booking < ActiveRecord::Base
     Booking.where(:machine_id => machine_id).
       where("ends_at <= :time", :time => starts_at).
       order(:starts_at).
-      first
+      last
   end
 
   def book_after_ok?
