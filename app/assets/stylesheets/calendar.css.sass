@@ -15,28 +15,57 @@ $time_width: 40px
 $time_right_offset: 4px
 
 $booking_color: $base_color
-$booking_border_width: 1px
+$booking_border_width: 1px 
 $booking_border: $booking_border_width solid $darker-color
 $booking_top_padding: 5px
 $booking_side_padding: 2px
 $booking_margin: 4px
 
 $table_border_width: 1px
-$table_thick_border: $table_border_width solid black
+$table_thick_border:  $table_border_width solid black
 $table_medium_border: $table_border_width solid gray
 $table_thin_border: $table_border_width solid $darker-color
 $column_width: 165px
 $column_vertical_padding: 4px
 
+$hover_factor_left_bottom: 4
+$hover_factor_right_top: 2
+
 //don't do nasty things here
 $dh: $line-height + 2 * ($booking_top_padding + $booking_border_width)
 $booking_padding: $booking_top_padding $booking_side_padding
 $machine_width: $column_width - 2 * $column_vertical_padding - 2 * $booking_border_width
+$inline_div_width: $machine_width - 2 * $booking_side_padding
+$inline_div_hover_width: $inline_div_width - ($hover_factor_left_bottom + $hover_factor_right_top - 2) * $booking_border_width
+$inline_div_margin_left: -$booking_side_padding
 
+@mixin hover_border_width
+  border-top-width: $hover_factor_right_top* $booking_border_width
+  border-right-width: $hover_factor_right_top * $booking_border_width
+  border-bottom-width: $hover_factor_left_bottom * $booking_border_width
+  border-left-width: $hover_factor_left_bottom * $booking_border_width
+  width: $machine_width - 2 * $booking_side_padding - ($hover_factor_left_bottom - 1)* $booking_border_width
 
 @mixin font_def
   font-size: $font-size
   line-height: $line-height
+@mixin rounded_bottom($factor: 1)
+  +border-top-radius(0)
+  +border-bottom-radius($factor * $radius)
+@mixin rounded_top($factor: 1)
+  +border-bottom-radius(0)
+  +border-top-radius($factor * $radius)
+@mixin inline_div
+  width: $inline_div_width
+  margin: 0
+  margin-left: $inline_div_margin_left
+  border: none
+@mixin inline_hover_div
+  background-color: $hover-color
+  border: $booking_border
+  +hover_border_width
+  margin-left: $inline_div_margin_left - $hover_factor_left_bottom * $booking_border_width
+  overflow: hidden
 
 body.bp
   h2.calendar
@@ -57,19 +86,19 @@ body.bp
       &.inner
         padding: 5px 0 0 0
         background-color: white
-        border-top: $table_thin_border
-        border-bottom: $table_thin_border
+        border: $table_thin_border
+        border-left: none
+        border-right: none
       &.middle
         background-color: #e5ecf9
         border: $table_thin_border
-        border-color: $darker-color
         margin: 0 -1px
         
     &.up, &.down
+      margin: 0
       padding: 0
       border: none
       text-align: center
-      margin: 0
   table.calendar
     margin-bottom: 0
     border-collapse: collapse
@@ -90,8 +119,8 @@ body.bp
       border-bottom: $table_thin_border
     td
       +font_def
-      border-left: $table_thin_border
-      border-bottom: $table_thin_border
+      border: $table_thin_border
+      border-right: none
       padding: 0 $column_vertical_padding
       vertical-align: top
       &.date
@@ -111,21 +140,30 @@ body.bp
           background-color: $booking_color
           position: relative
           overflow: hidden
+          width: $machine_width - 2 * $booking_side_padding
           &:hover
-            background-color: $darker-color
-            border-top-width: 2 * $booking_border_width
-            border-left-width: 4 * $booking_border_width
-            width: $machine_width - 2 * $booking_side_padding - 3 * $booking_border_width
+            +hover_border_width
+            border-bottom-width: $booking_border_width
             overflow: visible
+            background-color: $darker-color
+            width: ($machine_width - 2 * $booking_side_padding) - ($hover_factor_right_top + $hover_factor_left_bottom - 2) * $booking_border_width
             div.details
+              +inline_hover_div
+              +hover_border_width
+              +rounded_bottom(2)
+              border-top: none
               visibility: visible
+              width: $inline_div_hover_width
             div.booking_header
-              border-left-width: 4 * $booking_border_width
-              width: $machine_width - 2 *$booking_side_padding - 5 * $booking_border_width
-              background-color: $hover-color
-              margin-top: -($booking_top_padding )
-              padding-left: 3 * $booking_side_padding - 3 * $booking_border_width
-              padding-top: 1.5 * $booking_top_padding - 3 * $booking_border_width
+              +inline_hover_div
+              +hover_border_width
+              +rounded_top(1.5)
+              border-bottom: none
+              margin-top: - $booking_top_padding - $hover_factor_right_top * $booking_border_width
+              padding-top: $booking_top_padding - ($hover_factor_right_top - 1) * $booking_border_width
+              width: $inline_div_hover_width
+              a.first
+                margin-left:  2 * $booking_side_padding - ($hover_factor_left_bottom - 1) * $booking_border_width
         &.spacer
           height: $dh - 2 * $booking_top_padding
         &.free
@@ -165,36 +203,26 @@ body.bp
           font-size: 0.9em
           line-height: 1.0em
         &.details
+          +inline_div
           visibility: hidden
           position: relative
-          margin-left: -$booking_side_padding - 4 * $booking_border_width
           margin-top: -4px
-          border: $booking_border
-          border-width: 2 * $booking_border_width
-          border-left-width: 4 * $booking_border_width
-          border-bottom-width: 4 * $booking_border_width
-          width: $machine_width - 3 * $booking_side_padding - 2 * $booking_border_width
-          border-top: none
           z-index: 100
-          background-color: $hover-color
-          +border-top-radius(0)
-          +border-bottom-radius(2 * $radius)
+          +rounded_bottom(2)
+        &.booking_header
+          +inline_div
+          margin-top: - $booking_top_padding
+          a.first
+            margin-left: 2 * $booking_side_padding
+        &.details
           ul
             margin: 0
             li
               font-size: 0.75em
-        &.booking_header
-          margin: 0
-          margin-left: -$booking_side_padding 
-          margin-top: -($booking_top_padding + 2 * $booking_border_width)
-          padding-left: 3 * $booking_side_padding
-          padding-top: 1.5 * $booking_top_padding
-          border: none
-          width: $machine_width - 2 *$booking_side_padding
 
         @for $i from 1 through 60
           @for $j from 0 through $i
             &.height-#{$i}-#{$j}
               height: $dh * $i - 2 * ($booking_top_padding + $booking_border_width) + (2 * $i - $j - 2) * $booking_margin + ($i - $j - 1) * $table_border_width 
               &:hover
-                height: $dh * $i - 2 * ($booking_top_padding + 1.5 * $booking_border_width) + (2 * $i - $j - 2) * $booking_margin + ($i - $j - 1) * $table_border_width 
+                height: $dh * $i - 2 * ($booking_top_padding + (($hover_factor_right_top + 1) / 2) * $booking_border_width) + (2 * $i - $j - 2) * $booking_margin + ($i - $j - 1) * $table_border_width 
