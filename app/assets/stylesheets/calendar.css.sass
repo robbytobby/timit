@@ -44,8 +44,6 @@ $inline_div_margin_left: -$booking_side_padding
   border-right-width: $hover_factor_right_top * $booking_border_width
   border-bottom-width: $hover_factor_left_bottom * $booking_border_width
   border-left-width: $hover_factor_left_bottom * $booking_border_width
-  width: $machine_width - 2 * $booking_side_padding - ($hover_factor_left_bottom - 1)* $booking_border_width
-
 @mixin font_def
   font-size: $font-size
   line-height: $line-height
@@ -61,6 +59,7 @@ $inline_div_margin_left: -$booking_side_padding
   margin-left: $inline_div_margin_left
   border: none
 @mixin inline_hover_div
+  width: $inline_div_hover_width
   background-color: $hover-color
   border: $booking_border
   +hover_border_width
@@ -146,22 +145,18 @@ body.bp
             border-bottom-width: $booking_border_width
             overflow: visible
             background-color: $darker-color
-            width: ($machine_width - 2 * $booking_side_padding) - ($hover_factor_right_top + $hover_factor_left_bottom - 2) * $booking_border_width
+            width: $inline_div_hover_width
             div.details
               +inline_hover_div
-              +hover_border_width
               +rounded_bottom(2)
               border-top: none
               visibility: visible
-              width: $inline_div_hover_width
             div.booking_header
               +inline_hover_div
-              +hover_border_width
               +rounded_top(1.5)
               border-bottom: none
               margin-top: - $booking_top_padding - $hover_factor_right_top * $booking_border_width
               padding-top: $booking_top_padding - ($hover_factor_right_top - 1) * $booking_border_width
-              width: $inline_div_hover_width
               a.first
                 margin-left:  2 * $booking_side_padding - ($hover_factor_left_bottom - 1) * $booking_border_width
         &.spacer
