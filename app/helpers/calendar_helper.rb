@@ -32,8 +32,7 @@ module CalendarHelper
     "height-#{n}-#{m}"
   end
 
-  def new_booking(machine, day, opts = {})
-    if day >= Date.today
+  def new_booking_link(machine, day, opts = {})
       starts_at = opts[:after]  ? opts[:after].ends_at : day.to_datetime
       next_booking = Booking.next(machine, starts_at)
       ends_at = next_booking.starts_at if next_booking
@@ -41,10 +40,7 @@ module CalendarHelper
       max_duration ||= 1.week
       ends_at = starts_at + max_duration if ends_at.nil? || ends_at > starts_at + max_duration
 
-      content_tag(:div, link_to('+', new_booking_path(:booking => {:machine_id => machine, :starts_at => starts_at, :ends_at => ends_at, :user_id => current_user})), :class => "free")
-    else
-      content_tag(:div, ' ', :class => "free height-1-0")
-    end
+      link_to('+', new_booking_path(:booking => {:machine_id => machine, :starts_at => starts_at, :ends_at => ends_at, :user_id => current_user}))
   end
 
   def draw_spacer(calendar, machine_id, day)

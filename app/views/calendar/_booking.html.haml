@@ -1,6 +1,6 @@
 - if @calendar.draw_new_booking_after_mulitday?(booking, day)
   = render :partial => 'time', :object => booking.ends_at,:locals => {:klass => 'ends_at'}
-  = new_booking(booking.machine, day, :after => booking)
+  = render :partial => 'new_booking', :locals => {:machine => booking.machine, :day => day, :opts => {:after => booking}}
 -if @calendar.draw_booking?(booking, day)
   -if booking.book_before_ok?
     = render :partial => 'time', :object => booking.starts_at, :locals => {:klass => 'starts_at'}
@@ -13,5 +13,5 @@
     = render :partial => 'booking_details', :locals => {:booking => booking}
   -if @calendar.draw_new_booking_after?(booking, day)
     = render :partial => 'time', :object => booking.ends_at, :locals => {:klass => 'ends_at'}
-    = new_booking(booking.machine, day, :after => booking)
+    = render :partial => 'new_booking', :locals => {:machine => booking.machine, :day => day, :opts => {:after => booking}}
 

@@ -83,7 +83,7 @@ describe CalendarHelper do
     end
   end
 
-  describe "new_booking" do
+  describe "new_booking_link" do
     before :each do
       @machine = FactoryGirl.create(:machine)
       @machine2 = FactoryGirl.create(:machine, :max_duration => '3', :max_duration_unit => 'day')
@@ -96,60 +96,44 @@ describe CalendarHelper do
 
 
     it "creates a link to a new booking for a given date and machine" do
-      new_booking(@machine, Date.today).should have_selector(:div) do |div|
-        div.should have_selector(:a, :href => new_booking_path(:booking => {:machine_id => @machine,
+      new_booking_link(@machine, Date.today).should have_selector(:a, :href => new_booking_path(:booking => {:machine_id => @machine,
                                                                :starts_at => Date.today.to_datetime,
                                                                :ends_at => Date.today.to_datetime + 1.week,
                                                                :user_id => current_user.id}))
-      end
     end
 
     it "creates a link to a new booking for a given date and machine and respects the maximum duration" do
-      new_booking(@machine2, Date.today).should have_selector(:div) do |div|
-        div.should have_selector(:a, :href => new_booking_path(:booking => {:machine_id => @machine2,
+      new_booking_link(@machine2, Date.today).should have_selector(:a, :href => new_booking_path(:booking => {:machine_id => @machine2,
                                                                :starts_at => Date.today.to_datetime,
                                                                :ends_at => Date.today.to_datetime + @machine2.real_max_duration,
                                                                :user_id => current_user.id}))
-      end
     end
 
 
     it "creates a link to a new booking for a given date and machine with corect start if after is given" do
       @machine = FactoryGirl.create(:machine, :max_duration => 1, :max_duration_unit => 'week')
       @booking = FactoryGirl.create(:booking, :starts_at => '2011-12-01 00:00:00' , :ends_at => '2011-12-01 02:00:00')
-      new_booking(@machine, Date.today, :after => @booking).should have_selector(:div) do |div|
-        div.should have_selector(:a, :href => new_booking_path(:booking => {:machine_id => @machine,
+      new_booking_link(@machine, Date.today, :after => @booking).should have_selector(:a, :href => new_booking_path(:booking => {:machine_id => @machine,
                                                                :starts_at => '2011-12-01 02:00:00 UTC',
                                                                :ends_at => '2011-12-08 02:00:00 UTC',
                                                                :user_id => current_user.id}))
-      end
     end
 
     context "with a booking after it" do
       it "creates a link to a new booking for a given date and machine that ends before the next booking" do
         other_booking = FactoryGirl.create(:booking, :machine => @machine2, :starts_at => Date.today + 1.day + 3.hours, :ends_at => Date.today + 3.days)
-        new_booking(@machine2, Date.today).should have_selector(:div) do |div|
-          div.should have_selector(:a, :href => new_booking_path(:booking => {:machine_id => @machine2,
+        new_booking_link(@machine2, Date.today).should have_selector(:a, :href => new_booking_path(:booking => {:machine_id => @machine2,
                                                                  :starts_at => Date.today.to_datetime,
                                                                  :ends_at => other_booking.starts_at,
                                                                  :user_id => current_user.id}))
-        end
       end
 
       it "creates a link to a new booking for a given date and machine that ends before the next booking and has max duration" do
         other_booking = FactoryGirl.create(:booking, :machine => @machine2, :starts_at => Date.today + 7.days + 3.hours, :ends_at => Date.today + 8.days)
-        new_booking(@machine2, Date.today).should have_selector(:div) do |div|
-          div.should have_selector(:a, :href => new_booking_path(:booking => {:machine_id => @machine2,
+        new_booking_link(@machine2, Date.today).should have_selector(:a, :href => new_booking_path(:booking => {:machine_id => @machine2,
                                                                  :starts_at => Date.today.to_datetime,
                                                                  :ends_at => Date.today.to_datetime + @machine2.real_max_duration,
                                                                  :user_id => current_user.id}))
-        end
-      end
-    end
-
-    it "does not create a link if the date is in the past" do
-      new_booking(@machine2, Date.yesterday).should have_selector(:div, :class => "free height-1-0") do |div|
-        div.should_not have_selector(:a)
       end
     end
   end
