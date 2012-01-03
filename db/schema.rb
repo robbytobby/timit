@@ -11,14 +11,40 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111224163910) do
+ActiveRecord::Schema.define(:version => 20120103150258) do
 
   create_table "accessories", :force => true do |t|
     t.string   "name"
-    t.integer  "option_id"
     t.integer  "quantity",   :default => 1
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "option_groups", :force => true do |t|
+    t.string   "name"
+    t.boolean  "exclusive",  :default => false
+    t.boolean  "optional",   :default => true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "options", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "option_group_id"
+    t.text     "message"
+    t.index ["option_group_id"], :name => "index_options_on_option_group_id"
+    t.foreign_key ["option_group_id"], "option_groups", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "options_option_group_id_fkey"
+  end
+
+  create_table "accessories_options", :id => false, :force => true do |t|
+    t.integer "accessory_id"
+    t.integer "option_id"
+    t.index ["accessory_id"], :name => "index_accessories_options_on_accessory_id"
+    t.index ["option_id"], :name => "index_accessories_options_on_option_id"
+    t.foreign_key ["accessory_id"], "accessories", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "accessories_options_accessory_id_fkey"
+    t.foreign_key ["option_id"], "options", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "accessories_options_option_id_fkey"
   end
 
   create_table "machines", :force => true do |t|
@@ -69,24 +95,6 @@ ActiveRecord::Schema.define(:version => 20111224163910) do
     t.index ["user_id"], :name => "index_bookings_on_user_id"
     t.foreign_key ["user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "bookings_user_id_fkey"
     t.foreign_key ["machine_id"], "machines", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "bookings_machine_id_fkey"
-  end
-
-  create_table "option_groups", :force => true do |t|
-    t.string   "name"
-    t.boolean  "exclusive",  :default => false
-    t.boolean  "optional",   :default => true
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "options", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "option_group_id"
-    t.text     "message"
-    t.index ["option_group_id"], :name => "index_options_on_option_group_id"
-    t.foreign_key ["option_group_id"], "option_groups", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "options_option_group_id_fkey"
   end
 
   create_table "bookings_options", :id => false, :force => true do |t|

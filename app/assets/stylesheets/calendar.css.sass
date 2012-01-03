@@ -1,4 +1,5 @@
 @import compass/css3
+@import compass/css3/transform
 @import compass/utilities
 @import compass/layout/stretching
 //configurable
@@ -8,7 +9,7 @@ $line-height: $font-size / 3 * 4
 
 $base_color: #bbccee
 $darker-color: darken($base-color, 30%)
-$hover-color: lighten($base-color, 14%)
+$hover-color: lighten($base-color, 10%)
 
 $date_width: 90px
 $time_width: 40px
@@ -20,6 +21,7 @@ $booking_border: $booking_border_width solid $darker-color
 $booking_top_padding: 5px
 $booking_side_padding: 2px
 $booking_margin: 4px
+$new_link_width: 15px
 
 $table_border_width: 1px
 $table_thick_border:  $table_border_width solid black
@@ -40,7 +42,7 @@ $inline_div_hover_width: $inline_div_width - ($hover_factor_left_bottom + $hover
 $inline_div_margin_left: -$booking_side_padding
 
 @mixin hover_border_width
-  border-top-width: $hover_factor_right_top* $booking_border_width
+  border-top-width: $hover_factor_right_top * $booking_border_width
   border-right-width: $hover_factor_right_top * $booking_border_width
   border-bottom-width: $hover_factor_left_bottom * $booking_border_width
   border-left-width: $hover_factor_left_bottom * $booking_border_width
@@ -153,7 +155,7 @@ body.bp
               visibility: visible
             div.booking_header
               +inline_hover_div
-              +rounded_top(1.5)
+              +rounded_top(1)
               border-bottom: none
               margin-top: - $booking_top_padding - $hover_factor_right_top * $booking_border_width
               padding-top: $booking_top_padding - ($hover_factor_right_top - 1) * $booking_border_width
@@ -162,9 +164,39 @@ body.bp
         &.spacer
           height: $dh - 2 * $booking_top_padding
         &.free
-          padding-top: $booking_top_padding + $booking_border_width
-          padding-bottom: $booking_top_padding + $booking_border_width
           position: relative
+          padding:none
+          a
+            margin-bottom: $booking_top_padding + $booking_border_width
+            position: relative
+            width: $new_link_width
+            top: 0px
+        &.conflicts
+          +inline-block
+          width: $machine_width - 2 * $booking_side_padding - $new_link_width - $booking_border_width
+          margin: 0
+          padding: 0
+          margin-top: - $booking_top_padding
+          &.inner
+            overflow: hidden
+            white-space: nowrap
+            padding: $booking_top_padding $booking_side_padding
+            position: relative
+            div.conflict_details
+              margin: 0
+              margin-bottom: $booking_top_padding
+              padding: 0
+              padding-left: 10px
+              display: none
+              border: $booking_border
+              border-style: none
+            &:hover
+              z-index: 200
+              overflow: visible
+              background-color: $hover-color
+              border: $booking_border
+              div.conflict_details
+                display: block 
         &.end
           +border-top-radius(0)
         &.start
@@ -214,6 +246,10 @@ body.bp
             margin: 0
             li
               font-size: 0.75em
+        .not_available
+          color: darken(red, 25%)
+          &.whole_time
+            color: red
 
         @for $i from 1 through 60
           @for $j from 0 through $i

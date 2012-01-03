@@ -13,6 +13,7 @@
       = f.input :machine_id, :as => :hidden
     = f.input :comment, :input_html => { :class => 'autogrow', :rows => 5, :cols => 33}
   = f.inputs do
+    = @booking.not_available_options
     - if @booking.machine.option_groups.any?
       %h3= t('.options')
       - @booking.machine.options.sort_by{|o| o.option_group.name}.group_by(&:option_group).each do |group, options|
@@ -22,6 +23,7 @@
                               :required => !group.optional, 
                               :label => group.name, 
                               :include_blank => group.optional ? t('none') : t('please_choose'),
+                              :disabled => @booking.not_available_options,
                               :input_html => {:multiple => !group.exclusive} 
           %p.inline-errors
             - @booking.group_errors(group).each do |e|

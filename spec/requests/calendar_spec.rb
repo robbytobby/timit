@@ -84,6 +84,7 @@ describe "Calendar" do
     end
     
     it "renders bookings and new links correctly" do
+      pending
       FactoryGirl.create(:machine, :id => 1)
       FactoryGirl.create(:machine, :id => 2)
       FactoryGirl.create(:machine, :id => 3)

@@ -169,6 +169,12 @@ describe Calendar do
         @calendar.draw_new_booking_after_mulitday?(@booking, Date.today).should be_false
       end
 
+      it "does not have a new booking link if it is not multiday and is not drawn " do
+        @booking.stub(:multiday? => false, :all_day? => false, :endu_at? => true, :book_after_ok? => true)
+        @calendar.stub(:draw_booking? => false)
+        @calendar.draw_new_booking_after_mulitday?(@booking, Date.today).should be_false
+      end
+
       it "has no new booking link if it is not multiday" do
         @booking.stub(:multiday? => false, :all_day? => false, :ends_at? => true, :book_after_ok? => true)
         @calendar.draw_new_booking_after_mulitday?(@booking, Date.today).should be_false
@@ -272,6 +278,47 @@ describe Calendar do
       @booking.stub(:ends_at? => false, :book_after_ok? => true)
       @calendar = Calendar.new
       @calendar.draw_new_booking_after?(@booking, Date.today).should_not be_true
+    end
+  end
+
+  describe "not_available_options" do
+    before :each do
+      @user = FactoryGirl.create(:approved_user)
+      @acc1 = FactoryGirl.create(:accessory, :quantity => 1)
+      @acc2 = FactoryGirl.create(:accessory, :quantity => 2)
+      @opt_group = FactoryGirl.create(:option_group, :exclusive => false, :optional => true)
+      @machine1, @machine2, @machine3 = FactoryGirl.create_list(:machine, 3)
+      @opt0 = FactoryGirl.create(:option, :option_group => @opt_group, :needed => [], :machines => [@machine1, @machine2, @machine3])
+      @opt1 = FactoryGirl.create(:option, :option_group => @opt_group, :needed => [@acc1], :machines => [@machine1, @machine2, @machine3])
+      @opt2 = FactoryGirl.create(:option, :option_group => @opt_group, :needed => [@acc2, @acc1], :machines => [@machine1, @machine2, @machine3])
+      @opt3 = FactoryGirl.create(:option, :option_group => @opt_group, :needed => [@acc2], :machines => [@machine1, @machine2, @machine3])
+      @now = DateTime.now.to_time_in_current_zone
+      @then = @now + 1.day
+      @calendar = Calendar.new(@now - 1.day)
+    end
+
+    it "example 1" do
+      @calendar.not_available_options(@machine1, @now.to_date).should be_empty
+      @calendar.not_available_options(@machine2, @now.to_date).should be_empty
+      @calendar.not_available_options(@machine3, @now.to_date).should be_empty
+    end
+
+    it "example 2" do
+      @booking = FactoryGirl.create(:booking, :user => @user, :machine => @machine2, :options => [@opt1, @opt2], :starts_at => @now, :ends_at => @then)
+      @calendar.not_available_options(@machine1, @now.to_date).should == {@opt1.name => :whole_time, @opt2.name => :whole_time}
+    end
+
+    it "example 3" do
+      @booking = FactoryGirl.create(:booking, :user => @user, :machine => @machine2, :options => [@opt2], :starts_at => @now + 2.hours, :ends_at => @then - 4.hours)
+      @calendar.not_available_options(@machine1, @now.to_date).should == {@opt1.name => [(@now+2.hours)...(@then-4.hours)], @opt2.name => [(@now+2.hours)...(@then-4.hours)]}
+    end
+
+    it "example 4" do
+      @booking = FactoryGirl.create(:booking, :user => @user, :machine => @machine2, :options => [@opt2], :starts_at => @now + 2.hours, :ends_at => @then - 4.hours)
+      @booking = FactoryGirl.create(:booking, :user => @user, :machine => @machine3, :options => [@opt3], :starts_at => @now + 3.hours, :ends_at => @then - 2.hours)
+      @calendar.not_available_options(@machine1, @now.to_date).should == {@opt1.name => [(@now+2.hours)...(@then-4.hours)], 
+                                                                          @opt2.name => [(@now+2.hours)...(@then-4.hours), (@now +3.hours)...(@then-4.hours)],
+                                                                          @opt3.name => [(@now+3.hours)...(@then-4.hours)]}
     end
   end
 end

@@ -1,6 +1,15 @@
--if day > Date.today
-  #div.free
+-if day >= Date.today
+  %div.free{:class => 'height-1-0'}
     = new_booking_link(machine, day, opts)
+    -if (conflicts = @calendar.not_available_options(machine, day, opts)).any?
+      %div.conflicts{:class => 'height-1-0'}
+        %div.conflicts.inner
+          - conflicts.each_pair do |opt, value|
+            %span.not_available{:class => value == :whole_time ? 'whole_time' : '' }
+              = opt
+              %div.conflict_details
+                - if value != :whole_time
+                  = value.map{|v| l(v.begin, :format => :time) + ' - ' + l(v.end, :format => :time)}.join('</br>').html_safe 
 -else
-  #div{:class => "free height-1-0"}
+  %div{:class => "free height-1-0"}
 

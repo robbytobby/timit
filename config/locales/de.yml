@@ -87,7 +87,8 @@ de:
       temp: 'Temperatur'
     machines:
       select_machines: 'Anzuzeigende Maschinen'
-
+    new_booking:
+      all_day: 'ganzer Tag'
   machines:
     index:
       new: 'neues Gerät'

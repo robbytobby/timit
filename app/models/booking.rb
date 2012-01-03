@@ -152,6 +152,27 @@ class Booking < ActiveRecord::Base
     overlap
   end
 
+  def not_available_options
+    machine.options.map{|o| o.id unless o.available?(self, time_range)}.compact
+  end
+
+  def same_time_bookings
+    rel = Booking.during(self)
+    rel = rel.where("id != :id", :id => id) unless self.new_record?
+    rel
+  end
+
+  def self.during(test)
+    start, stop = test.starts_at, test.ends_at if test.is_a?(Booking)
+    start, stop = test.begin, test.end if test.is_a?(Range)
+    rel = Booking.where( "(starts_at <= :start and ends_at > :start) OR 
+                         (starts_at < :end and ends_at > :end) OR 
+                         (starts_at >= :start and ends_at <= :end)",
+                         :start => start, :end => stop)
+    rel = rel.order(:starts_at)
+    rel
+  end
+
   private
   def end_after_start
     errors.add(:ends_at, :start_after_end) unless ends_at && starts_at && ends_at > starts_at
@@ -165,12 +186,14 @@ class Booking < ActiveRecord::Base
   end
 
   def needed_accessories_available
-    needed.each do |acc|
-      conflicts = same_time_bookings.collect{|b| b if b.needed.include?(acc)}.compact
-      overlaps = multi_overlaps(conflicts)
-      overlaps[acc.quantity].each do |conflict|
-        errors.add(:base, :accessory_conflict, :name => acc.option.name, :from => I18n.l(conflict.begin), :to => I18n.l(conflict.end) )
-      end if overlaps[acc.quantity]
+    options.each do |opt|
+      opt.needed.each do |acc|
+        conflicts = same_time_bookings.collect{|b| b if b.needed.include?(acc)}.compact
+        overlaps = multi_overlaps(conflicts)
+        overlaps[acc.quantity].each do |conflict|
+          errors.add(:base, :accessory_conflict, :name => opt.name, :from => I18n.l(conflict.begin), :to => I18n.l(conflict.end) )
+        end if overlaps[acc.quantity]
+      end
     end
   end
 
@@ -216,16 +239,6 @@ class Booking < ActiveRecord::Base
       result[key+1] = result[key+1].compact.uniq
     end
     multi_overlaps(others, result)
-  end
-
-  def same_time_bookings
-    rel = Booking.where( "(starts_at <= :start and ends_at > :start) OR 
-                         (starts_at < :end and ends_at > :end) OR 
-                         (starts_at >= :start and ends_at <= :end)",
-                         :start => starts_at, :end => ends_at)
-    rel = rel.where("id != :id", :id => id) unless self.new_record?
-    rel = rel.order(:starts_at)
-    rel
   end
 
 end

@@ -3,7 +3,6 @@
 FactoryGirl.define do
   factory :option do
       sequence(:name){|n| "Option-#{n}"}
-      association :machine
       association :option_group
     end
 end
