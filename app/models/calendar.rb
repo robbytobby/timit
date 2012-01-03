@@ -63,7 +63,7 @@ class Calendar
   def not_available_options(machine, day, opts = {})
     not_available = {}
     starts = ( opts[:after].try(:ends_at) || day.beginning_of_day )
-    ends ||= ( opts[:before].try(:starts_at) || Booking.next(machine.id, starts, day.end_of_day).try(:starts_at) || day.end_of_day )
+    ends = ( opts[:before].try(:starts_at) || Booking.next(machine.id, starts, day.end_of_day).try(:starts_at) || day.end_of_day )
 
     machine.options.each do |opt|
       conflicts = opt.available?(starts...ends, return_conflicts = true)
