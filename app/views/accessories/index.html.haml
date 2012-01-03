@@ -5,7 +5,6 @@
     %th
       = link_to image_tag('icons/png16/add.png'), new_accessory_path if can? :create, Accessory
       = t 'activerecord.attributes.accessory.name'
-    %th= t 'activerecord.attributes.accessory.option'
     %th= t 'activerecord.attributes.accessory.quantity'
     -if can? :manage, Accessory
       %th
@@ -13,7 +12,6 @@
   - @accessories.each do |accessory|
     %tr{:class => cycle('odd', 'even')}
       %td= link_to accessory.name, accessory
-      %td= accessory.option_id
       %td= accessory.quantity
       -if can? :manage, Accessory
         %td

@@ -10,26 +10,20 @@ class Option < ActiveRecord::Base
     read_attribute(:name).try(:html_safe)
   end
 
-  def available?(during)
-    return true if needed.empty?
+  def available?(obj, return_conflicts = false)
+    raise "Either a booking or a time-range has to be given to Option#available? " unless obj.is_a?(Booking) || obj.is_a?(Range)
+    conflicts = []
 
-    if during.is_a?(Booking)
-      conflicts = during.same_time_bookings
-    elsif during.is_a?(Range)
-      conflicts = Booking.during(during)
-    else
-      raise "Either a booking or a time-range has to be given to Option#available? "
-    end
-    
+    bookings = obj.is_a?(Booking) ? obj.same_time_bookings : Booking.during(obj)
     needed.each do |n| 
-      testset = conflicts.collect{|b| b if b.needed.include?(n)}.compact
-      #TODO overlaps für Ranges als basis
-      booking = during.is_a?(Booking) ? during : Booking.new(:starts_at => during.begin, :ends_at => during.end)
-      #TODO in overlap statt nil lehren hash zurückgeben
-      overlaps = booking.overlap(testset)
-      testset = overlaps[n.quantity] if overlaps
-      return false if testset
-    end if conflicts.any?
-    return true
+      overlaps = obj.overlap(bookings.collect{|b| b if b.needed.include?(n)}.compact)
+      if overlaps && overlaps[n.quantity]
+        return false unless return_conflicts
+        conflicts << overlaps[n.quantity]
+      end
+    end if bookings.any?
+
+    return true unless return_conflicts
+    conflicts.flatten.uniq
   end
 end

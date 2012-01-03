@@ -136,24 +136,11 @@ class Booking < ActiveRecord::Base
   end
 
   def overlap(other)
-    return nil if other.nil?
-    return multi_overlaps(other) if other.is_a?(Array)
-
-    # Accept range of times or a booking
-    range = other.is_a?(Booking) ? other.time_range : other
-    raise "Booking#overlap Error: 'range' is not a Range, but #{range.class}" unless range.is_a?(Range)
-
-    overlap = nil
-    if time_range.cover?(range.begin) 
-      overlap = range.begin...(time_range.cover?(range.end) ? range.end : ends_at)
-    elsif range.cover?(starts_at)
-      overlap = starts_at...(range.cover?(ends_at) ? ends_at : range.end) 
-    end
-    overlap
+    time_range.overlap(other)
   end
 
   def not_available_options
-    machine.options.map{|o| o.id unless o.available?(self, time_range)}.compact
+    machine.options.map{|o| o.id unless o.available?(self)}.compact
   end
 
   def same_time_bookings
@@ -162,13 +149,10 @@ class Booking < ActiveRecord::Base
     rel
   end
 
-  def self.during(test)
-    start, stop = test.starts_at, test.ends_at if test.is_a?(Booking)
-    start, stop = test.begin, test.end if test.is_a?(Range)
-    rel = Booking.where( "(starts_at <= :start and ends_at > :start) OR 
-                         (starts_at < :end and ends_at > :end) OR 
-                         (starts_at >= :start and ends_at <= :end)",
-                         :start => start, :end => stop)
+  def self.during(obj)
+    start, stop = obj.starts_at, obj.ends_at if obj.is_a?(Booking)
+    start, stop = obj.begin, obj.end if obj.is_a?(Range)
+    rel = Booking.where( "(starts_at <= :start and ends_at > :start) OR (starts_at < :end and ends_at > :end) OR (starts_at >= :start and ends_at <= :end)", :start => start, :end => stop)
     rel = rel.order(:starts_at)
     rel
   end
@@ -187,12 +171,8 @@ class Booking < ActiveRecord::Base
 
   def needed_accessories_available
     options.each do |opt|
-      opt.needed.each do |acc|
-        conflicts = same_time_bookings.collect{|b| b if b.needed.include?(acc)}.compact
-        overlaps = multi_overlaps(conflicts)
-        overlaps[acc.quantity].each do |conflict|
-          errors.add(:base, :accessory_conflict, :name => opt.name, :from => I18n.l(conflict.begin), :to => I18n.l(conflict.end) )
-        end if overlaps[acc.quantity]
+      opt.available?(self, return_conflicts = true).each do |conflict|
+        errors.add(:base, :accessory_conflict, :name => opt.name, :from => I18n.l(conflict.begin), :to => I18n.l(conflict.end) )
       end
     end
   end
@@ -223,22 +203,6 @@ class Booking < ActiveRecord::Base
       self.starts_at = starts_at.beginning_of_day
       self.ends_at = ends_at.end_of_day
     end
-  end
-
-  def multi_overlaps(others, overlaps = {0 => [time_range]})
-    overlaps.delete_if{|k,v| v.blank?}
-    return overlaps if others.empty?
-
-    # overlaps.dup does not work here, because the values stay the same objects! There's nothing like ".deep_dup"
-    result = {}
-    overlaps.each_pair{|k,v| result[k] = v.dup}
-
-    other = others.shift
-    overlaps.each_pair do |key, value|
-      value.each{ |range| (result[key+1] ||= []) << other.overlap(range) unless range.nil? }
-      result[key+1] = result[key+1].compact.uniq
-    end
-    multi_overlaps(others, result)
   end
 
 end

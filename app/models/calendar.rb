@@ -64,19 +64,13 @@ class Calendar
     not_available = {}
     starts = opts[:after] ? opts[:after].ends_at : day.beginning_of_day
     ends = opts[:before] ? opts[:before].starts_at : day.end_of_day
-    b = Booking.new(:machine => machine, :starts_at => starts, :ends_at => ends)
-    machine.options.map{|o| o if o.needed}.compact.each do |opt|
-      opt.needed.each do |acc|
-        conflicts = b.send(:same_time_bookings).collect{|b| b if b.needed.include?(acc)}.compact
-        overlaps = b.overlap(conflicts)
-        overlaps[acc.quantity].each do |conflict|
-          not_available[opt.name] ||= []
-          if conflict.cover?(starts) && conflict.cover?(ends - 1.minute)
-            not_available[opt.name] = :whole_time
-          else
-            not_available[opt.name] << (conflict.begin...conflict.end)
-          end
-        end if overlaps[acc.quantity]
+
+    machine.options.each do |opt|
+      conflicts = opt.available?(starts...ends, return_conflicts = true)
+      if conflicts.any?{|c| c.cover?(starts) && c.cover?(ends - 1.minute)}
+        not_available[opt.name] = :whole_time
+      else
+        not_available[opt.name] = conflicts if conflicts.any?
       end
     end
     not_available
