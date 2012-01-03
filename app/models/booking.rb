@@ -88,11 +88,10 @@ class Booking < ActiveRecord::Base
     starts_at - booking.ends_at >= 1.hour
   end
 
-  def self.next(machine_id, after)
-    Booking.where(:machine_id => machine_id).
-      where("starts_at >= :time", :time => after).
-      order(:starts_at).
-      first
+  def self.next(machine_id, after, before = nil)
+    rel = Booking.where(:machine_id => machine_id).where("starts_at >= :time", :time => after)
+    rel = rel.where("starts_at < :time2", :time2 => before) if before
+    rel.order(:starts_at).first
   end
 
   def next
