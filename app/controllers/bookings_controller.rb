@@ -1,6 +1,7 @@
 class BookingsController < ApplicationController
   load_and_authorize_resource
   before_filter :store_location, only: [:new, :edit, :destroy]
+  before_filter :maximum_exceeded, only: [:new, :create]
   after_filter :show_messages, only: [:create, :update]
 
   def index
@@ -19,7 +20,7 @@ class BookingsController < ApplicationController
   end
 
   def new
-    redirect_to(calendar_path, notice: t('controller.bookings.machine_needed')) and return unless @booking.machine
+    redirect_back_or_default(calendar_path, notice: t('controller.bookings.machine_needed')) and return unless @booking.machine
     respond_to do |format|
       format.html 
       format.json { render json: @booking }
@@ -67,5 +68,12 @@ class BookingsController < ApplicationController
       flash[:notice] ||= ''
       flash[:notice] += "\n" + option.message unless option.message.blank?
     end if @booking.valid?
+  end
+
+  def maximum_exceeded
+    return true if can? :exceed_maximum, Booking
+      #if future_booking(user, machine) > machine.max_future_bookings
+      #  throw :halt, :notice => 'Maximum an zukünftigen Buchungen ist erreicht'
+      #end
   end
 end

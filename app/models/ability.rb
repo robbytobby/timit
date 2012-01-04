@@ -10,10 +10,13 @@ class Ability
       can :manage, :all
       cannot :change_role, User, :id => user.id
       cannot :change_approved, User, :id => user.id
+      can :exceed_maximum, Booking
     elsif user.role?(:teaching)
       can :manage, Booking
+      can :exceed_maximum, Booking
     elsif user.role?(:unprivileged)
       can [:create, :update, :destroy], Booking, :user_id => user.id
+      cannot :exceed_maximum, Booking
     end
 
 

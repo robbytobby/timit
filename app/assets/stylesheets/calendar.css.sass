@@ -84,6 +84,7 @@ body.bp
       &.outer
         border: $table_medium_border
         border-color: $darker-color
+        margin-bottom: 250px
       &.inner
         padding: 5px 0 0 0
         background-color: white
@@ -176,7 +177,7 @@ body.bp
           width: $machine_width - 2 * $booking_side_padding - $new_link_width - $booking_border_width
           margin: 0
           padding: 0
-          margin-top: - $booking_top_padding
+          margin-top: - $booking_top_padding + $booking_border_width
           &.inner
             overflow: hidden
             white-space: nowrap
@@ -184,7 +185,6 @@ body.bp
             position: relative
             div.conflict_details
               margin: 0
-              margin-bottom: $booking_top_padding
               padding: 0
               padding-left: 10px
               display: none
@@ -195,6 +195,7 @@ body.bp
               overflow: visible
               background-color: $hover-color
               border: $booking_border
+              padding-top: $booking_top_padding - $booking_border_width
               div.conflict_details
                 display: block 
         &.end
@@ -219,7 +220,7 @@ body.bp
         &.starts_at
           margin-top: -14px
         &.ends_at
-          margin-top: -12px
+          margin-top: -13px
         &.time
           padding: 1px 0
           background-color: white

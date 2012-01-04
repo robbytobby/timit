@@ -2,7 +2,7 @@
   = render :partial => 'time', :object => booking.ends_at,:locals => {:klass => 'ends_at'}
   = render :partial => 'new_booking', :locals => {:machine => booking.machine, :day => day, :opts => {:after => booking}}
 -if @calendar.draw_booking?(booking, day)
-  -if booking.book_before_ok?
+  -if booking.book_before_ok? && booking.starts_at?(day)
     = render :partial => 'time', :object => booking.starts_at, :locals => {:klass => 'starts_at'}
   %div[booking]{:class => div_class(@calendar, booking)}
     .booking_header
