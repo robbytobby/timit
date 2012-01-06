@@ -25,6 +25,11 @@ de:
         description: 'Beschreibung'
         max_duration: 'Maximale Buchungsdauer'
         options: 'Optionen'
+        needs_temperature: 'Angabe der Temperatur zwingend'
+        needs_sample: 'Angabe der Probe zwingend'
+        max_future_bookings: 'Maximum zukünftiger Buchungen'
+        min_booking_time: 'Minimale Buchungsdauer'
+        min_booking_time_unit: 'Einheit der minimalen Buchungsdauer'
       user:
         email: 'E-Mail'
         password: 'Passwort'

@@ -241,8 +241,6 @@ describe Booking do
     end
   end
 
-  it "has a maximum of bookings per day"
-
   describe "booking options" do
     before :each do
       @machine = FactoryGirl.create(:machine)

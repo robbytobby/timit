@@ -15,7 +15,7 @@ describe UserMailer do
     end
 
     it "has the correct sender" do
-      @mail.from.should contain(@admin.email)
+      @mail.from.should contain(Devise.mailer_sender)
     end
 
     it "has the address of the user" do
@@ -37,9 +37,6 @@ describe UserMailer do
     it "has a welcome body with link to set the password" do
       @mail.parts.each do |body|
         body.should have_content(@user.user_name)
-        body.should have_content(edit_password_url(@user))
-        body.should have_content(@user.reset_password_token)
-        body.should contain(new_user_session_url)
       end
     end
   end
@@ -52,7 +49,7 @@ describe UserMailer do
     end
     
     it "has the correct sender" do
-      @mail.from.should contain(@admin.email)
+      @mail.from.should contain(Devise.mailer_sender)
     end
 
     it "has the address of the user" do
@@ -87,7 +84,7 @@ describe UserMailer do
     end
     
     it "has the correct sender" do
-      @mail.from.should contain(@admin.email)
+      @mail.from.should contain(Devise.mailer_sender)
     end
 
     it "has the address of the user" do

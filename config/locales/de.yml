@@ -96,6 +96,14 @@ de:
       description: 'Beschreibung'
     edit:
       heading: 'Gerät bearbeiten'
+    show:
+      limits: 'Beschränkungen'
+      temperature_needed: 'Temperatur muß angegeben werden'
+      sample_needed: 'Probe muß angegeben werden'
+    form:
+      leave_max_time_empty: 'Soll die maximale Buchungsdauer unbeschränkt sein, einfach das Feld für die Anzahl leer lassen'
+      leave_min_time_empty: 'Soll die minimale Buchungsdauer unbeschränkt sein, einfach das Feld für die Anzahl leer lassen'
+      leave_max_empty: 'Um kein Maximum zu definieren, einfach dieses Feld frei lassen'
   
   option_groups:
     new:
@@ -136,22 +144,30 @@ de:
     welcome_email:
       subject: "Dein neuer Account für TiMiT"
       hi: "Hallo %{name}"
-      p1: "ich habe für dich einen Account für 'TiMiT', unserem Online-Kalender für die Meßgeräte angelegt. Dort wird die Meßzeit für diverse Maschinen verwaltet. \n Damit du den Account auch nutzen kannst mußt du zunächst unter\n %{link}\n ein Passwort setzen."
-      p2: "Danach kannst du dich mit diesem Passwort jederzeit unter %{link} einloggen um deine Buchungen zu managen."
+      p1_html: "ich habe für dich einen Account für 'TiMiT', unserem Online-Kalender für die Meßgeräte angelegt. Dort wird die Meßzeit für diverse Maschinen verwaltet. \n Damit du den Account auch nutzen kannst mußt du zunächst unter\n %{link}\n ein Passwort setzen."
+      p2_html: "Danach kannst du dich mit diesem Passwort jederzeit unter %{link} einloggen um deine Buchungen zu managen."
     approval_change_email:
       subject: "Dein Account für TiMiT"
       hi: "Hallo %{name}"
       p1:
-        activated: "ich habe gerade deinen Account freigeschaltet. Du kannst dich ab sofort auf %{link} einloggen."
+        activated_html: "ich habe gerade deinen Account freigeschaltet. Du kannst dich ab sofort auf %{link} einloggen."
         deactivated: "ich habe soeben deinen Account für Timit deaktiviert." 
     destroy_email:
       hi: "Hallo %{name}"
       p1: "Dein Account für TiMiT wurde gelöscht"
     sign_up_notification:
-        hi: "Hallo"
-        subject: "Ein Zugang zu TiMit wurde beantragt"
-        new_signup: "%{name} hat einen Account für TiMiT wurde beantragt und wartet nun auf die Freischaltung"
-        to_activate: "Um diesen Account zu aktivieren, kannst du folgenden Link nutzen:"
-        activate: "%{name} aktivieren"
+      hi: "Hallo"
+      subject: "Ein Zugang zu TiMit wurde beantragt"
+      new_signup: "%{name} hat einen Account für TiMiT wurde beantragt und wartet nun auf die Freischaltung"
+      to_activate: "Um diesen Account zu aktivieren, kannst du folgenden Link nutzen:"
+      activate: "%{name} aktivieren"
+    booking_updated_notification:
+      hi: "Hallo"
+      booking_changed: "Deine Buchung für %{machine} wurde von %{by} geändert"
+      from: "von:"
+      to: "zu:"
+    booking_deleted_notification:
+      hi: "Hallo"
+      booking_deleted: "Deine Buchung für %{machine} von %{from} bis %{to} wurde von %{by} gelöscht"
       
 

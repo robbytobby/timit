@@ -71,21 +71,21 @@ class Booking < ActiveRecord::Base
   end
 
   def till_end_of_day?
-    ends_at.end_of_day - ends_at < 1.hour
+    ends_at.end_of_day - ends_at < machine.min_duration 
   end
 
   def from_beginning_of_day?
-    starts_at - starts_at.beginning_of_day < 1.hour
+    starts_at - starts_at.beginning_of_day < machine.min_duration 
   end
 
   def leaves_time_till?(booking)
     return true if booking.nil?
-    booking.starts_at - ends_at >= 1.hour
+    booking.starts_at - ends_at >= machine.min_duration
   end
 
   def starts_long_after?(booking)
     return true if booking.nil?
-    starts_at - booking.ends_at >= 1.hour
+    starts_at - booking.ends_at >= machine.min_duration
   end
 
   def self.next(machine_id, after, before = nil)
@@ -153,6 +153,11 @@ class Booking < ActiveRecord::Base
     rel = Booking.where( "(starts_at <= :start and ends_at > :start) OR (starts_at < :end and ends_at > :end) OR (starts_at >= :start and ends_at <= :end)", :start => start, :end => stop)
     rel = rel.order(:starts_at)
     rel
+  end
+
+  #TODO: SPEC
+  def self.in_future(machine, user)
+    Booking.where(:user_id => user.id).where(:machine_id => machine.id).where("starts_at >= :now", :now => DateTime.now) 
   end
 
   private

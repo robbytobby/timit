@@ -1,0 +1,10 @@
+%p
+  = t '.hi'
+%p
+  = t '.booking_changed', :machine => @booking.machine.name, :by => @current_user.name
+%p
+  = t '.from'
+  = render :partial => 'calendar/booking_details', :locals => {:booking => @old_booking}
+%p
+  = t '.to'
+  = render :partial => 'calendar/booking_details', :locals => {:booking => @booking}

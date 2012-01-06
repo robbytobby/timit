@@ -2,18 +2,24 @@
   %tr
     %th
       = link_to image_tag('icons/png16/add.png'), new_machine_path if can? :create, Machine
-      = t('.name')
-    %th= t('.description')
+      = t('activerecord.attributes.machine.name')
+    %th= t('activerecord.attributes.machine.description')
     %th= t('activerecord.attributes.machine.max_duration')
+    %th= t('activerecord.attributes.machine.min_booking_time')
+    %th= t('activerecord.attributes.machine.max_future_bookings')
     %th
   - @machines.each do |machine|
     %tr{:class => cycle('odd', 'even')}
       %td.nowrap
         = link_to machine.name, machine, :title => t('show')
       %td
-        = machine.description
+        = machine.description.try(:truncate, 100)
       %td.nowrap
         = machine.human_max_duration
+      %td.nowrap
+        = machine.human_min_duration
+      %td
+        = machine.max_future_bookings
       %td.nowrap
         -if can? :manage, Machine
           = link_to image_tag('icons/png16/destroy.png', :size => '16x16') ,

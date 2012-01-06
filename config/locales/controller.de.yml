@@ -21,4 +21,6 @@ de:
     bookings:
       success: 'Buchung erfolgreich %{action}.'
       machine_needed: 'Eine Maschine muß ausgewählt sein'
+      max_bookings_reached: 'Deine Maximale Anzahl zukünftiger Buchungen für diese Maschine ist erreicht'
          
+

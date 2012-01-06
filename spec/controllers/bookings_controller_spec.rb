@@ -3,9 +3,6 @@ require 'spec_helper'
 describe BookingsController do
   include Devise::TestHelpers
 
-  # This should return the minimal set of attributes required to create a valid
-  # Booking. As you add validations to Booking, be sure to
-  # update the return value of this method accordingly.
   def valid_attributes
     FactoryGirl.build(:booking).attributes.symbolize_keys
   end
@@ -17,23 +14,21 @@ describe BookingsController do
 
   context "as an admin user" do
     before :each do
-      sign_in FactoryGirl.create :admin_user
+      sign_in (@current_user = FactoryGirl.create(:admin_user))
       @booking = FactoryGirl.create(:booking)
     end
 
     describe "GET index" do
       it "assigns all bookings as @bookings" do
-        booking = @booking
         get :index
-        assigns(:bookings).should eq([booking])
+        assigns(:bookings).should eq([@booking])
       end
     end
 
     describe "GET show" do
       it "assigns the requested booking as @booking" do
-        booking = @booking
-        get :show, :id => booking.id.to_s
-        assigns(:booking).should eq(booking)
+        get :show, :id => @booking.id.to_s
+        assigns(:booking).should eq(@booking)
       end
     end
 
@@ -55,7 +50,7 @@ describe BookingsController do
         response.should render_template :new
       end
 
-      it "redirect_to the calendar if no machine si selected" do
+      it "redirect_to the calendar if no machine is selected" do
         get :new
         response.should redirect_to calendar_path
       end
@@ -63,15 +58,13 @@ describe BookingsController do
 
     describe "GET edit" do
       it "assigns the requested booking as @booking" do
-        booking = @booking
-        get :edit, :id => booking.id.to_s
-        assigns(:booking).should eq(booking)
+        get :edit, :id => @booking.id.to_s
+        assigns(:booking).should eq(@booking)
       end
 
       it "saves referrer in the session" do
         @request.env['HTTP_REFERER'] = 'http://www.test'
-        booking = @booking
-        get :edit, :id => booking.id.to_s
+        get :edit, :id => @booking.id.to_s
         session[:return_to].should == 'http://www.test'
       end
     end
@@ -104,14 +97,12 @@ describe BookingsController do
 
       describe "with invalid params" do
         it "assigns a newly created but unsaved booking as @booking" do
-          # Trigger the behavior that occurs when invalid params are submitted
           Booking.any_instance.stub(:save).and_return(false)
           post :create, :booking => {}
           assigns(:booking).should be_a_new(Booking)
         end
 
         it "re-renders the 'new' template" do
-          # Trigger the behavior that occurs when invalid params are submitted
           Booking.any_instance.stub(:save).and_return(false)
           post :create, :booking => {}
           response.should render_template("new")
@@ -122,73 +113,75 @@ describe BookingsController do
     describe "PUT update" do
       describe "with valid params" do
         it "updates the requested booking" do
-          booking = @booking
-          # Assuming there are no other bookings in the database, this
-          # specifies that the Booking created on the previous line
-          # receives the :update_attributes message with whatever params are
-          # submitted in the request.
           Booking.any_instance.should_receive(:update_attributes).with({'these' => 'params'})
-          put :update, :id => booking.id, :booking => {'these' => 'params'}
+          put :update, :id => @booking.id, :booking => {'these' => 'params'}
         end
 
         it "assigns the requested booking as @booking" do
-          booking = @booking
-          put :update, :id => booking.id, :booking => valid_attributes
-          assigns(:booking).should eq(booking)
+          put :update, :id => @booking.id, :booking => valid_attributes
+          assigns(:booking).should eq(@booking)
         end
 
         it "redirects to the booking per default to the calendar" do
-          booking = @booking
-          put :update, :id => booking.id, :booking => valid_attributes
+          put :update, :id => @booking.id, :booking => valid_attributes
           response.should redirect_to(:calendar)
         end
 
         it "redirects to the url saved in session" do
           session[:return_to] = calendar_path(:start_date => Date.today - 3.weeks)
-          booking = @booking
-          put :update, :id => booking.id, :booking => valid_attributes
+          put :update, :id => @booking.id, :booking => valid_attributes
           response.should redirect_to(session[:return_to])
+        end
+
+        it "sends an email to booking.user if current_user != booking.user" do
+          UserMailer.should_receive(:booking_updated_notification).with(@current_user, instance_of(Booking), instance_of(Booking)).and_return(@mail = mock(Mail, :deliver => true))
+          put :update, :id => @booking.id, :booking => valid_attributes
         end
       end
 
       describe "with invalid params" do
         it "assigns the booking as @booking" do
-          booking = @booking
-          # Trigger the behavior that occurs when invalid params are submitted
           Booking.any_instance.stub(:save).and_return(false)
-          put :update, :id => booking.id.to_s, :booking => {}
-          assigns(:booking).should eq(booking)
+          put :update, :id => @booking.id.to_s, :booking => {}
+          assigns(:booking).should eq(@booking)
         end
 
         it "re-renders the 'edit' template" do
-          booking = @booking
-          # Trigger the behavior that occurs when invalid params are submitted
           Booking.any_instance.stub(:save).and_return(false)
-          put :update, :id => booking.id.to_s, :booking => {}
+          put :update, :id => @booking.id.to_s, :booking => {}
           response.should render_template("edit")
+        end
+
+        it "does not send an email to booking.user if current_user != booking.user" do
+          Booking.any_instance.stub(:save).and_return(false)
+          UserMailer.should_not_receive(:booking_updated_notification)
+          put :update, :id => @booking.id, :booking => valid_attributes
         end
       end
     end
 
     describe "DELETE destroy" do
       it "destroys the requested booking" do
-        booking = @booking
         expect {
-          delete :destroy, :id => booking.id.to_s
+          delete :destroy, :id => @booking.id.to_s
         }.to change(Booking, :count).by(-1)
       end
 
       it "redirects to the calendar per default" do
-        booking = @booking
-        delete :destroy, :id => booking.id.to_s
+        delete :destroy, :id => @booking.id.to_s
         response.should redirect_to(calendar_path)
       end
 
       it "redirects to the url saved in session" do
         @request.env['HTTP_REFERER'] = 'http://www.test'
-        booking = @booking
-        delete :destroy, :id => booking.id.to_s
+        delete :destroy, :id => @booking.id.to_s
         response.should redirect_to('http://www.test')
+      end
+
+      it "sends an email to booking.user if current_user != booking.user" do
+        UserMailer.stub(:booking_deleted_notification => @mail = mock(Mail, :deliver => true))
+        UserMailer.should_receive(:booking_deleted_notification).with(@current_user, @booking)
+        delete :destroy, :id => @booking.id.to_s
       end
     end
   end

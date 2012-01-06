@@ -43,8 +43,11 @@ class BookingsController < ApplicationController
   end
 
   def update
+    @old_booking = @booking.dup
+    @old_booking.options = @booking.options.dup
     respond_to do |format|
       if @booking.update_attributes(params[:booking])
+        UserMailer.booking_updated_notification(current_user, @booking, @old_booking).deliver if current_user != @booking.user
         format.html { redirect_back_or_default(calendar_path, notice: t('controller.success.update', :thing => I18n.t('activerecord.models.booking'))) }
         format.json { head :ok }
       else
@@ -57,6 +60,7 @@ class BookingsController < ApplicationController
   def destroy
     @booking.destroy
     respond_to do |format|
+      UserMailer.booking_deleted_notification(current_user, @booking).deliver if current_user != @booking.user
       format.html { redirect_back_or_default(calendar_path, notice: t('controller.success.destroy', :thing => I18n.t('activerecord.models.booking'))) }
       format.json { head :ok }
     end
@@ -72,8 +76,9 @@ class BookingsController < ApplicationController
 
   def maximum_exceeded
     return true if can? :exceed_maximum, Booking
-      #if future_booking(user, machine) > machine.max_future_bookings
-      #  throw :halt, :notice => 'Maximum an zukünftigen Buchungen ist erreicht'
-      #end
+    bookings = Booking.in_future(@booking.machine, @booking.user)
+    if @booking.machine.max_future_bookings && bookings.any? && bookings.size >= @booking.machine.max_future_bookings
+      redirect_back_or_default(calendar_path, notice: t('.controller.bookings.max_bookings_reached'))
+    end
   end
 end

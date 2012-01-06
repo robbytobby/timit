@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120103150258) do
+ActiveRecord::Schema.define(:version => 20120104111157) do
 
   create_table "accessories", :force => true do |t|
     t.string   "name"
@@ -54,8 +54,11 @@ ActiveRecord::Schema.define(:version => 20120103150258) do
     t.datetime "updated_at"
     t.integer  "max_duration"
     t.string   "max_duration_unit"
-    t.boolean  "needs_temperature", :default => false
-    t.boolean  "needs_sample",      :default => false
+    t.boolean  "needs_temperature",     :default => false
+    t.boolean  "needs_sample",          :default => false
+    t.integer  "max_future_bookings",   :default => 1
+    t.integer  "min_booking_time",      :default => 1
+    t.string   "min_booking_time_unit", :default => "hour"
   end
 
   create_table "users", :force => true do |t|

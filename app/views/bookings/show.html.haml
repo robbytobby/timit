@@ -20,6 +20,7 @@
   - @booking.options.each do |o|
     = o.name
 
-= link_to 'Edit', edit_booking_path(@booking)
-\|
+-if can? :edit, @booking
+  = link_to 'Edit', edit_booking_path(@booking)
+  \|
 = link_to 'Back', bookings_path

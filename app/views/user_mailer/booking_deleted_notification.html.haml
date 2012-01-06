@@ -1,0 +1,5 @@
+%p
+  = t '.hi'
+%p 
+  = t '.booking_deleted', :machine => @booking.machine.name, :from => @booking.human_start, :to => @booking.human_end, :by => @current_user.name
+

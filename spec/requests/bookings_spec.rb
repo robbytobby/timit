@@ -116,12 +116,77 @@ describe "Bookings" do
     end
 
     describe "GET new" do
+
       it "shows the new booking form for all users" do
         @machine = FactoryGirl.create(:machine)
         User.roles.each{|r| access_check(r, true){get new_booking_path, :booking => {:machine_id => @machine.id}} }
       end
 
       it "shows the right content"
+
+      describe "max number of bookings is restricted" do
+        context "as normal user" do
+          before :each do
+            session_for(:unprivileged)
+            @machine0 = FactoryGirl.create(:machine, :max_future_bookings => nil)
+            @machine1 = FactoryGirl.create(:machine, :max_future_bookings => 1)
+            @machine2 = FactoryGirl.create(:machine, :max_future_bookings => 2)
+            @booking0 = FactoryGirl.build(:booking, :machine => @machine0, :user => @current_user)
+            @booking1 = FactoryGirl.build(:booking, :machine => @machine1, :user => @current_user)
+            @booking2 = FactoryGirl.build(:booking, :machine => @machine2, :user => @current_user)
+          end
+
+          it "shows the booking form if there is no maximum number of future bookings set" do
+            @booking0.save
+            get new_booking_path, :booking => {:machine_id => @machine0.id}
+            response.should render_template(:new)
+          end
+
+          it "redirects to back if maximum number of future bookings is reached for normal user" do
+            @booking1.save
+            get new_booking_path, :booking => {:machine_id => @machine1.id}
+            response.should redirect_to(calendar_path)
+          end
+
+          it "shows the booking form if maximum number of future bookings is not reached for normal user" do
+            @booking2.save
+            get new_booking_path, :booking => {:machine_id => @machine2.id}
+            response.should render_template(:new)
+          end
+        end
+
+        [:teaching, :admin].each do |role|
+          context "as normal user" do
+            before :each do
+              session_for(role)
+              @machine0 = FactoryGirl.create(:machine, :max_future_bookings => nil)
+              @machine1 = FactoryGirl.create(:machine, :max_future_bookings => 1)
+              @machine2 = FactoryGirl.create(:machine, :max_future_bookings => 2)
+              @booking0 = FactoryGirl.build(:booking, :machine => @machine0, :user => @current_user)
+              @booking1 = FactoryGirl.build(:booking, :machine => @machine1, :user => @current_user)
+              @booking2 = FactoryGirl.build(:booking, :machine => @machine2, :user => @current_user)
+            end
+
+            it "does not care about maximum Number of bookings 1" do
+              @booking0.save
+              get new_booking_path, :booking => {:machine_id => @machine0.id}
+              response.should render_template(:new)
+            end
+
+            it "does not care about maximum Number of bookings 2" do
+              @booking1.save
+              get new_booking_path, :booking => {:machine_id => @machine1.id}
+              response.should render_template(:new)
+            end
+
+            it "does not care about maximum Number of bookings 3" do
+              @booking2.save
+              get new_booking_path, :booking => {:machine_id => @machine2.id}
+              response.should render_template(:new)
+            end
+          end
+        end
+      end
     end
 
     describe "GET edit" do

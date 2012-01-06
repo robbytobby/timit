@@ -11,7 +11,7 @@
           -@calendar.machines.each_with_index do |m, i|
             - if draw_machine?(i)
               %th
-                = m.name  
+                = link_to m.name, m  
                 = calendar_link image_tag('icons/go-next.svg', :size => '16x16'), {:machine_offset => @calendar.machine_offset + 1}, :class => 'next_machine_link' if next_machine_link?(m, i)
         - @calendar.days.each do |d|
           %tr{:class => row_class(@calendar, d)}

@@ -1,12 +1,11 @@
 require 'spec_helper'
 
 describe "bookings/show.html.haml" do
+  include Devise::TestHelpers
+
   before(:each) do
-    @booking = assign(:booking, stub_model(Booking,
-      :all_day => false,
-      :user_id => 1,
-      :machine_id => 1
-    ))
+    @booking = assign(:booking, FactoryGirl.create(:booking))
+    sign_in (@current_user = FactoryGirl.create(:admin_user))
   end
 
   it "renders attributes in <p>" do
