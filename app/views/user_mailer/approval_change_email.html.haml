@@ -2,6 +2,6 @@
   = t '.hi', :name => @user.user_name
 %p
   - if @user.approved?
-    = t '.p1.activated_html', :link => new_user_session_url 
+    = t '.p1.activated_html', :link => link_to(t('.login'), new_user_session_url) 
   - else
     = t '.p1.deactivated'
