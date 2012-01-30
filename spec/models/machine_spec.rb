@@ -73,4 +73,28 @@ describe Machine do
       end
     end
   end
+
+  describe "min_duration" do
+    it "returns the minimum duration if it number and unit are given" do
+      @machine = FactoryGirl.create(:machine, :min_booking_time => 20, :min_booking_time_unit => 'minute')
+      @machine.min_duration.should == 20.minutes
+    end
+
+    it "returns one minute if no min booking time is set" do
+      @machine = FactoryGirl.create(:machine, :min_booking_time => nil)
+      @machine.min_duration.should == 1.minute
+    end
+  end
+
+  describe "human_min_duration" do
+    it "returns the minimum duration if set" do
+      @machine = FactoryGirl.create(:machine, :min_booking_time => 20, :min_booking_time_unit => 'minute')
+      @machine.human_min_duration.should == "20 Minuten"
+    end
+
+    it "returns unlimited if minimum duration is not set" do
+      @machine = FactoryGirl.create(:machine, :min_booking_time => nil)
+      @machine.human_min_duration.should == 'unbegrenzt'
+    end
+  end
 end

@@ -335,6 +335,22 @@ describe Booking do
     end
   end
 
+  describe "not_available_options" do
+    it "returns an array of the non available options" do
+      @option_group1 = FactoryGirl.create(:option_group, :optional => true)
+      @option_group2 = FactoryGirl.create(:option_group, :optional => true)
+      @option1 = FactoryGirl.create(:option, :option_group => @option_group1)
+      @option2 = FactoryGirl.create(:option, :option_group => @option_group1)
+      @option3 = FactoryGirl.create(:option, :option_group => @option_group2)
+      @option4 = FactoryGirl.create(:option, :option_group => @option_group2)
+      @option2.stub(:available? => false)
+      @option4.stub(:available? => false)
+      @machine1 = FactoryGirl.create(:machine, :options => [@option1, @option2, @option3, @option4])
+      @booking = FactoryGirl.build(:booking, machine: @machine1)
+      @booking.not_available_options.should == [@option2.id, @option4.id]
+    end
+  end
+
   describe "overlap" do
     before :each do
       @t = "2011-12-27 00:00:00".to_datetime

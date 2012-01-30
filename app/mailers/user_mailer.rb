@@ -14,7 +14,7 @@ class UserMailer < ActionMailer::Base
 
   def destroy_email(user, admin)
     @user = user
-    mail(:to => user.mail_name, :reply_to => admin.mail_name, :subject => t('user_mailer.destroy_mail.subject'))
+    mail(:to => user.mail_name, :reply_to => admin.mail_name, :subject => t('user_mailer.destroy_email.subject'))
   end
 
   def sign_up_notification(user)

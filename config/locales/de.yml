@@ -155,6 +155,7 @@ de:
         activated_html: "ich habe gerade deinen Account freigeschaltet. Du kannst dich ab sofort auf %{link} einloggen."
         deactivated: "ich habe soeben deinen Account für Timit deaktiviert." 
     destroy_email:
+      subject: "Dein Account für TiMiT"
       hi: "Hallo %{name}"
       p1: "Dein Account für TiMiT wurde gelöscht"
     sign_up_notification:
@@ -164,6 +165,7 @@ de:
       to_activate: "Um diesen Account zu aktivieren, kannst du folgenden Link nutzen:"
       activate: "%{name} aktivieren"
     booking_updated_notification:
+      subject: "TiMiT: geänderte Buchung"
       hi: "Hallo"
       booking_changed: "Deine Buchung für %{machine} wurde von %{by} geändert"
       from: "von:"
@@ -171,5 +173,6 @@ de:
     booking_deleted_notification:
       hi: "Hallo"
       booking_deleted: "Deine Buchung für %{machine} von %{from} bis %{to} wurde von %{by} gelöscht"
+      subject: "TiMiT: gelöschte Buchung"
       
 

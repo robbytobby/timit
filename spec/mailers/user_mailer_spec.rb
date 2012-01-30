@@ -92,7 +92,7 @@ describe UserMailer do
     end
 
     it "has the approval change subject" do
-      @mail.subject.should == I18n.t('user_mailer.destroy_mail.subject')
+      @mail.subject.should == I18n.t('user_mailer.destroy_email.subject')
     end
 
     it "has the right encoding" do
