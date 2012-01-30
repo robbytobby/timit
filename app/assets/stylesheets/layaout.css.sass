@@ -1,7 +1,14 @@
 @import blueprint
 @import compass/css3
 @import "compass/utilities/lists/horizontal-list"
+@import "compass/reset/utilities"
+
 body.bp
+  //+global-reset
+  //+reset-box-model
+  //+reset-list-style
+  //+reset-table
+  //+reset-table-cell
   +blueprint
   +blueprint-interaction
   textarea
