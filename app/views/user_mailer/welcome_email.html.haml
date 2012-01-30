@@ -1,6 +1,6 @@
 %p
   = t '.hi', :name => @user.user_name
 %p
-  = t('.p1_html', :link => link_to('Set my password', edit_password_url(@user, :reset_password_token => @user.reset_password_token)))
+  = t('.p1_html', :link => link_to(t('.set_password'), edit_password_url(@user, :reset_password_token => @user.reset_password_token)))
 %p
-  = t('.p2_html', :link => link_to('Login', new_user_session_url)) 
+  = t('.p2_html', :link => link_to(t('.login'), new_user_session_url)) 
