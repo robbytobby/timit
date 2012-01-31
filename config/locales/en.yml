@@ -1,8 +1,178 @@
-# Sample localization file for English. Add more files in this directory for other locales.
-# See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
-
 en:
+  edit: 'edit'
+  destroy: 'delete'
+  delete: 'delete'
+  are_you_sure?: 'Are you sure?'
+  y: 'yes'
+  n: 'no'
+  back: 'back'
+  confirm: "Are you sure you want to %{action} %{name}?"
+  mail_to: "write email"
+  show: "show"
+  save: "save"
+  please_choose: "please choose"
+  none: "none"
+  time_units:
+    week: "week(s)"
+    day: "day(s)"
+    hour: "hour(s)"
+    minute: "minute(s)"
+    unlimited: "unlimited"
+  human_time_units:
+    week:
+      one: "1 week"
+      other: "%{count} weeks"
+    day:
+      one: "1 day"
+      other: "%{count} days"
+    hour:
+      one: "1 hour"
+      other: "%{count} hours"
+    minute:
+      one: "1 minute"
+      other: "%{count} minutes"
+  time_abbrev:
+    week: "w"
+    day: "d"
+    hour: "h"
+    minute: "m"
+  human_time_abbrev:
+    week: "%{count}w"
+    day: "%{count}d"
+    hour: "%{count}h"
+    minute: "%{count}m"
+
+  support:
+    array:
+      words_connector: ', '
+      last_word_connector: ' and '
+      two_words_connector: ' and '
+
   layouts:
     topmenu:
       machines: 'Machines'
-      users: 'Users'
+      options: 'Options'
+      accessories: 'Accessories'
+      users: 'User'
+      calendar: 'Calender'
+      bookings: 'Bookings'
+      sign_in: "sign in"
+      sign_up: "sign up"
+      sign_out: "sign out"
+      forgot_your_password?: "forgot your password?"
+      edit_account: "My Account"
+    application:
+      logged_in_as: 'logged in as:'
+
+  accessories:
+    index:
+      all_accessories: 'Accessories'
+    new:
+      new: 'new accessory'
+    edit:
+      edit: 'edit accessory'
+
+  bookings:
+    new:
+      new_booking_for: 'New booking for %{machine}'
+    form:
+      options: 'options'
+
+  calendar:
+    index:
+      next_period: '>>'
+      prev_period: '<<'
+      heading: "%{start} - %{end}"
+    booking_details:
+      temp: 'Temperature'
+    machines:
+      select_machines: 'Machines to be shown'
+    new_booking:
+      all_day: 'all day'
+  machines:
+    index:
+      new: 'new machine'
+      name: 'name'
+      description: 'description'
+    edit:
+      heading: 'Edit machine'
+    show:
+      limits: 'limits'
+      temperature_needed: 'Temperature has to be declared'
+      sample_needed: 'Sample has to be declared'
+    form:
+      leave_max_time_empty: 'If maximum booking duration shall be unlimited, just leave this field blank.'
+      leave_min_time_empty: 'If minimum booking duration shall be unlimited, just leave this field blank.'
+      leave_max_empty: 'If you do not want to define a maxium, just leave this field blank.'
+  
+  option_groups:
+    new:
+      new: 'New group'
+
+  registrations:
+    new:
+      sign_up: "Sign up"
+    edit:
+      my_account: "My account"
+      leave_blank: "If you don't want to change your password, just leave this field blank."
+      needed_for_update: "We need your current password to confrim the changes."
+      cancel_my_account: "delete my account"
+      unhappy?: "You don't need this account anymore? Or you're just tired of this program?"
+
+  users:
+    show:
+      personal: 'personal data:'
+      account: 'technical data:'
+    index:
+      email: 'email'
+      phone: 'phone'
+      name: 'name'
+      approved?: 'aktive?'
+      new: 'new user'
+      activate: 'activate'
+      deactivate: 'deactivate'
+      role: 'priviledges'
+      unprivileged: 'none'
+      teaching: 'teaching'
+      admin: 'administrator'
+    edit:
+      heading: 'Edit user %{name}'
+    new:
+      heading: 'New user'
+
+  user_mailer:
+    welcome_email:
+      subject: "Your new Account for TiMiT"
+      hi: "Hello %{name}"
+      p1_html: "I created an account for you for 'TiMiT', our online calendar for our measuring machines. With TiMiT, we manage the time for all our machines. \n To be able to use the system, you first have to set your password via\n %{link}\n"
+      p2_html: "Afterwards you may login with your email address and password via %{link} to manage your bookings."
+      login: "Login"
+      set_password: "Set password"
+    approval_change_email:
+      subject: "Your TiMiT account"
+      hi: "Hello %{name}"
+      p1:
+        activated_html: "I just activated your Account. You may now login via %{link}."
+        deactivated: "I just deactivated your TiMiT account" 
+    destroy_email:
+      subject: "Your TiMiT account"
+      hi: "Hello %{name}"
+      p1: "Your TiMiT account has been deleted"
+    sign_up_notification:
+      hi: "Hi"
+      subject: "An account for TiMit has been requested"
+      new_signup: "%{name} has requested an Account for TiMiT and waits for his activation."
+      to_activate: "To activate the account, you can use this link:"
+      activate: "%{name} acativate"
+    booking_updated_notification:
+      subject: "TiMiT: changed booking"
+      hi: "Hi"
+      booking_changed: "Your booking for %{machine} has been changed by %{by}"
+      from: "from:"
+      to: "to:"
+    booking_deleted_notification:
+      hi: "Hello"
+      booking_deleted: "Your booking for %{machine} from %{from} to %{to} has been deleted by %{by}"
+      subject: "TiMiT: booking deleted"
+      
+

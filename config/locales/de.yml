@@ -35,7 +35,7 @@ de:
     week: "w"
     day: "d"
     hour: "h"
-    minute: "%m"
+    minute: "m"
   human_time_abbrev:
     week: "%{count}w"
     day: "%{count}d"

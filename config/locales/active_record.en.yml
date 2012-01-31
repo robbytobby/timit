@@ -1,0 +1,74 @@
+en:
+  activerecord:
+    models:
+      accessory: 'Accessory'
+      machine: 'Machine'
+      user: 'User'
+      booking: 'Booking'
+      options: 'Options'
+      option: 'Option'
+      option_group: 'Group'
+    attributes:
+      accessory:
+        name: 'Name'
+        quantity: 'Quantity'
+      booking:
+        starts_at: 'Begin'
+        ends_at: 'End'
+        all_day: 'All day'
+        id: '#'
+        temperature: 'Temperature [K]'
+        sample: 'Sample'
+        comment: 'Comment'
+      machine: 
+        name: 'Name'
+        description: 'Descriptions'
+        max_duration: 'Maximum booking duration'
+        options: 'Options'
+        needs_temperature: 'Tem'
+        needs_sample: 'Declaration of sample obligatory'
+        max_future_bookings: 'Maximum number of future bookings'
+        min_booking_time: 'Minimal booking duration'
+        min_booking_time_unit: 'Unit for minimal booking duration'
+      user:
+        email: 'email'
+        password: 'password'
+        password_confirmation: 'password confirmations'
+        current_password: 'current password'
+        reset_password_token: 'Link for password reset'
+        phone: 'phone'
+        first_name: 'first name'
+        last_name: 'last name'
+        unprivileged: 'none'
+        teaching: 'teaching'
+        admin: 'administrator'
+        role: 'priviledges'
+        created_at: 'created at'
+        updated_at: 'updated at'
+        approved: 'approved?'
+        current_sign_in_ip: 'IP of last login'
+        current_sign_in_at: 'date of last login'
+        sign_in_count: 'login count'
+      option_group:
+        name: 'Name'
+        group: 'Group'
+        exclusive: 'exclusive'
+        optional: 'optional'
+      option: 
+        name: 'Name'
+        message: 'message'
+        needed: 'needs'
+    errors:
+      models:
+        user:
+          attributes:
+            role:
+              undefined: "is not defined"
+        booking:
+          attributes:
+            ends_at:
+              to_long: "Booking is to long (Maximum: %{max})"
+            base:
+              to_many: "Only one option of the group '%{name}' may be selected"
+              one_necessary: "One option of the group'%{name}' has to be selected"
+              accessory_conflict: "Option '%{name}' is not available from %{from} to %{to}"

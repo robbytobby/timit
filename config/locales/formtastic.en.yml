@@ -1,0 +1,13 @@
+en:
+  formtastic:
+    actions:
+      create: "create %{model}"
+      update: "update %{model}"
+      submit: "save %{model}"
+      cancel: "cancel"
+      sign_in: "sign in"
+      sign_up: "sign up"
+      send_reset_password_instructions: "Send password reset instructions"
+      change_my_password: 'change my password'
+      commit: 'save'
+      update_account: 'save'

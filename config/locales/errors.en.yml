@@ -1,0 +1,29 @@
+en:
+  errors:
+    format: "%{attribute} %{message}"
+
+    messages: &errors_messages
+      inclusion: "is no valid value"
+      exclusion: "is not available"
+      invalid: "is invalid"
+      confirmation: "does not match confirmation"
+      accepted: "has to be accepted"
+      empty: "may not be empty"
+      blank: "may not be blank"
+      too_long: "is to long (not more than %{count} characters)"
+      too_short: "is to short (not less than %{count} characters)"
+      wrong_length: "has the wron lengt (has to have exactly %{count} characters)"
+      not_a_number: "is not a number"
+      greater_than: "has to be greater than %{count}"
+      greater_than_or_equal_to: "has to be greater than or equal to %{count}"
+      equal_to: "has to be exactly %{count}"
+      less_than: "has to be less than %{count}"
+      less_than_or_equal_to: "has to be less than or equal to %{count}"
+      odd: "has to be odd"
+      even: "has to be even"
+      not_an_integer: "has to be an integer"
+      start_after_end: "booking has to end after its start."
+      date_conflicts: "collides with a booking %{from} to %{to}"
+      taken: "is allready taken"
+      not_saved: "not saved."
+

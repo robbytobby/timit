@@ -1,12 +1,25 @@
 de:
   errors:
     messages:
+      expired: "ist abgelaufen, bitte beantrage einen neuen"
       not_found: "Nicht gefunden"
       already_confirmed: "ist bereits bestätigt"
       not_locked: "war nicht gesperrt"
+      not_saved:
+        one: "1 Fehler verhinderte, dass diese %{resource} gespeichert werden konnte:"
+        other: "%{count} Fehler verhinderten, dass diese %{resource} gespeichert werden konnte:"
 
   devise:
+    shared:
+      links:
+        sign_in: "Anmelden"
+        sign_up: "Account beantragen"
+        forgot_your_password?: "Passwort vergessen?"
+        did_not_receive_confirmation_instructions?: "Keine Bestätigungs-Anweisungen erhalten?"
+        did_not_receive_unlock_instructions?: "Keine Anweisungen zu freischalten erhalten?"
+
     failure:
+      already_authenticated: 'Du bist schon eingeloggt.'
       unauthenticated: 'Du musst dich zuerst anmelden.'
       unconfirmed: 'Du musst deinen Acoount zuerst bestätigen.'
       locked: 'Dein Account ist gesperrt.'
@@ -15,7 +28,6 @@ de:
       timeout: 'Die Sitzung ist abgelaufen, bitte melde dich erneut an.'
       inactive: 'Dein Account ist noch nicht aktiviert.'
       not_approved: 'Dein Account ist nicht aktiviert.'
-      already_authenticated: 'Du bist schon eingeloggt.'
     sessions:
       signed_in: 'Erfolgreich Angemeldet.'
       signed_out: 'Erfolgreich Abgemeldet.'

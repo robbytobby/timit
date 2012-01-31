@@ -1,0 +1,27 @@
+en:
+  controller:
+    success:
+      create: '%{thing} successfully created.'
+      update: '%{thing} successfully updated.'
+      destroy: '%{thing} successfully deleted.'
+    machines:
+    users:
+      actions:
+        destroy: 'delete'
+        change_approved: 'deactivate'
+      activation:
+        failure: "The user %{name} could not be saved, his account is still inactive"
+        success: "The account of %{name} is now activated"
+      deactivation:
+        failure: "The user %{name} could not be saved, his account is still active"
+        success: "The account of %{name} is now deactivated"
+      not_yourself: "You cannot %{action} yourself."
+      destroy_self:
+        success: 'Your Account is now deleted'
+    bookings:
+      success: 'Booking successfully %{action}.'
+      machine_needed: 'A machine has to be selected'
+      max_bookings_reached: 'Your maximum for future bookings is reached.'
+         
+
+
