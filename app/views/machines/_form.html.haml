@@ -16,7 +16,9 @@
     = f.input :needs_temperature, :as => :boolean
     = f.input :needs_sample, :as => :boolean
     %li
-      %h3= t 'activerecord.attributes.machine.options'
+      %h3
+        = t 'activerecord.attributes.machine.options'
+      #new_option_group
       - if @options.any?
         - @options.group_by(&:option_group).each do |group, options|
           = f.input :options, :collection => options, :as => :check_boxes, :label => group.name
