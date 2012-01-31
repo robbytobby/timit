@@ -66,6 +66,11 @@ class BookingsController < ApplicationController
     end
   end
 
+  def update_options
+    @booking = Booking.new(params[:booking])
+    @booking.valid?
+  end
+
   private
   def show_messages
     @booking.options.each do |option|

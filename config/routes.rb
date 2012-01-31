@@ -3,7 +3,11 @@ Timit::Application.routes.draw do
 
   resources :option_groups
 
-  resources :bookings
+  resources :bookings do
+    collection do
+      get 'update_options'
+    end
+  end
 
   devise_for :users, :controllers => {:registrations => "registrations"}, :path_prefix => 'devise'
 
