@@ -59,4 +59,9 @@ Timit::Application.configure do
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
+
+  #send exceptions via email
+  config.middleware.use ExceptionNotifier,
+    sender_address: 'timit@physchem.uni-freiburg.de',
+    exception_recipients: 'christian.wittekindt@physchem.uni-freiburg.de'
 end

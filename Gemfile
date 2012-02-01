@@ -41,6 +41,7 @@ gem 'cancan'
 
 # Deploy with Capistrano
 gem 'capistrano'
+gem 'exception_notification'
 
 # To use debugger
 # gem 'ruby-debug19', :require => 'ruby-debug'
