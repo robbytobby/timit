@@ -47,7 +47,7 @@ class User < ActiveRecord::Base
   end
 
   def send_welcome_email(admin)
-    generate_reset_password_token! if should_generate_token?
+    generate_reset_password_token! if should_generate_reset_token?
     UserMailer.welcome_email(self, admin).deliver
   end
   

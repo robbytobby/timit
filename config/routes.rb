@@ -10,7 +10,8 @@ Timit::Application.routes.draw do
       end
     end
 
-    devise_for :users, :controllers => {:registrations => "registrations"}, :path_prefix => 'devise'
+    devise_for :users, :controllers => {:registrations => "registrations"}, :path => 'devise'
+    #devise_for :users, :controllers => {:registrations => "registrations"}, :path_prefix => 'devise'
 
     resources :users do
       member do

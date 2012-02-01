@@ -165,7 +165,7 @@ describe CalendarHelper do
 
   describe "calendar_link" do
     it "creates a link to calendar index with the name given" do
-      calendar_link('test').should have_selector(:a, :href => "/calendar?start_date=#{Date.today.to_s}", :content => "test")
+      calendar_link('test').should have_selector(:a, :href => "/de/calendar?start_date=#{Date.today.to_s}", :content => "test")
     end
 
     it "even accecpts other tags as name" do
@@ -175,11 +175,11 @@ describe CalendarHelper do
     end
 
     it "respects a given start date" do
-      calendar_link('test', start_date: Date.tomorrow).should have_selector(:a, :href => "/calendar?start_date=#{Date.tomorrow.to_s}", :content => "test")
+      calendar_link('test', start_date: Date.tomorrow).should have_selector(:a, :href => "/de/calendar?start_date=#{Date.tomorrow.to_s}", :content => "test")
     end
 
     it "respects a given machine offset" do
-      calendar_link('test', machine_offset: 2).should have_selector(:a, :href => "/calendar?machine_offset=2&start_date=#{Date.today}", :content => "test")
+      calendar_link('test', machine_offset: 2).should have_selector(:a, :href => "/de/calendar?machine_offset=2&start_date=#{Date.today}", :content => "test")
     end
 
     it "has default values" do

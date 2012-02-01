@@ -17,6 +17,18 @@ Spork.prefork do
     config.mock_with :rspec
     config.use_transactional_fixtures = true
   end
+
+  class ActionView::TestCase::TestController
+    def default_url_options(options={})
+      { :locale => I18n.default_locale }
+    end
+  end
+
+  class ActionDispatch::Routing::RouteSet
+    def default_url_options(options={})
+      { :locale => I18n.default_locale }
+    end
+  end
 end
 
 Spork.each_run do
