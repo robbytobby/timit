@@ -54,12 +54,12 @@ en:
       options: 'Options'
       accessories: 'Accessories'
       users: 'User'
-      calendar: 'Calender'
+      calendar: 'Calendar'
       bookings: 'Bookings'
-      sign_in: "sign in"
-      sign_up: "sign up"
-      sign_out: "sign out"
-      forgot_your_password?: "forgot your password?"
+      sign_in: "Log in"
+      sign_up: "Sign up"
+      sign_out: "Log out"
+      forgot_your_password?: "Forgot your password?"
       edit_account: "My Account"
     application:
       logged_in_as: 'logged in as:'
@@ -110,6 +110,9 @@ en:
       new: 'New group'
     edit:
       h1: 'Edit option group'
+    form:
+      remove_option: 'delete'
+      add_option: 'new option'
 
   registrations:
     new:

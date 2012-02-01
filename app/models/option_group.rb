@@ -4,5 +4,5 @@ class OptionGroup < ActiveRecord::Base
   validates_uniqueness_of :name
   validates_inclusion_of :optional, :in => [true, false]
   validates_inclusion_of :exclusive, :in => [true, false]
-  accepts_nested_attributes_for :options, :reject_if => :all_blank
+  accepts_nested_attributes_for :options, :reject_if => :all_blank, :allow_destroy => true
 end

@@ -110,6 +110,9 @@ de:
       new: 'Neue Gruppe'
     edit:
       h1: 'Gruppe bearbeiten'
+    form:
+      remove_option: 'löschen'
+      add_option: 'neue Option'
 
   registrations:
     new:

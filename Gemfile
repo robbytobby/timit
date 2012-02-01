@@ -26,6 +26,7 @@ gem 'haml'
 gem 'haml-rails'
 # nicer forms
 gem 'formtastic'
+gem 'nested_form', :git => 'git://github.com/ryanb/nested_form.git'
 gem 'schema_plus'
 
 gem 'state_machine'

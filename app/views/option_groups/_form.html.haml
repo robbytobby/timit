@@ -1,12 +1,14 @@
-= semantic_form_for @option_group do |f|
+= semantic_nested_form_for @option_group do |f|
   = f.inputs do
     = f.input :name
     = f.input :exclusive, :as => :boolean
     = f.input :optional, :as => :boolean
-  - unless @option_group.new_record?
-    = f.inputs :for => :options, :name => (t('activerecord.models.option') + ' %i'), :class => 'option' do |o|
+    = f.inputs :for => :options, :name => t('activerecord.models.option') + ' %i', :class => 'option' do |o|
+      %li.input
+        %label= o.link_to_remove t('.remove_option')
       = o.input :name
       = o.input :needed
       = o.input :message, :as => :string
+    %b= f.link_to_add t('.add_option'), :options
   = f.buttons do
     = f.commit_button
