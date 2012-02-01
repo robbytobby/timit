@@ -70,5 +70,5 @@ en:
               to_long: "Booking is to long (Maximum: %{max})"
             base:
               to_many: "Only one option of the group '%{name}' may be selected"
-              one_necessary: "One option of the group'%{name}' has to be selected"
+              one_necessary: "One option of the group '%{name}' has to be selected"
               accessory_conflict: "Option '%{name}' is not available from %{from} to %{to}"

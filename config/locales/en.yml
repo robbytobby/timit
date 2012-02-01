@@ -108,6 +108,8 @@ en:
   option_groups:
     new:
       new: 'New group'
+    edit:
+      h1: 'Edit option group'
 
   registrations:
     new:

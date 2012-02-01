@@ -1,5 +1,6 @@
 = semantic_form_for @booking, :html => {:id => 'new_booking'} do |f|
   = f.inputs do
+    = f.input :id, :as => :hidden if @booking.id
     = f.input :starts_at, :include_blank => false
     = f.input :ends_at, :include_blank => false
     = f.input :all_day, :as => :boolean

@@ -15,15 +15,10 @@
             #current_user
               %b= t '.logged_in_as'
               = current_user.user_name
-              %br
-              %b
-                = link_to 'en', request.path_parameters.merge(:locale => 'en')
-                |
-                = link_to 'de', request.path_parameters.merge(:locale => 'de')
 
         #topmenu
           = render :partial => 'layouts/topmenu'
       #content
         - flash.each do |name, msg|
-          %div{:class => name}= simple_format(msg)
+          %div{:class => name}= simple_format(msg) if msg.is_a?(String)
         = yield

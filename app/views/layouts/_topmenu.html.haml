@@ -12,6 +12,10 @@
   %ul.user_menu
     %li= link_to t('.edit_account'), edit_user_registration_path
     %li= link_to t(".sign_out"), destroy_user_session_path, :method => :delete
+    %li
+      = link_to 'en', request.path_parameters.merge(:locale => 'en')
+      |
+      = link_to 'de', request.path_parameters.merge(:locale => 'de')
 -else
   %ul.user_menu
     - if controller_name != 'sessions'
@@ -20,3 +24,8 @@
       %li= link_to t(".sign_up"), new_user_registration_path
     - if controller_name != 'passwords'
       %li= link_to t(".forgot_your_password?"), new_user_password_path
+    %li
+      = link_to 'en', request.path_parameters.merge(:locale => 'en')
+      |
+      = link_to 'de', request.path_parameters.merge(:locale => 'de')
+

@@ -67,7 +67,12 @@ class BookingsController < ApplicationController
   end
 
   def update_options
-    @booking = Booking.new(params[:booking])
+    if params[:booking][:id]
+      @booking = Booking.find(params[:booking][:id])
+      @booking.attributes = params[:booking]
+    else
+      @booking = Booking.new(params[:booking])
+    end
     @booking.valid?
   end
 
