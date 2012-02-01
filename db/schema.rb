@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120104111157) do
+ActiveRecord::Schema.define(:version => 20120201143855) do
 
   create_table "accessories", :force => true do |t|
     t.string   "name"
@@ -79,6 +79,7 @@ ActiveRecord::Schema.define(:version => 20120104111157) do
     t.string   "last_name"
     t.string   "phone"
     t.string   "role",                                  :default => "unprivileged", :null => false
+    t.string   "locale"
     t.index ["email"], :name => "index_users_on_email", :unique => true
     t.index ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
   end
@@ -116,6 +117,15 @@ ActiveRecord::Schema.define(:version => 20120104111157) do
     t.index ["option_id"], :name => "index_machines_options_on_option_id"
     t.foreign_key ["machine_id"], "machines", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "machines_options_machine_id_fkey"
     t.foreign_key ["option_id"], "options", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "machines_options_option_id_fkey"
+  end
+
+  create_table "machines_users", :id => false, :force => true do |t|
+    t.integer "machine_id"
+    t.integer "user_id"
+    t.index ["machine_id"], :name => "index_machines_users_on_machine_id"
+    t.index ["user_id"], :name => "index_machines_users_on_user_id"
+    t.foreign_key ["machine_id"], "machines", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "machines_users_machine_id_fkey"
+    t.foreign_key ["user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "machines_users_user_id_fkey"
   end
 
 end

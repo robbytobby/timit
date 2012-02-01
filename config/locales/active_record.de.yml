@@ -49,6 +49,7 @@ de:
         current_sign_in_ip: 'IP des letzten Logins'
         current_sign_in_at: 'letzter Login am'
         sign_in_count: 'Anzahl der Logins'
+        locale: 'Sprache'
       option_group:
         name: 'Name'
         group: 'Gruppe'

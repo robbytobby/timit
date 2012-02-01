@@ -49,6 +49,7 @@ en:
         current_sign_in_ip: 'IP of last login'
         current_sign_in_at: 'date of last login'
         sign_in_count: 'login count'
+        locale: 'language'
       option_group:
         name: 'Name'
         group: 'Group'

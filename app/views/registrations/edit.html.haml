@@ -4,6 +4,8 @@
   = f.input :last_name
   = f.input :phone, :as => :string
   = f.input :email
+  = f.input :locale, :as => :select, :collection => [['deutsch', 'de'], ['english', 'en']]
+  = f.input :default_machines
   = f.input :password, :hint => t('.leave_blank')
   = f.input :password_confirmation
   = f.input :current_password, :required => true, :hint => t('.needed_for_update')

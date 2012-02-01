@@ -19,7 +19,13 @@ class ApplicationController < ActionController::Base
     {:locale => I18n.locale}
   end
 
-  # Overwriting the sign_out redirect path method
+  def after_sign_in_path_for(resource_or_scope)
+    if resource_or_scope.is_a?(User) && resource_or_scope.locale
+      I18n.locale = resource_or_scope.locale
+    end
+    super
+  end
+
   def after_sign_out_path_for(resource_or_scope)
     new_user_session_path
   end

@@ -4,9 +4,10 @@ class User < ActiveRecord::Base
   # :token_authenticatable, :encryptable, :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, :timeoutable, :recoverable, :rememberable, :trackable, :validatable
   has_many :bookings, :dependent => :destroy
+  has_and_belongs_to_many :default_machines, :class_name => "Machine"
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :first_name, :last_name, :phone, :email, :password, :password_confirmation, :remember_me
+  attr_accessible :first_name, :last_name, :phone, :email, :password, :password_confirmation, :remember_me, :locale, :default_machine_ids
   validates_presence_of :first_name, :last_name, :phone, :role
   validates :phone, :format => /^\d[\d -\/]*\d$/
   validate :role_defined?

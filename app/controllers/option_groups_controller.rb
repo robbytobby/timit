@@ -32,7 +32,6 @@ class OptionGroupsController < ApplicationController
 
   # GET /option_groups/1/edit
   def edit
-    #@option_group.options.build(:needed => [])
   end
 
   # POST /option_groups
