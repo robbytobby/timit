@@ -1,0 +1,23 @@
+base: &base
+  adapter: postgresql
+  timeout: 5000
+  host: localhost
+  encoding: unicode
+
+development:
+  database: #{application}_development
+  <<: *base
+
+test: &test
+  database: #{application}_test
+  <<: *base
+
+production:
+  database: #{application}
+  username: #{user}
+  password: #{Capistrano::CLI.ui.ask("Enter Postgresql database password: ")}
+  password: 
+  <<: *base
+
+cucumber:
+  <<: *test
