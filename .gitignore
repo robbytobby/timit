@@ -6,3 +6,4 @@ tmp/
 *.swp
 coverage/
 public/assets/
+config/database.yml
