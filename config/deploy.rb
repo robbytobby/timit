@@ -4,6 +4,7 @@ set :rvm_ruby_string, 'ruby-1.9.2-p290@timit'
 set :rvm_type, :user 
 
 require "bundler/capistrano"
+$LOAD_PATH.unshift File.join(File.dirname(__FILE__), 'deploy')
 require "cap_db_config"
 require "cap_passenger"
 

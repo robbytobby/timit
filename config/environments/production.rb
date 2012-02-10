@@ -47,8 +47,13 @@ Timit::Application.configure do
 
   # Disable delivery errors, bad email addresses will be ignored
   #TODO configure
-  # config.action_mailer.raise_delivery_errors = false
-  #config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+  if Rails.env.production?
+    config.action_mailer.raise_delivery_errors = true
+    config.action_mailer.default_url_options = { :host => 'timit.chemie.uni-freiburg.de' }
+  else
+    config.action_mailer.raise_delivery_errors = false
+    config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+  end
 
   # Enable threaded mode
   # config.threadsafe!
