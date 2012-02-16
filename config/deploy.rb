@@ -1,5 +1,6 @@
 $:.unshift(File.expand_path('./lib', ENV['rvm_path'])) # Add RVM's lib directory to the load path.
 require "rvm/capistrano"                  # Load RVM's capistrano plugin.
+require "bundler/capistrano"
 set :rvm_ruby_string, '1.9.2-p290@timit'      
 set :rvm_type, :user 
 #set :default_environment, {
@@ -10,7 +11,6 @@ set :rvm_type, :user
 #  'BUNDLE_PATH'  => '/var/www/timit2/.rvm/gems/ruby-1.9.2-p290@timit'  # If you are using bundler.
 #}
 
-require "bundler/capistrano"
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), 'deploy')
 require "cap_db_config"
 require "cap_passenger"
