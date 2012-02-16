@@ -14,6 +14,7 @@ set :rvm_type, :user
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), 'deploy')
 require "cap_db_config"
 require "cap_passenger"
+load "deploy/assets"
 
 set :application, "timit2"
 
