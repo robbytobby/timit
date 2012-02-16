@@ -1,7 +1,7 @@
 $:.unshift(File.expand_path('./lib', ENV['rvm_path'])) # Add RVM's lib directory to the load path.
-Require "rvm/capistrano"                  # Load RVM's capistrano plugin.
-Set :rvm_ruby_string, 'ruby-1.9.2-p290@timit'      
-Set :rvm_type, :user 
+require "rvm/capistrano"                  # Load RVM's capistrano plugin.
+set :rvm_ruby_string, 'ruby-1.9.2-p290@timit'      
+set :rvm_type, :user 
 #set :default_environment, {
 #  'PATH' => "/var/www/timit2/.rvm/gems/ruby-1.9.2-p290/bin:/var/www/timit2/.rvm/bin:/var/www/timit2/.rvm/rubies/ruby-1.9.2-p290/bin:$PATH",
 #  'RUBY_VERSION' => 'ruby 1.9.2',
