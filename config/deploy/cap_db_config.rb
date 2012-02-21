@@ -39,17 +39,23 @@ Capistrano::Configuration.instance.load do
 
       default_template = <<-EOF
       base: &base
-        adapter: sqlite3
+        adapter: postgresql
         timeout: 5000
+        host: localhost
+        encoding: unicode
       development:
-        database: #{shared_path}/db/development.sqlite3
+        database: #{application}_development
         <<: *base
-      test:
-        database: #{shared_path}/db/test.sqlite3
+      test: &test
+        database: #{application}_test
         <<: *base
       production:
-        database: #{shared_path}/db/production.sqlite3
+        database: #{application}
+        username: #{user}
+        password: #{Capistrano::CLI.ui.ask("Enter Postgresql database password: "}
         <<: *base
+      cucumber:
+        <<: *test
       EOF
 
       location = fetch(:template_dir, "config/deploy") + '/database.yml.erb'
