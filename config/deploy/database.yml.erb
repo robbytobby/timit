@@ -16,7 +16,6 @@ production:
   database: #{application}
   username: #{user}
   password: #{Capistrano::CLI.ui.ask("Enter Postgresql database password: ")}
-  password: 
   <<: *base
 
 cucumber:
