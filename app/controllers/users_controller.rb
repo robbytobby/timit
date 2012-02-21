@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   before_filter :delete_blank_password, :only => :update
 
   def index
-    @users = User.order(:id)
+    @users = User.order(:last_name)
 
     respond_to do |format|
       format.html

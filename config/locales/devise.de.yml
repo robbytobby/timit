@@ -55,6 +55,7 @@ de:
         sign_up: 'Zugang beantragen'
       user:
         inactive_signed_up: 'Dein Account ist angelegt, muß aber noch durch den Admin freigegeben werden. Du wirst per email informiert über die Freischaltung.'
+        signed_up_but_not_approved: 'Dein Account ist angelegt, muß aber noch durch den Admin freigegeben werden. Du wirst per email informiert über die Freischaltung.'
     unlocks:
       send_instructions: 'Du wirst in Kürze eine E-Mail mit den Anweisungen zum Entsperren des Accounts erhalten.'
       unlocked: 'Dein Acoount wurde erfolgreich entsperrt. Du bist nun angemeldet'

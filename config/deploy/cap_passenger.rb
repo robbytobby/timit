@@ -56,7 +56,9 @@ Capistrano::Configuration.instance.load do
       Overwrites default :restart task for Passenger server.
     DESC
     task :restart, :roles => :app, :except => { :no_release => true } do
-      passenger.restart
+      #passenger.restart
+      killall -u timit2 nginx
+      passenger start -a 127.0.0.1 -p 3001 -e production -d
     end
           
     desc <<-DESC
@@ -64,7 +66,8 @@ Capistrano::Configuration.instance.load do
       Overwrites default :start task for Passenger server.
     DESC
     task :start, :roles => :app do
-      passenger.start
+      #passenger.start
+      passenger start -a 127.0.0.1 -p 3001 -e production -d
     end
     
     desc <<-DESC
@@ -72,7 +75,8 @@ Capistrano::Configuration.instance.load do
       Overwrites default :start task for Passenger server.
     DESC
     task :stop, :roles => :app do
-      passenger.stop
+      #passenger.stop
+      killall -u timit2 nginx
     end
                                       
   end
