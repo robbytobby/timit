@@ -50,7 +50,7 @@ de:
         current_sign_in_at: 'letzter Login am'
         sign_in_count: 'Anzahl der Logins'
         locale: 'Sprache'
-        default_machines: 'Ausgewählt Maschinen'
+        default_machines: 'Ausgewählte Maschinen'
       option_group:
         name: 'Name'
         group: 'Gruppe'
