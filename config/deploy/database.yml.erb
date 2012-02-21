@@ -5,17 +5,17 @@ base: &base
   encoding: unicode
 
 development:
-  database: #{application}_development
+  database: <%=application + '_development'%>
   <<: *base
 
 test: &test
-  database: #{application}_test
+  database: <%=application + '_test'%>
   <<: *base
 
 production:
-  database: #{application}
-  username: #{user}
-  password: #{Capistrano::CLI.ui.ask("Enter Postgresql database password: ")}
+  database: <%=application%>
+  username: <%=user%>
+  password: <%=Capistrano::CLI.ui.ask("Enter Postgresql database password: ")%>
   <<: *base
 
 cucumber:
