@@ -53,8 +53,8 @@ Capistrano::Configuration.instance.load do
       EOF
 
       location = fetch(:template_dir, "config/deploy") + '/database.yml.erb'
-      raise location.inspect
       template = File.file?(location) ? File.read(location) : default_template
+      raise template.inspect
 
       config = ERB.new(template)
 
