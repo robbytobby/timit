@@ -52,7 +52,7 @@ Capistrano::Configuration.instance.load do
       production:
         database: #{application}
         username: #{user}
-        password: #{Capistrano::CLI.ui.ask("Enter Postgresql database password: "}
+        password: #{Capistrano::CLI.ui.ask("Enter Postgresql database password: ")}
         <<: *base
       cucumber:
         <<: *test
