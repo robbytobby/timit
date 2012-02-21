@@ -57,8 +57,8 @@ Capistrano::Configuration.instance.load do
     DESC
     task :restart, :roles => :app, :except => { :no_release => true } do
       #passenger.restart
-      killall -u timit2 nginx
-      passenger start -a 127.0.0.1 -p 3001 -e production -d
+      run "killall -u timit2 nginx"
+      run "passenger start -a 127.0.0.1 -p 3001 -e production -d"
     end
           
     desc <<-DESC
@@ -67,7 +67,7 @@ Capistrano::Configuration.instance.load do
     DESC
     task :start, :roles => :app do
       #passenger.start
-      passenger start -a 127.0.0.1 -p 3001 -e production -d
+      run "passenger start -a 127.0.0.1 -p 3001 -e production -d"
     end
     
     desc <<-DESC
@@ -76,7 +76,7 @@ Capistrano::Configuration.instance.load do
     DESC
     task :stop, :roles => :app do
       #passenger.stop
-      killall -u timit2 nginx
+      run "killall -u timit2 nginx"
     end
                                       
   end
