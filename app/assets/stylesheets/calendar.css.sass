@@ -10,6 +10,8 @@ $line-height: $font-size / 3 * 4
 $base_color: #bbccee
 $darker-color: darken($base-color, 30%)
 $hover-color: lighten($base-color, 10%)
+$teaching-color: #eeaa33
+$admin-color: $base_color
 
 $date_width: 90px
 $time_width: 40px
@@ -211,6 +213,10 @@ body.bp
           margin-top: $booking_margin
         &.from_midnight
           margin-top: $booking_margin
+        &.teaching
+          background-color: $teaching-color
+        &.admin
+          background-color: $admin-color
         &.starts_at, &.ends_at
           position: absolute
           z-index: 10

@@ -13,6 +13,7 @@ module CalendarHelper
     klass << " from_midnight" if booking.from_beginning_of_day? ||  booking.starts_at.to_date < calendar.days.first && (booking.multiday? && !booking.ends_at?(calendar.days.first)) 
     klass << " end" if  booking.includes?(calendar.days.first) && booking.multiday? && !booking.starts_at?(calendar.days.first)
     klass << " start" if  booking.includes?(calendar.days.last - 1.day) && booking.multiday? && !booking.ends_at?(calendar.days.last - 1.day)
+    klass << " " + booking.user.role
     klass
   end
 
@@ -34,12 +35,12 @@ module CalendarHelper
 
   def new_booking_link(machine, day, opts = {})
       starts_at = opts[:after]  ? opts[:after].ends_at : day.to_datetime
+      starts_at = starts_at.beginning_of_day + 8.hours if current_user.role?('teaching') && starts_at < starts_at.beginning_of_day + 8.hours
       next_booking = Booking.next(machine, starts_at)
       ends_at = next_booking.starts_at if next_booking
-      max_duration = machine.real_max_duration 
+      max_duration = machine.max_duration_for(current_user) 
       max_duration ||= 1.week
       ends_at = starts_at + max_duration if ends_at.nil? || ends_at > starts_at + max_duration
-
       link_to('+', new_booking_path(:booking => {:machine_id => machine, :starts_at => starts_at, :ends_at => ends_at, :user_id => current_user}))
   end
 

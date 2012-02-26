@@ -81,6 +81,10 @@ describe CalendarHelper do
     it "labels events that end in the next calendar period" do
       helper.div_class(@calendar, @booking6).should include("start")
     end
+
+    it "labels events with the role of the corresponding user" do
+      helper.div_class(@calendar, @booking1).should include(@booking1.user.role)
+    end
   end
 
   describe "new_booking_link" do

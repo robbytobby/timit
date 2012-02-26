@@ -3,7 +3,7 @@
     = f.input :id, :as => :hidden if @booking.id
     = f.input :starts_at, :include_blank => false
     = f.input :ends_at, :include_blank => false
-    = f.input :all_day, :as => :boolean
+    = f.input :all_day, :as => :boolean unless @booking.machine.max_duration_for(@booking.user) && @booking.machine.max_duration_for(@booking.user) < 1.day
     = f.input :temperature, :as => :string, :label => t('activerecord.attributes.booking.temperature')
     = f.input :sample
     - if can? :manage, Booking

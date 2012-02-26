@@ -181,9 +181,10 @@ class Booking < ActiveRecord::Base
   end
 
   def not_to_long
-    if machine && machine.max_duration
+    if machine && machine.max_duration_for(user)
       duration = ends_at - starts_at
-      errors.add(:ends_at, :to_long, :max => I18n.t('human_time_units.' + machine.max_duration_unit, :count => machine.max_duration)) if duration > machine.real_max_duration
+      text = user.role?('teaching') ? I18n.t('human_time_units.hour', :count => 6) : I18n.t('human_time_units.' + machine.max_duration_unit, :count => machine.max_duration)
+      errors.add(:ends_at, :to_long, :max => text) if duration > machine.max_duration_for(user)
     end
   end
 

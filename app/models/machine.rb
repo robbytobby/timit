@@ -23,6 +23,14 @@ class Machine < ActiveRecord::Base
   def real_max_duration
     max_duration.send(max_duration_unit) if max_duration
   end
+
+  def max_duration_for(user = nil)
+    if user.try(:role?, 'teaching') 
+      return 6.hours
+    else
+      return real_max_duration
+    end
+  end
   
   def min_duration
     if min_booking_time
