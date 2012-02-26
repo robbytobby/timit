@@ -11,7 +11,7 @@
     //  %li= link_to t('.bookings'), bookings_path
   %ul.user_menu
     %li= link_to t('.edit_account'), edit_user_registration_path
-    %li= link_to t(".sign_out"), destroy_user_session_path, :method => :delete
+    %li= link_to t(".sign_out"), destroy_user_session_path
     %li
       = link_to 'en', request.path_parameters.merge(:locale => 'en')
       |
