@@ -31,6 +31,8 @@ class UsersController < ApplicationController
   def create
     @user.password = Devise.friendly_token.first(8)
     @user.toggle_approved
+    params[:user].delete(:role) if cannot? :change_role, @user
+    change_role(params[:user][:role]) if params[:user][:role]
 
     respond_to do |format|
       if @user.save
