@@ -89,7 +89,7 @@ describe Booking do
 
   describe "next and previous booking" do
     before :each do
-      @booking1 = FactoryGirl.create(:booking, :starts_at => "2011-12-01 00:00:00", :ends_at => "2011-12-02 00:02:00")
+      @booking1 = FactoryGirl.create(:booking, :starts_at => "2011-12-01 00:00:00", :ends_at => "2011-12-01 00:02:00")
       @booking2 = FactoryGirl.create(:booking, :starts_at => "2011-12-01 00:02:00", :ends_at => "2011-12-01 00:05:00")
       @booking3 = FactoryGirl.create(:booking, :starts_at => "2011-12-03 00:02:02", :ends_at => "2011-12-04 00:03:00", :machine => @booking1.machine)
     end
