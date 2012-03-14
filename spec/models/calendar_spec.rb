@@ -36,12 +36,13 @@ describe Calendar do
       before :each do
         first_day = @calendar.days.first.to_datetime
         last_day = @calendar.days.last.to_datetime
-        @to_early_booking = FactoryGirl.create(:booking, :starts_at => first_day - 1.day, :ends_at =>  first_day - 1.day + 1.second)
-        @started_booking = FactoryGirl.create(:booking, :starts_at => first_day - 3.days, :ends_at =>  first_day + 1.minute)
-        @today_booking = FactoryGirl.create(:booking, :starts_at => first_day, :ends_at => first_day + 1.second)
-        @future_booking = FactoryGirl.create(:booking, :starts_at => last_day, :ends_at => last_day + 1.second)
-        @future_booking2 = FactoryGirl.create(:booking, :starts_at => last_day - 2.days, :ends_at => last_day + 2.days)
-        @to_late_booking = FactoryGirl.create(:booking, :starts_at => last_day + 1.day, :ends_at => last_day + 1.day + 1.second)
+        @machines = FactoryGirl.create_list(:machine, 6, :min_booking_time => 1, :min_booking_time_unit => 'minute')
+        @to_early_booking = FactoryGirl.create(:booking, :machine => @machines[0], :starts_at => first_day - 1.day, :ends_at =>  first_day - 1.day + 1.minute)
+        @started_booking = FactoryGirl.create(:booking, :machine => @machines[1], :starts_at => first_day - 3.days, :ends_at =>  first_day + 1.minute)
+        @today_booking = FactoryGirl.create(:booking, :machine => @machines[2], :starts_at => first_day, :ends_at => first_day + 1.minute)
+        @future_booking = FactoryGirl.create(:booking, :machine => @machines[3], :starts_at => last_day, :ends_at => last_day + 1.minute)
+        @future_booking2 = FactoryGirl.create(:booking, :machine => @machines[4], :starts_at => last_day - 2.days, :ends_at => last_day + 2.days)
+        @to_late_booking = FactoryGirl.create(:booking, :machine => @machines[5], :starts_at => last_day + 1.day, :ends_at => last_day + 1.day + 1.minute)
         @calendar = Calendar.new
       end
 

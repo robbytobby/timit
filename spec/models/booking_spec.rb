@@ -89,7 +89,7 @@ describe Booking do
 
   describe "next and previous booking" do
     before :each do
-      @booking1 = FactoryGirl.create(:booking, :starts_at => "2011-12-01 00:00:00", :ends_at => "2011-12-01 00:02:00")
+      @booking1 = FactoryGirl.create(:booking, :starts_at => "2011-12-01 00:00:00", :ends_at => "2011-12-02 00:02:00")
       @booking2 = FactoryGirl.create(:booking, :starts_at => "2011-12-01 00:02:00", :ends_at => "2011-12-01 00:05:00")
       @booking3 = FactoryGirl.create(:booking, :starts_at => "2011-12-03 00:02:02", :ends_at => "2011-12-04 00:03:00", :machine => @booking1.machine)
     end
@@ -128,10 +128,17 @@ describe Booking do
     it {should validate_presence_of(:ends_at)}
     it {should validate_presence_of(:starts_at)}
     it {should_not accept_values_for(:ends_at, booking.starts_at - 1.minute, booking.starts_at - 1.day)}
-    it "does not accept bookings exceeding the maximum" do
+    it "does not accept bookings exceeding the maximum duration" do
       @machine = FactoryGirl.create(:machine, :max_duration => 2, :max_duration_unit => 'day')
       @now = DateTime.now
       @booking = FactoryGirl.build(:booking, :machine => @machine, :starts_at => @now, :ends_at => @now + @machine.real_max_duration + 1.minute)
+      @booking.should_not be_valid
+    end
+
+    it "does not accept bookings shorter than the minimum duration" do
+      @machine = FactoryGirl.create(:machine, :min_booking_time => 2, :min_booking_time_unit => 'hour')
+      @now = DateTime.now
+      @booking = FactoryGirl.build(:booking, :machine => @machine, :starts_at => @now, :ends_at => @now + @machine.min_duration - 1.minutes)
       @booking.should_not be_valid
     end
 

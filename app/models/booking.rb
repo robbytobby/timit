@@ -9,6 +9,7 @@ class Booking < ActiveRecord::Base
   validates_numericality_of :machine_id, :only_integer => true
   validates_presence_of :starts_at, :ends_at
   validate :not_to_long
+  validate :not_to_short
   validate :end_after_start
   validate :no_overlaps
   validate :non_optional_options
@@ -185,6 +186,14 @@ class Booking < ActiveRecord::Base
       duration = ends_at - starts_at
       text = user.role?('teaching') ? I18n.t('human_time_units.hour', :count => 6) : I18n.t('human_time_units.' + machine.max_duration_unit, :count => machine.max_duration)
       errors.add(:ends_at, :to_long, :max => text) if duration > machine.max_duration_for(user)
+    end
+  end
+
+  def not_to_short
+    if machine && machine.min_duration
+      duration = ends_at - starts_at
+      text = I18n.t('human_time_units.' + machine.min_booking_time_unit, :count => machine.min_booking_time)
+      errors.add(:ends_at, :to_short, :min => text) if duration < machine.min_duration
     end
   end
 

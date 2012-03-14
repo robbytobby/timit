@@ -5,5 +5,7 @@ FactoryGirl.define do
     sequence(:name){|n| "Name#{n}"}
     max_duration ""
     description "Text"
+    min_booking_time 1
+    min_booking_time_unit 'hour'
   end
 end

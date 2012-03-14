@@ -70,6 +70,7 @@ de:
           attributes:
             ends_at:
               to_long: "Buchung ist zu lang (Maximal: %{max})"
+              to_short: "Buchung ist zu kurz (Minimal: %{min})"
             base:
               to_many: "Aus der Gruppe '%{name}' darf nur eine Option ausgewählt sein"
               one_necessary: "Eine Option aus der Gruppe '%{name}' muss ausgewählt sein"
