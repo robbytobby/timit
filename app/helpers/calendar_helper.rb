@@ -34,14 +34,11 @@ module CalendarHelper
   end
 
   def new_booking_link(machine, day, opts = {})
-      starts_at = opts[:after]  ? opts[:after].ends_at : day.to_datetime
-      starts_at = starts_at.beginning_of_day + 8.hours if current_user.role?('teaching') && starts_at < starts_at.beginning_of_day + 8.hours
-      next_booking = Booking.next(machine, starts_at)
-      ends_at = next_booking.starts_at if next_booking
-      max_duration = machine.max_duration_for(current_user) 
-      max_duration ||= 1.week
-      ends_at = starts_at + max_duration if ends_at.nil? || ends_at > starts_at + max_duration
-      link_to('+', new_booking_path(:booking => {:machine_id => machine, :starts_at => starts_at, :ends_at => ends_at, :user_id => current_user}))
+    starts_at = opts[:after]  ? opts[:after].ends_at : day.to_datetime
+    next_booking = Booking.next(machine, starts_at)
+    starts_at += 8.hours unless opts[:after] || (next_booking && next_booking.starts_at < starts_at + 8.hours + machine.min_duration)
+    ends_at = starts_at + machine.min_duration
+    link_to('+', new_booking_path(:booking => {:machine_id => machine, :starts_at => starts_at, :ends_at => ends_at, :user_id => current_user}))
   end
 
   def draw_spacer(calendar, machine_id, day)
