@@ -89,8 +89,8 @@ describe Booking do
 
   describe "next and previous booking" do
     before :each do
-      @booking1 = FactoryGirl.create(:booking, :starts_at => "2011-12-01 00:00:00", :ends_at => "2011-12-01 00:02:00")
-      @booking2 = FactoryGirl.create(:booking, :starts_at => "2011-12-01 00:02:00", :ends_at => "2011-12-01 00:05:00")
+      @booking1 = FactoryGirl.create(:booking, :starts_at => "2011-12-01 00:00:00", :ends_at => "2011-12-02 00:03:00")
+      @booking2 = FactoryGirl.create(:booking, :starts_at => "2011-12-01 00:02:00", :ends_at => "2011-12-02 00:05:00")
       @booking3 = FactoryGirl.create(:booking, :starts_at => "2011-12-03 00:02:02", :ends_at => "2011-12-04 00:03:00", :machine => @booking1.machine)
     end
 
@@ -335,7 +335,7 @@ describe Booking do
       it "is  valid if a neede accessory is available n times, but not booked n times during the same period" do
         @machine3 = FactoryGirl.create(:machine, :options => [@option1, @option2])
         @booking3 = FactoryGirl.create(:booking, machine: @machine3, options: [@option2], starts_at: Time.now - 1.hour, ends_at: Time.now + 1.minute)
-        @booking2 = FactoryGirl.create(:booking, machine: @machine2, options: [@option2], starts_at: Time.now + 2.minutes, ends_at: Time.now + 1.hour)
+        @booking2 = FactoryGirl.create(:booking, machine: @machine2, options: [@option2], starts_at: Time.now + 2.minutes, ends_at: Time.now + 2.hour)
         @booking = FactoryGirl.build(:booking, machine: @machine1, options: [@option2], starts_at: Time.now, ends_at: Time.now + 1.hour)
         @booking.should be_valid
       end

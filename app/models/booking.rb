@@ -190,7 +190,7 @@ class Booking < ActiveRecord::Base
   end
 
   def not_to_short
-    if machine && machine.min_duration
+    if machine && ends_at && starts_at
       duration = ends_at - starts_at
       text = I18n.t('human_time_units.' + machine.min_booking_time_unit, :count => machine.min_booking_time)
       errors.add(:ends_at, :to_short, :min => text) if duration < machine.min_duration
