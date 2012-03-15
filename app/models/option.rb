@@ -3,6 +3,8 @@ class Option < ActiveRecord::Base
   has_and_belongs_to_many :bookings
   has_and_belongs_to_many :machines
   has_and_belongs_to_many :needed, :class_name => 'Accessory', :order => :name
+  has_many :exclusions
+  has_many :excluded_options, :through => :exclusions, :dependent => :destroy
   validates_presence_of :name, :option_group_id
   validates_uniqueness_of :name
 

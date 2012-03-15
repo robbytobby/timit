@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120201143855) do
+ActiveRecord::Schema.define(:version => 20120315130559) do
 
   create_table "accessories", :force => true do |t|
     t.string   "name"
@@ -108,6 +108,17 @@ ActiveRecord::Schema.define(:version => 20120201143855) do
     t.index ["option_id"], :name => "index_bookings_options_on_option_id"
     t.foreign_key ["booking_id"], "bookings", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "bookings_options_booking_id_fkey"
     t.foreign_key ["option_id"], "options", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "bookings_options_option_id_fkey"
+  end
+
+  create_table "exclusions", :force => true do |t|
+    t.integer  "option_id"
+    t.integer  "excluded_option_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["excluded_option_id"], :name => "index_exclusions_on_excluded_option_id"
+    t.index ["option_id"], :name => "index_exclusions_on_option_id"
+    t.foreign_key ["option_id"], "options", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "exclusions_option_id_fkey"
+    t.foreign_key ["excluded_option_id"], "options", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "exclusions_excluded_option_id_fkey"
   end
 
   create_table "machines_options", :id => false, :force => true do |t|

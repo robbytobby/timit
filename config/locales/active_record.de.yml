@@ -60,6 +60,7 @@ de:
         name: 'Name'
         message: 'Hinweis'
         needed: 'Benötigt'
+        excluded_options: 'Schließt aus'
     errors:
       models:
         user:

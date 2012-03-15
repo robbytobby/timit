@@ -59,6 +59,7 @@ en:
         name: 'Name'
         message: 'message'
         needed: 'needs'
+        excluded_options: 'excludes'
     errors:
       models:
         user:
