@@ -18,6 +18,7 @@ class Booking < ActiveRecord::Base
   validates :temperature, :presence => {:if => lambda{|b| b.machine ? b.machine.needs_temperature : false} }
   validates :sample, :presence => {:if => lambda{|b| b.machine ? b.machine.needs_sample : false} }
   validate :needed_accessories_available
+  validate :no_option_conflicts
 
   before_validation :adjust_time_to_all_day
 
@@ -140,7 +141,11 @@ class Booking < ActiveRecord::Base
   end
 
   def not_available_options
-    machine.options.map{|o| o.id unless o.available?(self)}.compact
+    res = machine.options.map{|o| o.id unless o.available?(self)}.compact
+    options.each do |opt|
+      res << opt.excluded_options.map{|o| o.id}
+    end
+    return res.flatten.uniq
   end
 
   def same_time_bookings
@@ -218,4 +223,12 @@ class Booking < ActiveRecord::Base
     end
   end
 
+  def no_option_conflicts
+    options.each do |opt|
+      conflicts = (opt.excluded_options & options)
+      conflicts.each do |conflict|
+        errors.add(:base, :option_conflict, :name => opt.name, :with => conflict )
+      end
+    end
+  end
 end

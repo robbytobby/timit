@@ -298,6 +298,43 @@ describe Booking do
       @booking.group_errors(@group4).should be_empty
     end
 
+    describe "conflicting options" do
+      before :each do
+        @group5 = FactoryGirl.create(:option_group, :exclusive => true, :optional => true)
+        @group6 = FactoryGirl.create(:option_group, :exclusive => true, :optional => true)
+        @group7 = FactoryGirl.create(:option_group, :exclusive => true, :optional => true)
+        @option1 = FactoryGirl.create(:option, :option_group => @group5)
+        @option2 = FactoryGirl.create(:option, :option_group => @group6)
+        @option3 = FactoryGirl.create(:option, :option_group => @group7, :excluded_options => [@option1, @option2])
+        @machine2 = FactoryGirl.create(:machine, :options => [@option1, @option2, @option3])
+      end
+
+      it "is valid with one of two conflicting options #1" do
+        @booking = FactoryGirl.build(:booking, :machine => @machine2, :options => [@option1])
+        @booking.should be_valid
+      end
+
+      it "is valid with one of two conflicting options #2" do
+        @booking = FactoryGirl.build(:booking, :machine => @machine2, :options => [@option2])
+        @booking.should be_valid
+      end
+
+      it "is valid with two of the not conflicting options" do
+        @booking = FactoryGirl.build(:booking, :machine => @machine2, :options => [@option1, @option2])
+        @booking.should be_valid
+      end
+
+      it "is not valid with two of the conflicting options #2" do
+        @booking = FactoryGirl.build(:booking, :machine => @machine2, :options => [@option1, @option3])
+        @booking.should_not be_valid
+      end
+
+      it "is not valid with two of the conflicting options #3" do
+        @booking = FactoryGirl.build(:booking, :machine => @machine2, :options => [@option2, @option3])
+        @booking.should_not be_valid
+      end
+    end
+
     describe 'needed accessories' do
       before :each do
         @option_group = FactoryGirl.create(:option_group, :optional => true)
