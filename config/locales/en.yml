@@ -149,8 +149,8 @@ en:
     welcome_email:
       subject: "Your new Account for TiMiT"
       hi: "Hello %{name}"
-      p1_html: "I created an account for you for 'TiMiT', our online calendar for our measuring machines. With TiMiT, we manage the time for all our machines. \n To be able to use the system, you first have to set your password via\n %{link}\n"
-      p2_html: "Afterwards you may login with your email address and password via %{link} to manage your bookings."
+      p1_html: "I created an account for you for 'TiMiT', our online calendar for our measuring machines. With TiMiT, we manage the time for all our machines. \n To be able to use the system, you first have to set your password via\n %{link}\n Attention: the akivationlink is only valid within the next 72 hours."
+      p2_html: "Afterwards you may login with your email address (as login) and password via %{link} to manage your bookings."
       login: "Login"
       set_password: "Set password"
     approval_change_email:

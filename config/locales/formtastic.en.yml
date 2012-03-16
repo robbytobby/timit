@@ -1,4 +1,5 @@
 en:
+  required: "required"
   formtastic:
     actions:
       create: "create %{model}"

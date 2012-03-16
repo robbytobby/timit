@@ -149,8 +149,8 @@ de:
     welcome_email:
       subject: "Dein neuer Account für TiMiT"
       hi: "Hallo %{name}"
-      p1_html: "ich habe für dich einen Account für 'TiMiT', unserem Online-Kalender für die Meßgeräte angelegt. Dort wird die Meßzeit für diverse Maschinen verwaltet. \n Damit du den Account auch nutzen kannst mußt du zunächst unter\n %{link}\n ein Passwort setzen."
-      p2_html: "Danach kannst du dich mit diesem Passwort jederzeit unter %{link} einloggen um deine Buchungen zu managen."
+      p1_html: "ich habe für dich einen Account für 'TiMiT', unserem Online-Kalender für die Meßgeräte angelegt. Dort wird die Meßzeit für diverse Maschinen verwaltet. \n Damit du den Account auch nutzen kannst mußt du zunächst unter\n %{link}\n ein Passwort setzen. Achtung: der Aktivierungslink ist nur 72 Stunden gültig."
+      p2_html: "Danach kannst du dich mit deiner E-Mail Adresse als Login und diesem Passwort jederzeit unter %{link} einloggen um deine Buchungen zu managen."
       login: "Login"
       set_password: "Passwort setzen"
     approval_change_email:

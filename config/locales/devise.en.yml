@@ -66,7 +66,7 @@ en:
         hello: 'Hello %{name} !'
         password_reset_request: "Somebody has requested a link to change your password, which you can do using the following link:"
         false_request_ignore: "If you did not request this link, just ignore this email."
-        wont_change: "Until you follow the link above and set a new password, your old one is still valid"
+        wont_change: "Until you follow the link above and set a new password, your old one is still valid. The link is only valid within the next 72 hours."
         change_my_password: "Change my Password"
       unlock_instructions:
         subject: 'Unlock Instructions'

@@ -1,5 +1,6 @@
 de:
   formtastic:
+    required: 'obligatorisch'
     actions:
       create: "%{model} speichern"
       update: "%{model} speichern"
