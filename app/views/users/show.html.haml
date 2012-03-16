@@ -13,7 +13,7 @@
       = @user.phone
     %li
       %b= t('activerecord.attributes.user.email') + ':'
-      = @user.email
+      = mail_to @user.email
     %li
       %b= t('activerecord.attributes.user.role') + ':'
       = t 'activerecord.attributes.user.' + @user.role
