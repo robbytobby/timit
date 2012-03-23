@@ -30,6 +30,8 @@ class User < ActiveRecord::Base
       name
     elsif format == :short
       first_name[0] + '. ' + last_name[0..15]
+    elsif format == :shorter
+      first_name[0] + '. ' + last_name[0..11]
     else
       raise "unknown format #{format} for user_name"
     end
