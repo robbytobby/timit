@@ -17,7 +17,8 @@ en:
         success: "The account of %{name} is now deactivated"
       not_yourself: "You cannot %{action} yourself."
       destroy_self:
-        success: 'Your Account is now deleted'
+        success: 'Your account is now deleted'
+      allready_approved: 'This account has allready been activated.'
     bookings:
       success: 'Booking successfully %{action}.'
       machine_needed: 'A machine has to be selected'

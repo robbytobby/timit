@@ -18,6 +18,7 @@ de:
       not_yourself: "Du kannst dich selbst nicht %{action}."
       destroy_self:
         success: 'Dein Account ist nun gelöscht'
+      allready_approved: 'Dieser Account wurde schon aktiviert'
     bookings:
       success: 'Buchung erfolgreich %{action}.'
       machine_needed: 'Eine Maschine muß ausgewählt sein'

@@ -80,6 +80,12 @@ class UsersController < ApplicationController
   end
 
   def change_approved
+
+    if params[:approve] && @user.approved
+      flash[:notice] = 'Ist shon passiert'
+      redirect_to users_path, :notice => t('controller.users.allready_approved') and return
+    end
+
     @user.toggle_approved
     
     respond_to do |format|

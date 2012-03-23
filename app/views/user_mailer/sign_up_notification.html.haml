@@ -4,4 +4,4 @@
   = t '.new_signup', :name => @user.name
 %p
   = t '.to_activate'
-  = link_to t('.activate', :name => @user.name), change_approved_user_url(@user, :locale => 'de')
+  = link_to t('.activate', :name => @user.name), change_approved_user_url(@user, :locale => 'de', :approve => true)
