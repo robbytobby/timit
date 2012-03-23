@@ -3,7 +3,7 @@
 - Machine.order(:id).each do |m|
   %div.machine_select
     = check_box_tag "machines[#{m.id}]", 1, @calendar.machines.include?(m)
-    = label_tag m.name
+    = label_tag "machines[#{m.id}]", m.name
 = hidden_field_tag :start_date, @calendar.days.first
 %div.clear
 %br
