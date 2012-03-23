@@ -12,6 +12,7 @@ en:
   save: "save"
   please_choose: "please choose"
   none: "none"
+  all: "all"
   time_units:
     week: "week(s)"
     day: "day(s)"

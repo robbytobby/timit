@@ -12,6 +12,7 @@ de:
   save: "speichern"
   please_choose: "bitte wählen"
   none: "keine/r"
+  all: "alle"
   time_units:
     week: "Woche(n)"
     day: "Tag(e)"
