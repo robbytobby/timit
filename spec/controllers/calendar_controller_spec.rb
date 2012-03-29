@@ -15,7 +15,7 @@ describe CalendarController do
 
     context "with user logged in" do
       before :each do
-        sign_in FactoryGirl.create :approved_user
+        sign_in @user = FactoryGirl.create(:approved_user)
       end
 
       describe "GET index" do
@@ -61,6 +61,16 @@ describe CalendarController do
           @calendar.machines.should include(@machines[0], @machines[2], @machines[4])
           @calendar.machines.should have(3).machines
           @calendar.machines.should_not include(@machines[1], @machines[3], @machines[5])
+        end
+
+        it "respects the user set defaults for the machines" do
+          @machines = FactoryGirl.create_list(:machine, 5)
+          @user.default_machines = [@machines[1], @machines[3]]
+          get :index
+          @calendar = assigns(:calendar)
+          @calendar.machines.should include(@machines[1], @machines[3])
+          @calendar.machines.should have(2).machines
+          @calendar.machines.should_not include(@machines[0], @machines[2], @machines[4])
         end
 
         it "respects an offset for machines" do

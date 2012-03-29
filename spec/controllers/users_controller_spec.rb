@@ -196,16 +196,31 @@ describe UsersController do
   end
 
   describe "change approved" do
-    it "changes the 'approved' value from true to false" do
+    it "changes the 'approved' value from false to true" do
       get :change_approved, :id => @user
       @user.reload.should be_approved
     end
 
-    it "changes the 'approved' value from false to true" do
+    it "changes the 'approved' value from true to false" do
       @user = FactoryGirl.create(:approved_user)
       get :change_approved, :id => @user
       @user.reload.should_not be_approved
     end
+
+    context "with approve only param" do
+      it "changes the 'approved' value from false to true" do
+        get :change_approved, :id => @user, :approve => true
+        @user.reload.should be_approved
+      end
+
+      it "does not change the 'approved' value from true to false" do
+        @user = FactoryGirl.create(:approved_user)
+        get :change_approved, :id => @user, :approve => true
+        @user.reload.should be_approved
+        flash[:notice].should == I18n.t('controller.users.allready_approved')
+      end
+    end
+
 
     context "of current user" do
       it "does not change the account" do

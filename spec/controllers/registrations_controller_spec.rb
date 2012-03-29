@@ -29,5 +29,22 @@ describe RegistrationsController do
       end
     end
   end
+
+  describe "locale set" do
+    after :all do
+      I18n.locale = :de
+    end
+
+    it "does set the locale" do
+      post :create, :locale => 'en'
+      I18n.locale.should == :en
+    end
+
+    it "does return an error if the requested locale does not exist" do
+      post :create, :locale => 'pt'
+      I18n.locale.should == :en
+      flash[:notice].should == 'pt translation not available'
+    end
+  end
 end
 

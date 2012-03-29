@@ -225,4 +225,34 @@ describe BookingsController do
       end
     end
   end
+
+  describe "update_options" do
+    before :each do
+      sign_in (@current_user = FactoryGirl.create(:admin_user))
+      @own_booking = FactoryGirl.create(:booking, :user => @current_user)
+      @params = {:sample => 'Test'}
+    end
+
+    it "assigns an existing booking to @booking if a booking_id is given" do
+      get :update_options, :booking => @params.merge({:id => @own_booking.id}), :format => :js
+      assigns(:booking).should eq(@own_booking)
+    end
+
+    it "updates the attributes of an existing booking" do
+      get :update_options, :booking => @params.merge({:id => @own_booking.id}), :format => :js
+      assigns(:booking).sample.should_not == @own_booking.sample
+      assigns(:booking).sample.should == @params[:sample]
+    end
+
+    it "assigns a new booking to @booking if no booking_id is given" do
+      get :update_options, :booking => {}, :format => :js
+      assigns(:booking).should be_new_record
+      assigns(:booking).should be_a(Booking)
+    end
+
+    it "valildates the booking" do
+      Booking.any_instance.should_receive(:valid?)
+      get :update_options, :booking => {}, :format => :js
+    end
+  end
 end
