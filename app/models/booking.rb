@@ -12,11 +12,11 @@ class Booking < ActiveRecord::Base
   validate :not_to_short
   validate :end_after_start
   validate :no_overlaps
-  validate :non_optional_options
-  validate :exclusive_options
   validates_numericality_of :temperature, :only_integer => true, :allow_blank => true
   validates :temperature, :presence => {:if => lambda{|b| b.machine ? b.machine.needs_temperature : false} }
   validates :sample, :presence => {:if => lambda{|b| b.machine ? b.machine.needs_sample : false} }
+  validate :non_optional_options
+  validate :exclusive_options
   validate :needed_accessories_available
   validate :no_option_conflicts
 

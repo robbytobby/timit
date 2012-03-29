@@ -18,6 +18,237 @@ describe Booking do
   it { should belong_to(:machine) }
   it { should have_and_belong_to_many(:options) }
 
+  describe "validations" do
+    it {should validate_numericality_of(:temperature), :integer_only => true }
+    it {should validate_presence_of(:user_id)}
+    it {should validate_numericality_of(:user_id), :integer_only => true }
+    it {should validate_presence_of(:machine_id)}
+    it {should validate_numericality_of(:machine_id), :integer_only => true}
+    it {should validate_presence_of(:ends_at)}
+    it {should validate_presence_of(:starts_at)}
+
+    it "does not accept bookings exceeding the maximum duration" do
+      @machine = FactoryGirl.create(:machine, :max_duration => 2, :max_duration_unit => 'day')
+      @now = DateTime.now
+      @booking = FactoryGirl.build(:booking, :machine => @machine, :starts_at => @now, :ends_at => @now + @machine.real_max_duration + 1.minute)
+      @booking.should_not be_valid
+    end
+    
+    it "does not accept bookings shorter than the minimum duration" do
+      @machine = FactoryGirl.create(:machine, :min_booking_time => 2, :min_booking_time_unit => 'hour')
+      @now = DateTime.now
+      @booking = FactoryGirl.build(:booking, :machine => @machine, :starts_at => @now, :ends_at => @now + @machine.min_duration - 1.minutes)
+      @booking.should_not be_valid
+    end
+
+    it {should_not accept_values_for(:ends_at, booking.starts_at - 1.minute, booking.starts_at - 1.day)}
+
+    describe "bookings may not overlap" do
+      before :each do
+        @now = Time.now.beginning_of_day
+        @old_booking = FactoryGirl.create(:booking, :starts_at => @now, :ends_at => @now + 6.hours)
+      end
+      
+      describe "#new booking" do
+        it "is not valid if its start lies in an existing booking for that machine" do
+          FactoryGirl.build(:booking, :starts_at => @now, :ends_at => @now + 3.days).should be_valid
+          FactoryGirl.build(:booking, :starts_at => @now, :ends_at => @now + 3.days, :machine_id => @old_booking.machine_id).should_not be_valid
+        end
+
+        it "is not valid if its end lies in an existing booking for that machine" do
+          FactoryGirl.build(:booking, :starts_at => @now - 1.day, :ends_at => @now).should be_valid
+          FactoryGirl.build(:booking, :starts_at => @now - 1.day, :ends_at => @now + 1.minute, :machine_id => @old_booking.machine_id).should_not be_valid
+        end
+
+        it "is not valid if its dates include an existing booking for that machine" do
+          FactoryGirl.build(:booking, :starts_at => @now - 1.day, :ends_at => @now + 1.day).should be_valid
+          FactoryGirl.build(:booking, :starts_at => @now - 1.day, :ends_at => @now + 1.day, :machine_id => @old_booking.machine_id).should_not be_valid
+        end
+
+        it "is not valid if it is an all day booking and it dates include another booking" do
+          FactoryGirl.build(:booking, :starts_at => @now + 6.hours, :ends_at => @now + 7.hours, :all_day => true).should be_valid
+          FactoryGirl.build(:booking, :starts_at => @now + 6.hours, :ends_at => @now + 7.hours, :machine => @old_booking.machine).should be_valid
+          FactoryGirl.build(:booking, :starts_at => @now + 6.hours, :ends_at => @now + 7.hours, :all_day => true, :machine => @old_booking.machine).should_not be_valid
+        end
+      end
+
+      describe "#existing booking" do
+        before :each do
+          @booking = FactoryGirl.create(:booking, :starts_at => @now + 7.hours, :ends_at => @now + 8.hours, :machine_id => @old_booking.machine_id)
+        end
+
+        it "is not valid if its start lies in an existing booking for that machine" do
+          @booking.starts_at = @now + 6.hours 
+          @booking.should be_valid
+
+          @booking.starts_at = @now + 5.hours 
+          @booking.should_not be_valid
+        end
+
+        it "is not valid if its end lies in an existing booking for that machine" do
+          @booking.starts_at = @now - 1.hour 
+          @booking.ends_at = @now 
+          @booking.should be_valid
+
+          @booking.ends_at = @now + 1.hour
+          @booking.should_not be_valid
+        end
+
+        it "#is not valid if its dates include an existing booking for that machine" do
+          @booking.starts_at = @now - 1.hour 
+          @booking.ends_at = @now 
+          @booking.should be_valid
+
+          @booking.ends_at = @now + 7.hours
+          @booking.should_not be_valid
+        end
+      end
+    end
+
+    it "is not valid without temperature if machine needs temperature"  do
+      @machine = FactoryGirl.create(:machine, :needs_temperature => true)
+      @booking = FactoryGirl.build(:booking, :machine => @machine)
+      @booking.should_not be_valid
+    end
+
+    it "is not valid without sample if machine needs sample" do
+      @machine = FactoryGirl.create(:machine, :needs_sample => true)
+      @booking = FactoryGirl.build(:booking, :machine => @machine)
+      @booking.should_not be_valid
+    end
+
+    describe "booking options" do
+      before :each do
+        @machine = FactoryGirl.create(:machine)
+        @groups = [
+          @group1 = FactoryGirl.create(:option_group, :exclusive => true, :optional => true),
+          @group2 = FactoryGirl.create(:option_group, :exclusive => true, :optional => false),
+          @group3 = FactoryGirl.create(:option_group, :exclusive => false, :optional => true),
+          @group4 = FactoryGirl.create(:option_group, :exclusive => false, :optional => false)
+        ]
+        
+        @groups.each do |group|
+          FactoryGirl.create_list(:option, 3, :option_group => group)
+          group.options.each{|o| @machine.options << o}
+        end
+      end
+
+      it "is not valid if no option in a non-optional group is checked" do
+        @booking = FactoryGirl.build(:booking, :machine => @machine)
+        @booking.should_not be_valid
+        @groups.each do |group|
+          @booking.group_errors(group).send(group.optional ? :should : :should_not, be_empty)
+        end
+      end
+
+      it "is valid if one option of each non-optional group is checked" do
+        @booking = FactoryGirl.build(:booking, :machine => @machine, :options => [@group2.options[0], @group4.options[0]])
+        @booking.should be_valid
+        @groups.each do |group|
+          @booking.group_errors(group).should be_empty
+        end
+      end
+
+      it "is valid if no more than one option of an exclusive group is given" do
+        @booking = FactoryGirl.build(:booking, :machine => @machine, :options => [@group2.options[0], @group4.options[0], @group3.options].flatten)
+        @booking.should be_valid
+        @booking.group_errors(@group1).should be_empty
+        @booking.group_errors(@group2).should be_empty
+        @booking.group_errors(@group3).should be_empty
+        @booking.group_errors(@group4).should be_empty
+      end
+
+      it "is not valid if more than one option of an non exclusive group is given" do
+        @booking = FactoryGirl.build(:booking, :machine => @machine, :options => [@group2.options[0], @group4.options[0], @group1.options].flatten)
+        @booking.should_not be_valid
+        @booking.group_errors(@group1).should_not be_empty
+        @booking.group_errors(@group2).should be_empty
+        @booking.group_errors(@group3).should be_empty
+        @booking.group_errors(@group4).should be_empty
+      end
+
+      describe "conflicting options" do
+        before :each do
+          @group5 = FactoryGirl.create(:option_group, :exclusive => true, :optional => true)
+          @group6 = FactoryGirl.create(:option_group, :exclusive => true, :optional => true)
+          @group7 = FactoryGirl.create(:option_group, :exclusive => true, :optional => true)
+          @option1 = FactoryGirl.create(:option, :option_group => @group5)
+          @option2 = FactoryGirl.create(:option, :option_group => @group6)
+          @option3 = FactoryGirl.create(:option, :option_group => @group7, :excluded_options => [@option1, @option2])
+          @machine2 = FactoryGirl.create(:machine, :options => [@option1, @option2, @option3])
+        end
+
+        it "is valid with one of two conflicting options #1" do
+          @booking = FactoryGirl.build(:booking, :machine => @machine2, :options => [@option1])
+          @booking.should be_valid
+        end
+
+        it "is valid with one of two conflicting options #2" do
+          @booking = FactoryGirl.build(:booking, :machine => @machine2, :options => [@option2])
+          @booking.should be_valid
+        end
+
+        it "is valid with two of the not conflicting options" do
+          @booking = FactoryGirl.build(:booking, :machine => @machine2, :options => [@option1, @option2])
+          @booking.should be_valid
+        end
+
+        it "is not valid with two of the conflicting options #2" do
+          @booking = FactoryGirl.build(:booking, :machine => @machine2, :options => [@option1, @option3])
+          @booking.should_not be_valid
+        end
+
+        it "is not valid with two of the conflicting options #3" do
+          @booking = FactoryGirl.build(:booking, :machine => @machine2, :options => [@option2, @option3])
+          @booking.should_not be_valid
+        end
+      end
+
+      describe 'needed accessories' do
+        before :each do
+          @option_group = FactoryGirl.create(:option_group, :optional => true)
+          @option1 = FactoryGirl.create(:option, :option_group => @option_group, :needed => [FactoryGirl.create(:accessory, :quantity => 1)] )
+          @option2 = FactoryGirl.create(:option, :option_group => @option_group, :needed => [FactoryGirl.create(:accessory, :quantity => 2)] )
+          @machine1 = FactoryGirl.create(:machine, :options => [@option1, @option2])
+          @machine2 = FactoryGirl.create(:machine, :options => [@option1, @option2])
+        end
+
+        it "is valid if a needed accessory is available" do
+          @booking = FactoryGirl.build(:booking, :machine => @machine1, :options => [@option1])
+          @booking.should be_valid
+        end
+
+        it "is not valid if a needed accessory is not available" do
+          @booking2 = FactoryGirl.create(:booking, machine: @machine2, options: [@option1], starts_at: Time.now, ends_at: Time.now + 1.hour)
+          @booking = FactoryGirl.build(:booking, machine: @machine1, options: [@option1], starts_at: Time.now, ends_at: Time.now + 1.hour)
+          @booking.should_not be_valid
+        end
+
+        it "is valid if a needed accessory is available mutliple times, but booked less times" do
+          @booking2 = FactoryGirl.create(:booking, machine: @machine2, options: [@option2], starts_at: Time.now, ends_at: Time.now + 1.hour)
+          @booking = FactoryGirl.build(:booking, machine: @machine1, options: [@option2], starts_at: Time.now, ends_at: Time.now + 1.hour)
+          @booking.should be_valid
+        end
+
+        it "is not valid if a neede accessory is available n times and booked n times" do
+          @machine3 = FactoryGirl.create(:machine, :options => [@option1, @option2])
+          @booking3 = FactoryGirl.create(:booking, machine: @machine3, options: [@option2], starts_at: Time.now, ends_at: Time.now + 1.hour)
+          @booking2 = FactoryGirl.create(:booking, machine: @machine2, options: [@option2], starts_at: Time.now, ends_at: Time.now + 1.hour)
+          @booking = FactoryGirl.build(:booking, machine: @machine1, options: [@option2], starts_at: Time.now, ends_at: Time.now + 1.hour)
+          @booking.should_not be_valid
+        end
+
+        it "is  valid if a neede accessory is available n times, but not booked n times during the same period" do
+          @machine3 = FactoryGirl.create(:machine, :options => [@option1, @option2])
+          @booking3 = FactoryGirl.create(:booking, machine: @machine3, options: [@option2], starts_at: Time.now - 1.hour, ends_at: Time.now + 1.minute)
+          @booking2 = FactoryGirl.create(:booking, machine: @machine2, options: [@option2], starts_at: Time.now + 2.minutes, ends_at: Time.now + 2.hour)
+          @booking = FactoryGirl.build(:booking, machine: @machine1, options: [@option2], starts_at: Time.now, ends_at: Time.now + 1.hour)
+          @booking.should be_valid
+        end
+      end
+    end
+  end
+
   describe "days" do
     it("is a Range") { booking.days.class.should == Range }
     it("the first is the start date") { booking.days.first.should == booking.starts_at.to_date }
@@ -120,103 +351,6 @@ describe Booking do
     end
   end
 
-  describe "validations" do
-    it {should validate_numericality_of(:temperature) }
-    it {should_not accept_values_for(:user_id, nil, 'ab', '', ' ')}
-    it {should validate_presence_of(:machine_id)}
-    it {should validate_numericality_of(:machine_id)}
-    it {should validate_presence_of(:ends_at)}
-    it {should validate_presence_of(:starts_at)}
-    it {should_not accept_values_for(:ends_at, booking.starts_at - 1.minute, booking.starts_at - 1.day)}
-    it "does not accept bookings exceeding the maximum duration" do
-      @machine = FactoryGirl.create(:machine, :max_duration => 2, :max_duration_unit => 'day')
-      @now = DateTime.now
-      @booking = FactoryGirl.build(:booking, :machine => @machine, :starts_at => @now, :ends_at => @now + @machine.real_max_duration + 1.minute)
-      @booking.should_not be_valid
-    end
-
-    it "does not accept bookings shorter than the minimum duration" do
-      @machine = FactoryGirl.create(:machine, :min_booking_time => 2, :min_booking_time_unit => 'hour')
-      @now = DateTime.now
-      @booking = FactoryGirl.build(:booking, :machine => @machine, :starts_at => @now, :ends_at => @now + @machine.min_duration - 1.minutes)
-      @booking.should_not be_valid
-    end
-
-    describe "bookings may not overlap" do
-      before :each do
-        @now = Time.now.beginning_of_day
-        @old_booking = FactoryGirl.create(:booking, :starts_at => @now, :ends_at => @now + 6.hours)
-      end
-      
-      describe "#new booking" do
-        it "is not valid if its start lies in an existing booking for that machine" do
-          FactoryGirl.build(:booking, :starts_at => @now, :ends_at => @now + 3.days).should be_valid
-          FactoryGirl.build(:booking, :starts_at => @now, :ends_at => @now + 3.days, :machine_id => @old_booking.machine_id).should_not be_valid
-        end
-
-        it "is not valid if its end lies in an existing booking for that machine" do
-          FactoryGirl.build(:booking, :starts_at => @now - 1.day, :ends_at => @now).should be_valid
-          FactoryGirl.build(:booking, :starts_at => @now - 1.day, :ends_at => @now + 1.minute, :machine_id => @old_booking.machine_id).should_not be_valid
-        end
-
-        it "is not valid if its dates include an existing booking for that machine" do
-          FactoryGirl.build(:booking, :starts_at => @now - 1.day, :ends_at => @now + 1.day).should be_valid
-          FactoryGirl.build(:booking, :starts_at => @now - 1.day, :ends_at => @now + 1.day, :machine_id => @old_booking.machine_id).should_not be_valid
-        end
-
-        it "is not valid if it is an all day booking and it dates include another booking" do
-          FactoryGirl.build(:booking, :starts_at => @now + 6.hours, :ends_at => @now + 7.hours, :all_day => true).should be_valid
-          FactoryGirl.build(:booking, :starts_at => @now + 6.hours, :ends_at => @now + 7.hours, :machine => @old_booking.machine).should be_valid
-          FactoryGirl.build(:booking, :starts_at => @now + 6.hours, :ends_at => @now + 7.hours, :all_day => true, :machine => @old_booking.machine).should_not be_valid
-        end
-      end
-
-      describe "#existing booking" do
-        before :each do
-          @booking = FactoryGirl.create(:booking, :starts_at => @now + 7.hours, :ends_at => @now + 8.hours, :machine_id => @old_booking.machine_id)
-        end
-
-        it "is not valid if its start lies in an existing booking for that machine" do
-          @booking.starts_at = @now + 6.hours 
-          @booking.should be_valid
-
-          @booking.starts_at = @now + 5.hours 
-          @booking.should_not be_valid
-        end
-
-        it "is not valid if its end lies in an existing booking for that machine" do
-          @booking.starts_at = @now - 1.hour 
-          @booking.ends_at = @now 
-          @booking.should be_valid
-
-          @booking.ends_at = @now + 1.hour
-          @booking.should_not be_valid
-        end
-
-        it "#is not valid if its dates include an existing booking for that machine" do
-          @booking.starts_at = @now - 1.hour 
-          @booking.ends_at = @now 
-          @booking.should be_valid
-
-          @booking.ends_at = @now + 7.hours
-          @booking.should_not be_valid
-        end
-      end
-    end
-
-    it "is not valid without temperature if machine needs temperature"  do
-      @machine = FactoryGirl.create(:machine, :needs_temperature => true)
-      @booking = FactoryGirl.build(:booking, :machine => @machine)
-      @booking.should_not be_valid
-    end
-
-    it "is not valid without sample if machine needs sample" do
-      @machine = FactoryGirl.create(:machine, :needs_sample => true)
-      @booking = FactoryGirl.build(:booking, :machine => @machine)
-      @booking.should_not be_valid
-    end
-  end
-
   describe "permissions" do
     context "an unpriviliged user" do
       before :each do
@@ -248,150 +382,28 @@ describe Booking do
     end
   end
 
-  describe "booking options" do
-    before :each do
-      @machine = FactoryGirl.create(:machine)
-      @groups = [
-        @group1 = FactoryGirl.create(:option_group, :exclusive => true, :optional => true),
-        @group2 = FactoryGirl.create(:option_group, :exclusive => true, :optional => false),
-        @group3 = FactoryGirl.create(:option_group, :exclusive => false, :optional => true),
-        @group4 = FactoryGirl.create(:option_group, :exclusive => false, :optional => false)
-      ]
-      
-      @groups.each do |group|
-        FactoryGirl.create_list(:option, 3, :option_group => group)
-        group.options.each{|o| @machine.options << o}
-      end
-    end
-
-    it "is not valid if no option in a non-optional group is checked" do
-      @booking = FactoryGirl.build(:booking, :machine => @machine)
-      @booking.should_not be_valid
-      @groups.each do |group|
-        @booking.group_errors(group).send(group.optional ? :should : :should_not, be_empty)
-      end
-    end
-
-    it "is valid if one option of each non-optional group is checked" do
-      @booking = FactoryGirl.build(:booking, :machine => @machine, :options => [@group2.options[0], @group4.options[0]])
-      @booking.should be_valid
-      @groups.each do |group|
-        @booking.group_errors(group).should be_empty
-      end
-    end
-
-    it "is valid if no more than one option of an exclusive group is given" do
-      @booking = FactoryGirl.build(:booking, :machine => @machine, :options => [@group2.options[0], @group4.options[0], @group3.options].flatten)
-      @booking.should be_valid
-      @booking.group_errors(@group1).should be_empty
-      @booking.group_errors(@group2).should be_empty
-      @booking.group_errors(@group3).should be_empty
-      @booking.group_errors(@group4).should be_empty
-    end
-
-    it "is not valid if more than one option of an non exclusive group is given" do
-      @booking = FactoryGirl.build(:booking, :machine => @machine, :options => [@group2.options[0], @group4.options[0], @group1.options].flatten)
-      @booking.should_not be_valid
-      @booking.group_errors(@group1).should_not be_empty
-      @booking.group_errors(@group2).should be_empty
-      @booking.group_errors(@group3).should be_empty
-      @booking.group_errors(@group4).should be_empty
-    end
-
-    describe "conflicting options" do
-      before :each do
-        @group5 = FactoryGirl.create(:option_group, :exclusive => true, :optional => true)
-        @group6 = FactoryGirl.create(:option_group, :exclusive => true, :optional => true)
-        @group7 = FactoryGirl.create(:option_group, :exclusive => true, :optional => true)
-        @option1 = FactoryGirl.create(:option, :option_group => @group5)
-        @option2 = FactoryGirl.create(:option, :option_group => @group6)
-        @option3 = FactoryGirl.create(:option, :option_group => @group7, :excluded_options => [@option1, @option2])
-        @machine2 = FactoryGirl.create(:machine, :options => [@option1, @option2, @option3])
-      end
-
-      it "is valid with one of two conflicting options #1" do
-        @booking = FactoryGirl.build(:booking, :machine => @machine2, :options => [@option1])
-        @booking.should be_valid
-      end
-
-      it "is valid with one of two conflicting options #2" do
-        @booking = FactoryGirl.build(:booking, :machine => @machine2, :options => [@option2])
-        @booking.should be_valid
-      end
-
-      it "is valid with two of the not conflicting options" do
-        @booking = FactoryGirl.build(:booking, :machine => @machine2, :options => [@option1, @option2])
-        @booking.should be_valid
-      end
-
-      it "is not valid with two of the conflicting options #2" do
-        @booking = FactoryGirl.build(:booking, :machine => @machine2, :options => [@option1, @option3])
-        @booking.should_not be_valid
-      end
-
-      it "is not valid with two of the conflicting options #3" do
-        @booking = FactoryGirl.build(:booking, :machine => @machine2, :options => [@option2, @option3])
-        @booking.should_not be_valid
-      end
-    end
-
-    describe 'needed accessories' do
-      before :each do
-        @option_group = FactoryGirl.create(:option_group, :optional => true)
-        @option1 = FactoryGirl.create(:option, :option_group => @option_group, :needed => [FactoryGirl.create(:accessory, :quantity => 1)] )
-        @option2 = FactoryGirl.create(:option, :option_group => @option_group, :needed => [FactoryGirl.create(:accessory, :quantity => 2)] )
-        @machine1 = FactoryGirl.create(:machine, :options => [@option1, @option2])
-        @machine2 = FactoryGirl.create(:machine, :options => [@option1, @option2])
-      end
-
-      it "is valid if a needed accessory is available" do
-        @booking = FactoryGirl.build(:booking, :machine => @machine1, :options => [@option1])
-        @booking.should be_valid
-      end
-
-      it "is not valid if a needed accessory is not available" do
-        @booking2 = FactoryGirl.create(:booking, machine: @machine2, options: [@option1], starts_at: Time.now, ends_at: Time.now + 1.hour)
-        @booking = FactoryGirl.build(:booking, machine: @machine1, options: [@option1], starts_at: Time.now, ends_at: Time.now + 1.hour)
-        @booking.should_not be_valid
-      end
-
-      it "is valid if a needed accessory is available mutliple times, but booked less times" do
-        @booking2 = FactoryGirl.create(:booking, machine: @machine2, options: [@option2], starts_at: Time.now, ends_at: Time.now + 1.hour)
-        @booking = FactoryGirl.build(:booking, machine: @machine1, options: [@option2], starts_at: Time.now, ends_at: Time.now + 1.hour)
-        @booking.should be_valid
-      end
-
-      it "is not valid if a neede accessory is available n times and booked n times" do
-        @machine3 = FactoryGirl.create(:machine, :options => [@option1, @option2])
-        @booking3 = FactoryGirl.create(:booking, machine: @machine3, options: [@option2], starts_at: Time.now, ends_at: Time.now + 1.hour)
-        @booking2 = FactoryGirl.create(:booking, machine: @machine2, options: [@option2], starts_at: Time.now, ends_at: Time.now + 1.hour)
-        @booking = FactoryGirl.build(:booking, machine: @machine1, options: [@option2], starts_at: Time.now, ends_at: Time.now + 1.hour)
-        @booking.should_not be_valid
-      end
-
-      it "is  valid if a neede accessory is available n times, but not booked n times during the same period" do
-        @machine3 = FactoryGirl.create(:machine, :options => [@option1, @option2])
-        @booking3 = FactoryGirl.create(:booking, machine: @machine3, options: [@option2], starts_at: Time.now - 1.hour, ends_at: Time.now + 1.minute)
-        @booking2 = FactoryGirl.create(:booking, machine: @machine2, options: [@option2], starts_at: Time.now + 2.minutes, ends_at: Time.now + 2.hour)
-        @booking = FactoryGirl.build(:booking, machine: @machine1, options: [@option2], starts_at: Time.now, ends_at: Time.now + 1.hour)
-        @booking.should be_valid
-      end
-    end
-  end
-
   describe "not_available_options" do
-    it "returns an array of the non available options" do
+    before :each do
       @option_group1 = FactoryGirl.create(:option_group, :optional => true)
       @option_group2 = FactoryGirl.create(:option_group, :optional => true)
       @option1 = FactoryGirl.create(:option, :option_group => @option_group1)
       @option2 = FactoryGirl.create(:option, :option_group => @option_group1)
       @option3 = FactoryGirl.create(:option, :option_group => @option_group2)
       @option4 = FactoryGirl.create(:option, :option_group => @option_group2)
+      @machine1 = FactoryGirl.create(:machine, :options => [@option1, @option2, @option3, @option4])
+    end
+
+    it "returns an array of the non available options" do
       @option2.stub(:available? => false)
       @option4.stub(:available? => false)
-      @machine1 = FactoryGirl.create(:machine, :options => [@option1, @option2, @option3, @option4])
       @booking = FactoryGirl.build(:booking, machine: @machine1)
       @booking.not_available_options.should == [@option2.id, @option4.id]
+    end
+
+    it "disables options excluded by others" do
+      @option1.stub(:excluded_options => [@option3])
+      @booking = FactoryGirl.build(:booking, machine: @machine1, options: [@option1, @option2])
+      @booking.not_available_options.should == [@option3.id]
     end
   end
 

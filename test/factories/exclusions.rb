@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :exclusion do
-      option_id 1
-      excluded_option_id 1
-    end
+    association :option
+    association :excluded_option, :factory => :option
+  end
 end
