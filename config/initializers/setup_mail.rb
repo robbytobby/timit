@@ -17,13 +17,13 @@ if Rails.env.development?
   #:address => "physchem.uni-freiburg.de",
   #:port => 25,
   #:authentication => :plain,
-  #:user_name => "cw69",
-  #:password => "2qt2bstr"
+  #:user_name => "",
+  #:password => ""
    :address => "smtp.tuxwerk.de",
    :port => 25,
    :authentication => :plain,
-   :user_name => "widu@radgeber-freiburg.de",
-   :password => "1ly4Mys12"
+   :user_name => "",
+   :password => ""
   }
   #ActionMailer::Base.raise_delivery_errors = true
 end
