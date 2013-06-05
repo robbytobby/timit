@@ -201,6 +201,19 @@ class Booking < ActiveRecord::Base
     Booking.where(:user_id => user.id).where(:machine_id => machine.id).where("starts_at >= :now", :now => DateTime.now) 
   end
 
+  def last_minute?
+    if starts_at.to_date - Time.now.to_date <=1 && maximum_exceeded?
+      true
+    else
+      false
+    end
+  end
+
+  def maximum_exceeded?
+    return false if Ability.new(user).can? :exceed_maximum, Booking
+    Booking.in_future(machine, user).size >= machine.max_future_bookings
+  end
+
   private
   def end_after_start
     errors.add(:ends_at, :start_after_end) unless ends_at && starts_at && ends_at > starts_at
@@ -225,7 +238,8 @@ class Booking < ActiveRecord::Base
     if machine && machine.max_duration_for(user)
       duration = ends_at - starts_at
       text = user.role?('teaching') ? I18n.t('human_time_units.hour', :count => 6) : I18n.t('human_time_units.' + machine.max_duration_unit, :count => machine.max_duration)
-      errors.add(:ends_at, :to_long, :max => text) if duration > machine.max_duration_for(user)
+      max = last_minute? ? [2.days, machine.max_duration_for(user)].min : machine.max_duration_for(user)
+      errors.add(:ends_at, :to_long, :max => text) if duration > max
     end
   end
 

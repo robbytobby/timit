@@ -217,8 +217,9 @@ describe BookingsController do
     describe "POST create" do
       before :each do
         sign_in @user = FactoryGirl.create(:unprivileged_user)
-        @own_booking = FactoryGirl.build(:booking, :user => @user)
-        @other_boooking = FactoryGirl.build(:booking)
+        @machine = FactoryGirl.create(:machine, max_future_bookings: 1)
+        @own_booking = FactoryGirl.build(:booking, :user => @user, machine: @machine, starts_at: Time.now + 2.days, ends_at: Time.now + 2.days + 2.hours)
+        @other_boooking = FactoryGirl.build(:booking, machine: @machine)
       end
 
       it "is not possible to create a booking for another user" do
@@ -231,6 +232,20 @@ describe BookingsController do
         expect {
           post :create, :booking => @own_booking.attributes
         }.to change(Booking.where(:user_id => @user.id), :count).by(1)
+      end
+
+      it "is not possible to exceed maximum of future bookings" do
+        @old_booking = FactoryGirl.create(:booking, user: @user, machine: @machine, starts_at: Time.now + 1.week, ends_at: Time.now + 1.week + 3.hours)
+        expect {
+          post :create, :booking => @own_booking.attributes
+        }.not_to change(Booking, :count)
+      end
+
+      it "is possible to make a last minute booking" do
+        @old_booking = FactoryGirl.create(:booking, user: @user, machine: @machine, starts_at: Time.now + 1.week, ends_at: Time.now + 1.week + 3.hours)
+        expect {
+          post :create, :booking => @own_booking.attributes.merge(starts_at: Time.now + 1.day, ends_at: Time.now + 1.day + 3.hours)
+        }.to change(Booking, :count)
       end
     end
 

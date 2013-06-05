@@ -87,10 +87,12 @@ class BookingsController < ApplicationController
   end
 
   def maximum_exceeded
-    return true if can? :exceed_maximum, Booking
+    return true if can?(:exceed_maximum, Booking)
+    return true if @booking.last_minute?
     bookings = Booking.in_future(@booking.machine, @booking.user)
     if @booking.machine.max_future_bookings && bookings.any? && bookings.size >= @booking.machine.max_future_bookings
       redirect_back_or_default(calendar_path, notice: t('.controller.bookings.max_bookings_reached'))
     end
   end
+
 end

@@ -581,4 +581,66 @@ describe Booking do
       @booking.ics_description.should_not match(/Probe:/)
     end
   end
+
+  describe "last_minute?", focus: true do
+    it "is true if user allready has max of bookings in future, for a new booking wich starts today or tomorrow" do
+      @machine = FactoryGirl.create(:machine, max_future_bookings: 1)
+      @user = FactoryGirl.create(:user)
+      @old_booking = FactoryGirl.create(:booking, machine: @machine, user: @user, starts_at: Time.now + 1.month, ends_at: Time.now + 1.month + 1.day)
+      @booking = FactoryGirl.build(:booking, machine: @machine, user: @user, starts_at: Time.now + 1.day, ends_at: Time.now + 2.days)
+      @booking.should be_last_minute
+    end
+    
+    it "is false if a user does not exceed it's maximum" do
+      @booking = FactoryGirl.build(:booking, starts_at: Time.now + 1.day, ends_at: Time.now + 2.days)
+      @booking.should_not be_last_minute
+    end
+
+    it "is false for a booking that starts later than tomorrow" do
+      @booking = FactoryGirl.build(:booking, starts_at: Time.now + 2.days, ends_at: Time.now + 4.days)
+      @booking.should_not be_last_minute
+    end
+
+    it "is false for an admin" do
+      @machine = FactoryGirl.create(:machine, max_future_bookings: 1)
+      @user = FactoryGirl.create(:admin_user)
+      @old_booking = FactoryGirl.create(:booking, machine: @machine, user: @user, starts_at: Time.now + 1.month, ends_at: Time.now + 1.month + 1.day)
+      @booking = FactoryGirl.build(:booking, machine: @machine, user: @user, starts_at: Time.now + 1.day, ends_at: Time.now + 2.days)
+      @booking.should_not be_last_minute
+    end
+
+    it "is false for a teacher" do
+      @machine = FactoryGirl.create(:machine, max_future_bookings: 1)
+      @user = FactoryGirl.create(:teaching_user)
+      @old_booking = FactoryGirl.create(:booking, machine: @machine, user: @user, starts_at: Time.now + 1.month, ends_at: Time.now + 1.month + 2.hours)
+      @booking = FactoryGirl.build(:booking, machine: @machine, user: @user, starts_at: Time.now + 1.day, ends_at: Time.now + 2.days)
+      @booking.should_not be_last_minute
+    end
+  end
+
+  describe "last minute bookings", focus: true do
+    it "is valid if booking duration is less than two days" do
+      @machine = FactoryGirl.create(:machine, max_future_bookings: 1, max_duration: 7, max_duration_unit: 'day')
+      @user = FactoryGirl.create(:user)
+      @old_booking = FactoryGirl.create(:booking, machine: @machine, user: @user, starts_at: Time.now + 1.month, ends_at: Time.now + 1.month + 1.day)
+      @booking = FactoryGirl.build(:booking, machine: @machine, user: @user, starts_at: Time.now + 1.day, ends_at: Time.now + 2.days)
+      @booking.should be_valid
+    end
+
+    it "is not valid if booking duration is more than two days" do
+      @machine = FactoryGirl.create(:machine, max_future_bookings: 1, max_duration: 7, max_duration_unit: 'day')
+      @user = FactoryGirl.create(:user)
+      @old_booking = FactoryGirl.create(:booking, machine: @machine, user: @user, starts_at: Time.now + 1.month, ends_at: Time.now + 1.month + 1.day)
+      @booking = FactoryGirl.build(:booking, machine: @machine, user: @user, starts_at: Time.now, ends_at: Time.now + 2.days + 1.hour)
+      @booking.should_not be_valid
+    end
+
+    it "respects the maximum booking duration for a machine" do
+      @machine = FactoryGirl.create(:machine, max_future_bookings: 1, max_duration: 1, max_duration_unit: 'day')
+      @user = FactoryGirl.create(:user)
+      @old_booking = FactoryGirl.create(:booking, machine: @machine, user: @user, starts_at: Time.now + 1.month, ends_at: Time.now + 1.month + 3.hours)
+      @booking = FactoryGirl.build(:booking, machine: @machine, user: @user, starts_at: Time.now, ends_at: Time.now + 1.days + 1.hour)
+      @booking.should_not be_valid
+    end
+  end
 end
