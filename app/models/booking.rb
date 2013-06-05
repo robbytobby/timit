@@ -162,7 +162,6 @@ class Booking < ActiveRecord::Base
   end
 
   def to_ics
-    #TODO: spec
     event = Icalendar::Event.new
     if all_day?
       event.start = starts_at.to_date
@@ -190,6 +189,7 @@ class Booking < ActiveRecord::Base
 
   def ics_description
     desc = []
+    desc << "#{Booking.model_name.human} #{id}"
     desc << "#{Booking.human_attribute_name(:sample)}: #{sample}" unless sample.blank?
     desc << "#{Booking.human_attribute_name(:temperature)}: #{temperature}" unless temperature.blank?
     desc << "#{Booking.human_attribute_name(:options)}: #{options.map(&:name).join(', ')}" if options.any?

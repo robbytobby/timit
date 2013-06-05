@@ -145,4 +145,30 @@ describe UserMailer do
       end
     end
   end
+
+  describe "booking_ical_attachement" do
+    before :each do
+      @booking = FactoryGirl.create(:booking)
+      @mail = UserMailer.booking_ical_attachement(@booking)
+    end
+
+    it "has the correct sender", forcus: true do
+      @mail.from.should == [Devise.mailer_sender]
+    end
+
+    it "is send to the bookings user" do
+      @mail.to.should == [@booking.user.email]
+    end
+
+    it "has a descriptive subject" do
+      @mail.subject.should == "TiMiT: Buchung ##{@booking.id}"
+    end
+
+    it "has the booking in ical format as attachement" do
+      #FIXME: check the attachement
+      @mail.attachments.size.should == 1
+      @attachement = @mail.attachments["booking.ics"]
+      @attachement.content_type.should == 'text/calendar'
+    end
+  end
 end

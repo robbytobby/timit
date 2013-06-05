@@ -48,22 +48,26 @@ gem 'exception_notification'
 # gem 'ruby-debug19', :require => 'ruby-debug'
 
 group :development, :test do
- gem 'rspec-rails'
- gem 'cucumber-rails'
- gem 'webrat'
- gem 'database_cleaner'
- gem 'factory_girl_rails', "~> 1.2.0"
- gem 'guard-rspec'
- # gem 'guard-livereload'
- # gem 'yajl-ruby'
- gem 'rb-inotify'
- gem 'libnotify'
- gem 'rails3-generators'
- gem 'accept_values_for'
- gem 'simplecov', :require => false
- gem 'spork', '> 0.9.0.rc'
- gem 'guard-spork'
- gem 'shoulda-matchers'
+  gem 'rspec-rails'
+  gem 'cucumber-rails'
+  gem 'webrat'
+  gem 'database_cleaner'
+  gem 'factory_girl_rails', "~> 1.2.0"
+  gem 'guard-rspec'
+  # gem 'guard-livereload'
+  # gem 'yajl-ruby'
+  gem 'rb-inotify'
+  gem 'libnotify'
+  gem 'rails3-generators'
+  gem 'accept_values_for'
+  gem 'simplecov', :require => false
+  gem 'spork', '> 0.9.0.rc'
+  gem 'guard-spork'
+  gem 'shoulda-matchers'
+  gem "pry"
+  gem "pry-doc"
+  #gem "better_errors"
+  gem "binding_of_caller"
 end
 group :test do
   # Pretty printed test output

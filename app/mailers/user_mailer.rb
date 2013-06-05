@@ -38,11 +38,13 @@ class UserMailer < ActionMailer::Base
 
   def booking_ical_attachement(booking)
     #TODO: spec
+    @booking = booking.reload
+    @action = @booking.created_at == @booking.updated_at ? :create : :update
     calendar = Icalendar::Calendar.new
     calendar.add_event(booking.to_ics)
     calendar.publish
     attachments["booking.ics"] = {:mime_type => 'text/calendar', :content => calendar.to_ical }
-    mail(:to => booking.user.mail_name, :subject => t('user_mailer.booking_ical_attachement.subject'))
+    mail(:to => booking.user.mail_name, :subject => t('user_mailer.booking_ical_attachement.subject', id: booking.id))
   end
 end
 

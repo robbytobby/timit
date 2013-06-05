@@ -1,0 +1,26 @@
+-if @action == :create
+  %p 
+    Du hast eine Buchung für #{@booking.machine.name} angelegt: 
+-else
+  %p Deine Buchung ##{@booking.id} für #{@booking.machine.name} hat sich geändert:
+%div
+  %ul
+    %li Buchungsnummer: #{@booking.id}
+    %li 
+      Zeitraum: 
+      -if @booking.all_day?
+        #{I18n.l @booking.starts_at.to_date} - #{I18n.l @booking.ends_at.to_date}
+      -else
+        #{I18n.l @booking.starts_at} - #{I18n.l @booking.ends_at}
+    %li Gerät: #{@booking.machine.name}
+    -if @booking.sample
+      %li Probe: #{@booking.sample}
+    -if @booking.temperature
+      %li Temperatur: #{@booking.temperature}K
+    -if @booking.options.any?
+      %li Optionen: #{@booking.options.map(&:name).join(', ')}
+%p
+  Im Anhang findest du die zugehörige iCal Datei.
+%p 
+  Möchtest du keine Emails zu deinen Buchungen mehr bekommen, dann ändere die Einstellung für "Buchungsbenachrichtigung" in
+  = link_to 'deinem Account', edit_user_registration_url

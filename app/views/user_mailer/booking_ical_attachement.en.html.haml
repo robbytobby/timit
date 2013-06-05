@@ -1,0 +1,27 @@
+-if @action == :create
+  %p 
+    You've created a new booking for #{@booking.machine.name}: 
+-else
+  %p Your ##{@booking.id} for #{@booking.machine.name} has changed:
+%div
+  %ul
+    %li booking number: #{@booking.id}
+    %li 
+      period: 
+      -if @booking.all_day?
+        #{I18n.l @booking.starts_at.to_date} - #{I18n.l @booking.ends_at.to_date}
+      -else
+        #{I18n.l @booking.starts_at} - #{I18n.l @booking.ends_at}
+    %li machine: #{@booking.machine.name}
+    -if @booking.sample
+      %li sample: #{@booking.sample}
+    -if @booking.temperature
+      %li temperature: #{@booking.temperature}K
+    -if @booking.options.any?
+      %li options: #{@booking.options.map(&:name).join(', ')}
+%p
+  The corresponding iCal file is attached.
+%p 
+  If you'd rather not get email notifications for your bookings anymore simply change the setting for "send booking notification?" in 
+  = link_to 'your Account', edit_user_registration_url
+

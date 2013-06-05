@@ -94,15 +94,15 @@ describe BookingsController do
           response.should redirect_to(session[:return_to])
         end
 
-        it "send an booking notification", focus: true do
+        it "send an booking notification" do
           UserMailer.should_receive(:booking_ical_attachement).with( instance_of(Booking)).and_return(@mail = mock(Mail, :deliver => true))
           post :create, :booking => valid_attributes
         end
 
         it "does not send an booking notification if the user does not want one" do
-          @current_user.stub(:wants_booking_email => false)
+          user = FactoryGirl.build(:user, wants_booking_email: false)
           UserMailer.should_not_receive(:booking_ical_attachement)
-          post :create, :booking => valid_attributes
+          post :create, :booking => FactoryGirl.build(:booking, user: user).attributes.symbolize_keys
         end
 
       end
@@ -130,22 +130,26 @@ describe BookingsController do
         end
 
         it "assigns the requested booking as @booking" do
+          UserMailer.stub(:booking_ical_attachement).and_return(@mail = mock(Mail, :deliver => true))
           put :update, :id => @booking.id, :booking => valid_attributes
           assigns(:booking).should eq(@booking)
         end
 
         it "redirects to the booking per default to the calendar" do
+          UserMailer.stub(:booking_ical_attachement).and_return(@mail = mock(Mail, :deliver => true))
           put :update, :id => @booking.id, :booking => valid_attributes
           response.should redirect_to(:calendar)
         end
 
         it "redirects to the url saved in session" do
+          UserMailer.stub(:booking_ical_attachement).and_return(@mail = mock(Mail, :deliver => true))
           session[:return_to] = calendar_path(:start_date => Date.today - 3.weeks)
           put :update, :id => @booking.id, :booking => valid_attributes
           response.should redirect_to(session[:return_to])
         end
 
         it "sends an email to booking.user if current_user != booking.user" do
+          UserMailer.stub(:booking_ical_attachement).and_return(@mail = mock(Mail, :deliver => true))
           UserMailer.should_receive(:booking_updated_notification).with(@current_user, instance_of(Booking), instance_of(Booking)).and_return(@mail = mock(Mail, :deliver => true))
           put :update, :id => @booking.id, :booking => valid_attributes
         end
@@ -156,7 +160,7 @@ describe BookingsController do
         end
 
         it "does not send an booking notification if the user does not want one" do
-          @current_user.stub(:wants_booking_email => false)
+          User.any_instance.stub(wants_booking_email: false)
           UserMailer.should_not_receive(:booking_ical_attachement)
           put :update, :id => @booking.id, :booking => valid_attributes
         end

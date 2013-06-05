@@ -501,4 +501,84 @@ describe Booking do
 
     end
   end
+
+  describe "to_ics" do
+    before(:each) { @booking = FactoryGirl.create(:booking) }
+
+    it "should be a Icalendar event" do
+      @booking.to_ics.should be_a(Icalendar::Event)
+    end
+
+    it "has the correct data" do
+      Booking.any_instance.stub(ics_title: 'TITLE', ics_description: 'DESCRIPTION')
+      event = @booking.to_ics
+      event.start.should == I18n.l(@booking.starts_at, format: :ical)
+      event.end.should == I18n.l(@booking.ends_at, format: :ical)
+      event.summary.should == 'TITLE'
+      event.description.should == 'DESCRIPTION'
+      event.location.should == 'Uni'
+      event.klass.should == 'PUBLIC'
+      event.created.should == I18n.l(@booking.created_at, format: :ical)
+      event.last_modified.should == I18n.l(@booking.updated_at, format: :ical)
+      event.uid.should == "timit_booking_#{@booking.id}"
+      event.url.should == "http://timit.chemie.uni-freiburg.de/#{I18n.locale}/calendar"
+    end
+
+    it "deals with all_day_events" do
+      @booking.all_day = true
+      event = @booking.to_ics
+      event.start.should == @booking.starts_at.to_date
+      event.start.ical_params.should == {"VALUE" => "DATE"}
+      event.end.should == @booking.ends_at.to_date
+      event.end.ical_params.should == {"VALUE" => "DATE"}
+    end
+  end
+
+  describe "ics_title" do
+    before(:each) { @booking = FactoryGirl.create(:booking) }
+    it "should be coreect" do
+      @booking.ics_title.should == I18n.t('ics.measurement', machine: @booking.machine.name)
+    end
+  end
+
+  describe "ics_description" do
+
+    it "should include the booking id" do
+      @booking = FactoryGirl.create(:booking)
+      @booking.ics_description.should match(/Buchung #{@booking.id}/)
+    end
+
+    it "should include the sample if it is given" do
+      @booking = FactoryGirl.create(:booking, sample: 'MySample')
+      @booking.ics_description.should match(/Probe: #{@booking.sample}/)
+    end
+
+    it "should not include the sample if it is not given" do
+      @booking = FactoryGirl.create(:booking, sample: nil)
+      @booking.ics_description.should_not match(/Probe:/)
+    end
+
+    it "should include the temperature if it is given" do
+      @booking = FactoryGirl.create(:booking, temperature: 100)
+      @booking.ics_description.should match(/Temperatur \[K\]: #{@booking.temperature}/)
+    end
+
+    it "should not include the temperature if it is not given" do
+      @booking = FactoryGirl.create(:booking, temperature: nil)
+      @booking.ics_description.should_not match(/Temperatur \[K\]:/)
+    end
+
+
+    it "should include the options" do
+      @booking = FactoryGirl.create(:booking)
+      @options = FactoryGirl.create_list(:option,3)
+      @booking.stub(options: @options)
+      @booking.ics_description.should match(/Optionen: #{@options.map(&:name).join(', ')}/)
+    end
+
+    it "should not include the options if there are none" do
+      @booking = FactoryGirl.create(:booking)
+      @booking.ics_description.should_not match(/Probe:/)
+    end
+  end
 end

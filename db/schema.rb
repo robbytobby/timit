@@ -98,8 +98,8 @@ ActiveRecord::Schema.define(:version => 20130605102922) do
     t.string   "sample"
     t.index ["machine_id"], :name => "index_bookings_on_machine_id"
     t.index ["user_id"], :name => "index_bookings_on_user_id"
-    t.foreign_key ["machine_id"], "machines", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "bookings_machine_id_fkey"
     t.foreign_key ["user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "bookings_user_id_fkey"
+    t.foreign_key ["machine_id"], "machines", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "bookings_machine_id_fkey"
   end
 
   create_table "bookings_options", :id => false, :force => true do |t|
@@ -118,8 +118,8 @@ ActiveRecord::Schema.define(:version => 20130605102922) do
     t.datetime "updated_at"
     t.index ["excluded_option_id"], :name => "index_exclusions_on_excluded_option_id"
     t.index ["option_id"], :name => "index_exclusions_on_option_id"
-    t.foreign_key ["excluded_option_id"], "options", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "exclusions_excluded_option_id_fkey"
     t.foreign_key ["option_id"], "options", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "exclusions_option_id_fkey"
+    t.foreign_key ["excluded_option_id"], "options", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "exclusions_excluded_option_id_fkey"
   end
 
   create_table "machines_options", :id => false, :force => true do |t|
