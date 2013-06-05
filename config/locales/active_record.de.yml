@@ -52,6 +52,7 @@ de:
         sign_in_count: 'Anzahl der Logins'
         locale: 'Sprache'
         default_machines: 'Ausgewählte Maschinen'
+        wants_booking_email: 'Buchungsbenachrichtigung'
       option_group:
         name: 'Name'
         group: 'Gruppe'

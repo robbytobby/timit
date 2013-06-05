@@ -51,6 +51,7 @@ en:
         current_sign_in_at: 'date of last login'
         sign_in_count: 'login count'
         locale: 'language'
+        wants_booking_email: 'send booking notification?'
       option_group:
         name: 'Name'
         group: 'Group'

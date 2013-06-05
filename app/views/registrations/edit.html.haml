@@ -5,6 +5,7 @@
   = f.input :phone, :as => :string
   = f.input :email
   = f.input :locale, :as => :select, :collection => [['deutsch', 'de'], ['english', 'en']]
+  = f.input :wants_booking_email, as: :radio, :collection => [[t('y'), true], [t('n'), false]], hint: t('.booking_notification')
   = f.input :default_machines, :include_blank => t('all')
   = f.input :password, :hint => t('.leave_blank')
   = f.input :password_confirmation

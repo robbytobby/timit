@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120315130559) do
+ActiveRecord::Schema.define(:version => 20130605102922) do
 
   create_table "accessories", :force => true do |t|
     t.string   "name"
@@ -80,6 +80,7 @@ ActiveRecord::Schema.define(:version => 20120315130559) do
     t.string   "phone"
     t.string   "role",                                  :default => "unprivileged", :null => false
     t.string   "locale"
+    t.boolean  "wants_booking_email",                   :default => true,           :null => false
     t.index ["email"], :name => "index_users_on_email", :unique => true
     t.index ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
   end
@@ -97,8 +98,8 @@ ActiveRecord::Schema.define(:version => 20120315130559) do
     t.string   "sample"
     t.index ["machine_id"], :name => "index_bookings_on_machine_id"
     t.index ["user_id"], :name => "index_bookings_on_user_id"
-    t.foreign_key ["user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "bookings_user_id_fkey"
     t.foreign_key ["machine_id"], "machines", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "bookings_machine_id_fkey"
+    t.foreign_key ["user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "bookings_user_id_fkey"
   end
 
   create_table "bookings_options", :id => false, :force => true do |t|
@@ -117,8 +118,8 @@ ActiveRecord::Schema.define(:version => 20120315130559) do
     t.datetime "updated_at"
     t.index ["excluded_option_id"], :name => "index_exclusions_on_excluded_option_id"
     t.index ["option_id"], :name => "index_exclusions_on_option_id"
-    t.foreign_key ["option_id"], "options", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "exclusions_option_id_fkey"
     t.foreign_key ["excluded_option_id"], "options", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "exclusions_excluded_option_id_fkey"
+    t.foreign_key ["option_id"], "options", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "exclusions_option_id_fkey"
   end
 
   create_table "machines_options", :id => false, :force => true do |t|

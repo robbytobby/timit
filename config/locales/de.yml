@@ -124,6 +124,7 @@ de:
       needed_for_update: "Dein aktuelles Passwort wird benötigt um deine Änderungen zu bestätigen"
       cancel_my_account: "Account löschen"
       unhappy?: "Der Account wird nicht mehr gebraucht? Oder hast du dieses Programm einfach nur satt?"
+      booking_notification: "Willst du für jede Buchung eine Email mit den Buchungsdaten im ical-Format erhalten?"
 
   users:
     show:

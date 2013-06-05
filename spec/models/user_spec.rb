@@ -14,7 +14,7 @@ describe User do
     it {should allow_mass_assignment_of(attr)}
   end
 
-  (User.attribute_names.map{|a| a.to_sym} - [:first_name, :last_name, :phone, :email, :password_confirmation, :password_confirmation, :remember_me, :locale]).each do |attr|
+  (User.attribute_names.map{|a| a.to_sym} - [:first_name, :last_name, :phone, :email, :password_confirmation, :password_confirmation, :remember_me, :locale, :wants_booking_email]).each do |attr|
     it {should_not allow_mass_assignment_of(attr)}
   end
 

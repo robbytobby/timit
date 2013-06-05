@@ -93,6 +93,18 @@ describe BookingsController do
           post :create, :booking => valid_attributes
           response.should redirect_to(session[:return_to])
         end
+
+        it "send an booking notification", focus: true do
+          UserMailer.should_receive(:booking_ical_attachement).with( instance_of(Booking)).and_return(@mail = mock(Mail, :deliver => true))
+          post :create, :booking => valid_attributes
+        end
+
+        it "does not send an booking notification if the user does not want one" do
+          @current_user.stub(:wants_booking_email => false)
+          UserMailer.should_not_receive(:booking_ical_attachement)
+          post :create, :booking => valid_attributes
+        end
+
       end
 
       describe "with invalid params" do
@@ -135,6 +147,17 @@ describe BookingsController do
 
         it "sends an email to booking.user if current_user != booking.user" do
           UserMailer.should_receive(:booking_updated_notification).with(@current_user, instance_of(Booking), instance_of(Booking)).and_return(@mail = mock(Mail, :deliver => true))
+          put :update, :id => @booking.id, :booking => valid_attributes
+        end
+
+        it "send an booking notification" do
+          UserMailer.should_receive(:booking_ical_attachement).with( instance_of(Booking)).and_return(@mail = mock(Mail, :deliver => true))
+          put :update, :id => @booking.id, :booking => valid_attributes
+        end
+
+        it "does not send an booking notification if the user does not want one" do
+          @current_user.stub(:wants_booking_email => false)
+          UserMailer.should_not_receive(:booking_ical_attachement)
           put :update, :id => @booking.id, :booking => valid_attributes
         end
       end
