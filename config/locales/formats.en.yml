@@ -5,6 +5,7 @@ en:
       short: "%d. %b"
       long: "%d. %B %Y"
       only_day: "%d"
+      ical: "%Y%m%d"
 
     day_names: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
     abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
@@ -23,6 +24,7 @@ en:
       short: "%d %B, %H:%M"
       long: "%A, %d. %B %Y, %H:%M Uhr"
       time: "%H:%M"
+      ical: "%Y%m%dT%H%M%S"
 
     am: "am"
     pm: "pm"

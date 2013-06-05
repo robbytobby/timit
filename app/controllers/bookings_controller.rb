@@ -48,6 +48,8 @@ class BookingsController < ApplicationController
     respond_to do |format|
       if @booking.update_attributes(params[:booking])
         UserMailer.booking_updated_notification(current_user, @booking, @old_booking).deliver if current_user != @booking.user
+        #TODO after create, update
+        #UserMailer.booking_ical_attachement(@booking).deliver
         format.html { redirect_back_or_default(calendar_path, notice: t('controller.success.update', :thing => I18n.t('activerecord.models.booking'))) }
         format.json { head :ok }
       else

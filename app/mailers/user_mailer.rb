@@ -35,5 +35,14 @@ class UserMailer < ActionMailer::Base
     @current_user = current_user
     mail(:to => booking.user.mail_name, :reply_to => current_user.mail_name, :subject => t('user_mailer.booking_deleted_notification.subject'))
   end
+
+  def booking_ical_attachement(booking)
+    #TODO: spec
+    calendar = Icalendar::Calendar.new
+    calendar.add_event(booking.to_ics)
+    calendar.publish
+    attachments["booking.ics"] = {:mime_type => 'text/calendar', :content => calendar.to_ical }
+    mail(:to => booking.user.mail_name, :subject => t('user_mailer.booking_ical_attachement.subject'))
+  end
 end
 

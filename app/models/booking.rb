@@ -161,6 +161,41 @@ class Booking < ActiveRecord::Base
     rel
   end
 
+  def to_ics
+    #TODO: spec
+    event = Icalendar::Event.new
+    if all_day?
+      event.start = starts_at.to_date
+      event.end = ends_at.to_date
+      event.start.ical_params = { "VALUE" => "DATE" }
+      event.end.ical_params = { "VALUE" => "DATE" }
+    else
+      event.start = I18n.l(starts_at, format: :ical)
+      event.end = I18n.l(ends_at, format: :ical)
+    end
+    event.summary = ics_title
+    event.description = ics_description
+    event.location = 'Uni'
+    event.klass = "PUBLIC"
+    event.created = I18n.l(created_at, format: :ical)
+    event.last_modified = I18n.l(updated_at, format: :ical)
+    event.uid = "timit_booking_#{self.id}"
+    event.url = "http://timit.chemie.uni-freiburg.de/#{I18n.locale}/calendar"
+    event
+  end
+
+  def ics_title
+    I18n.t('ics.measurement', machine: machine.name)
+  end
+
+  def ics_description
+    desc = []
+    desc << "#{Booking.human_attribute_name(:sample)}: #{sample}" unless sample.blank?
+    desc << "#{Booking.human_attribute_name(:temperature)}: #{temperature}" unless temperature.blank?
+    desc << "#{Booking.human_attribute_name(:options)}: #{options.map(&:name).join(', ')}" if options.any?
+    desc.join("\n")
+  end
+
   #TODO: SPEC
   def self.in_future(machine, user)
     Booking.where(:user_id => user.id).where(:machine_id => machine.id).where("starts_at >= :now", :now => DateTime.now) 

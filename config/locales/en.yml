@@ -180,5 +180,7 @@ en:
       hi: "Hello"
       booking_deleted: "Your booking for %{machine} from %{from} to %{to} has been deleted by %{by}"
       subject: "TiMiT: booking deleted"
+  ics:
+    measurement: "Measurement on %{machine}"
       
 

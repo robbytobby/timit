@@ -22,8 +22,8 @@ if Rails.env.development?
    :address => "smtp.tuxwerk.de",
    :port => 25,
    :authentication => :plain,
-   :user_name => "",
-   :password => ""
+   :user_name => "widu@radgeber-freiburg.de",
+   :password => "WatG8Kl1a"
   }
   #ActionMailer::Base.raise_delivery_errors = true
 end

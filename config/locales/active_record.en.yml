@@ -20,6 +20,7 @@ en:
         temperature: 'Temperature [K]'
         sample: 'Sample'
         comment: 'Comment'
+        options: 'Options'
       machine: 
         name: 'Name'
         description: 'Descriptions'

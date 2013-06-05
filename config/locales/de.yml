@@ -180,5 +180,7 @@ de:
       hi: "Hallo"
       booking_deleted: "Deine Buchung für %{machine} von %{from} bis %{to} wurde von %{by} gelöscht"
       subject: "TiMiT: gelöschte Buchung"
+  ics:
+    measurement: 'Messung an %{machine}'
       
 
