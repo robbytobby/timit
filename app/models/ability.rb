@@ -18,7 +18,15 @@ class Ability
       can [:create, :update, :destroy], Booking, :user_id => user.id
       cannot :exceed_maximum, Booking
     end
-
+    cannot [:update, :destroy], Booking do |b|
+      b.ends_at.present? && b.ends_at < Time.now
+    end
+    cannot [:destroy], Booking do |b|
+      b.starts_at.present? && b.starts_at < Time.now
+    end
+    can :update_starts_at, Booking do |b| 
+      b.starts_at.present? && b.starts_at > Time.now 
+    end
 
     # Define abilities for the passed in user here. For example:
     #

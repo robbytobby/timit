@@ -229,8 +229,9 @@ describe BookingsController do
       end
 
       it "it is possible to create own bookings" do
+        time = Time.now - 1.second
         expect {
-          post :create, :booking => @own_booking.attributes
+          post :create, :booking => @own_booking.attributes.merge(starts_at: time)
         }.to change(Booking.where(:user_id => @user.id), :count).by(1)
       end
 
@@ -266,12 +267,47 @@ describe BookingsController do
         @own_booking.ends_at.should_not == @own_booking.reload.ends_at
       end
 
-      it "is not possible to change the start time of a past booking" do
+      it "is not possible to change a past booking" do
         @old_booking = FactoryGirl.create(:booking, :user => @user, starts_at: Time.now - 2.days, ends_at: Time.now - 1.day)
         old_end = @old_booking.ends_at
         Booking.any_instance.should_not_receive(:update_attributes)
         put :update, :id => @old_booking.id, :booking => {'ends_at' => Time.now + 2.hours}
-        @old_booking.reload.ends_at.should == old_end
+      end
+
+      it "is not possible to change the start of a booking, that allready started" do
+        @old_booking = FactoryGirl.create(:booking, :user => @user, starts_at: Time.now - 1.day, ends_at: Time.now + 1.day)
+        old_end, old_start = @old_booking.ends_at, @old_booking.starts_at
+        put :update, :id => @old_booking.id, :booking => {starts_at: Time.now, ends_at: Time.now + 2.hours}
+        @old_booking.reload.ends_at.should_not == old_end
+        @old_booking.reload.starts_at.should == old_start
+      end
+
+      it "is not possible to change the start of a booking, that allready started - alternative take" do
+        @old_booking = FactoryGirl.create(:booking, :user => @user, starts_at: Time.now - 1.day, ends_at: Time.now + 1.day)
+        old_end, old_start = @old_booking.ends_at, @old_booking.starts_at
+        put :update, :id => @old_booking.id, :booking => {
+          'starts_at(1i)' => Time.now.strftime('%Y'),
+          'starts_at(2i)' => Time.now.strftime('%m'),
+          'starts_at(3i)' => Time.now.strftime('%d'),
+          'starts_at(4i)' => Time.now.strftime('%H'),
+          'starts_at(5i)' => Time.now.strftime('%M'),
+           ends_at: Time.now + 2.days + 2.hours}
+        @old_booking.reload.ends_at.should_not == old_end
+        @old_booking.reload.starts_at.should == old_start
+      end
+
+      it "is possible to change the start of a booking with start in the future - alternative take" do
+        @old_booking = FactoryGirl.create(:booking, :user => @user, starts_at: Time.now + 1.day, ends_at: Time.now + 2.day)
+        old_end, old_start = @old_booking.ends_at, @old_booking.starts_at
+        put :update, :id => @old_booking.id, :booking => {
+          'starts_at(1i)' => Time.now.strftime('%Y'),
+          'starts_at(2i)' => Time.now.strftime('%m'),
+          'starts_at(3i)' => Time.now.strftime('%d'),
+          'starts_at(4i)' => Time.now.strftime('%H'),
+          'starts_at(5i)' => Time.now.strftime('%M'),
+           ends_at: Time.now + 2.days + 2.hours}
+        @old_booking.reload.ends_at.should_not == old_end
+        @old_booking.reload.starts_at.should_not == old_start
       end
     end
   end

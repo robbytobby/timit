@@ -47,7 +47,7 @@ class BookingsController < ApplicationController
     @old_booking = @booking.dup
     @old_booking.options = @booking.options.dup
     respond_to do |format|
-      if @booking.update_attributes(params[:booking])
+      if @booking.update_attributes(booking_params)
         UserMailer.booking_updated_notification(current_user, @booking, @old_booking).deliver if current_user != @booking.user
         UserMailer.booking_ical_attachement(@booking).deliver if @booking.user.wants_booking_email
         format.html { redirect_back_or_default(calendar_path, notice: t('controller.success.update', :thing => I18n.t('activerecord.models.booking'))) }
@@ -92,6 +92,14 @@ class BookingsController < ApplicationController
     bookings = Booking.in_future(@booking.machine, @booking.user)
     if @booking.machine.max_future_bookings && bookings.any? && bookings.size >= @booking.machine.max_future_bookings
       redirect_back_or_default(calendar_path, notice: t('.controller.bookings.max_bookings_reached'))
+    end
+  end
+
+  def booking_params
+    if can? :update_starts_at, @booking 
+      params[:booking]
+    else
+      params[:booking].except(:starts_at, 'starts_at(1i)', 'starts_at(2i)', 'starts_at(3i)', 'starts_at(4i)', 'starts_at(5i)')
     end
   end
 

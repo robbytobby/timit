@@ -216,6 +216,7 @@ class Booking < ActiveRecord::Base
 
   def maximum_exceeded?
     return false if Ability.new(user).can? :exceed_maximum, Booking
+    return false unless machine.max_future_bookings 
     Booking.in_future(machine, user).size >= machine.max_future_bookings
   end
 
