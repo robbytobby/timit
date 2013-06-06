@@ -265,6 +265,14 @@ describe BookingsController do
         put :update, :id => @own_booking.id, :booking => {'ends_at' => @own_booking.ends_at + 2.hours}
         @own_booking.ends_at.should_not == @own_booking.reload.ends_at
       end
+
+      it "is not possible to change the start time of a past booking" do
+        @old_booking = FactoryGirl.create(:booking, :user => @user, starts_at: Time.now - 2.days, ends_at: Time.now - 1.day)
+        old_end = @old_booking.ends_at
+        Booking.any_instance.should_not_receive(:update_attributes)
+        put :update, :id => @old_booking.id, :booking => {'ends_at' => Time.now + 2.hours}
+        @old_booking.reload.ends_at.should == old_end
+      end
     end
   end
 

@@ -6,4 +6,4 @@
   = f.input :phone, :as => :string
   = f.input :password
   = f.input :password_confirmation, :required => true
-  = f.commit_button :sign_up
+  = f.action :submit, label: :sign_up

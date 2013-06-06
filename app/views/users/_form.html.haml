@@ -5,8 +5,8 @@
     = f.input :email
     = f.input :phone, :as => :string
     = f.input :role, :as => :select, :collection => human_roles if can? :change_role, @user
-  = f.buttons do
-    = f.commit_button
+  = f.actions do
+    = f.action :submit
     %li.button
       = link_to t('formtastic.actions.cancel'), users_path 
     

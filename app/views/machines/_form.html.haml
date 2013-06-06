@@ -22,7 +22,7 @@
       - if @options.any?
         - @options.group_by(&:option_group).each do |group, options|
           = f.input :options, :collection => options, :as => :check_boxes, :label => group.name
-  = f.buttons do
-    = f.commit_button
+  = f.actions do
+    = f.action :submit
     %li.button
       = link_to t('formtastic.actions.cancel'), machines_path

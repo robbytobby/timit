@@ -11,5 +11,5 @@
       = o.input :excluded_options, :collection => Option.where('option_group_id != :id', :id => @option_group.id).order(:name), :group_by => :option_group, :include_blank => t('none')
       = o.input :message, :as => :string
     %b= f.link_to_add t('.add_option'), :options
-  = f.buttons do
-    = f.commit_button
+  = f.actions do
+    = f.action :submit

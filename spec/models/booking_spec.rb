@@ -19,11 +19,11 @@ describe Booking do
   it { should have_and_belong_to_many(:options) }
 
   describe "validations" do
-    it {should validate_numericality_of(:temperature), :integer_only => true }
+    it {should validate_numericality_of(:temperature)}
     it {should validate_presence_of(:user_id)}
-    it {should validate_numericality_of(:user_id), :integer_only => true }
+    it {should validate_numericality_of(:user_id)}
     it {should validate_presence_of(:machine_id)}
-    it {should validate_numericality_of(:machine_id), :integer_only => true}
+    it {should validate_numericality_of(:machine_id)}
     it {should validate_presence_of(:ends_at)}
     it {should validate_presence_of(:starts_at)}
 
@@ -582,7 +582,7 @@ describe Booking do
     end
   end
 
-  describe "last_minute?", focus: true do
+  describe "last_minute?" do
     it "is true if user allready has max of bookings in future, for a new booking wich starts today or tomorrow" do
       @machine = FactoryGirl.create(:machine, max_future_bookings: 1)
       @user = FactoryGirl.create(:user)
@@ -618,7 +618,7 @@ describe Booking do
     end
   end
 
-  describe "last minute bookings", focus: true do
+  describe "last minute bookings" do
     it "is valid if booking duration is less than two days" do
       @machine = FactoryGirl.create(:machine, max_future_bookings: 1, max_duration: 7, max_duration_unit: 'day')
       @user = FactoryGirl.create(:user)

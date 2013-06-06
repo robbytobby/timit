@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe "Registrations" do
+  before :all do
+    FactoryGirl.create(:admin_user)
+  end
+
   describe "POST /users" do
     it "returns to new registration on failure" do
       post user_registration_path

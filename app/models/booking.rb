@@ -155,7 +155,12 @@ class Booking < ActiveRecord::Base
   end
 
   def self.during(obj)
-    start, stop = ( obj.try(:starts_at) || obj.try(:begin) ), ( obj.try(:ends_at) || obj.try(:end) ) # obj may be Booking or Range!
+    if obj.is_a?(Booking)
+      start, stop = obj.starts_at, obj.ends_at
+    else
+      start, stop = obj.begin, obj.end
+    end
+
     rel = Booking.where( "(starts_at <= :start and ends_at > :start) OR (starts_at < :end and ends_at > :end) OR (starts_at >= :start and ends_at <= :end)", :start => start, :end => stop)
     rel = rel.order(:starts_at)
     rel
@@ -202,7 +207,7 @@ class Booking < ActiveRecord::Base
   end
 
   def last_minute?
-    if starts_at.to_date - Time.now.to_date <=1 && maximum_exceeded?
+    if starts_at.present? && starts_at.to_date - Time.now.to_date <=1 && maximum_exceeded?
       true
     else
       false

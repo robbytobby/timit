@@ -10,7 +10,7 @@
   = f.input :password, :hint => t('.leave_blank')
   = f.input :password_confirmation
   = f.input :current_password, :required => true, :hint => t('.needed_for_update')
-  = f.commit_button :update_account
+  = f.action :submit, label: :update_account
 .clear
 %h3= t('.cancel_my_account')
 %p
