@@ -34,15 +34,15 @@ ActiveRecord::Schema.define(:version => 20130605102922) do
     t.datetime "updated_at"
     t.integer  "option_group_id"
     t.text     "message"
-    t.index ["option_group_id"], :name => "index_options_on_option_group_id"
+    t.index ["option_group_id"], :name => "index_options_on_option_group_id", :order => {"option_group_id" => :asc}
     t.foreign_key ["option_group_id"], "option_groups", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "options_option_group_id_fkey"
   end
 
   create_table "accessories_options", :id => false, :force => true do |t|
     t.integer "accessory_id"
     t.integer "option_id"
-    t.index ["accessory_id"], :name => "index_accessories_options_on_accessory_id"
-    t.index ["option_id"], :name => "index_accessories_options_on_option_id"
+    t.index ["accessory_id"], :name => "index_accessories_options_on_accessory_id", :order => {"accessory_id" => :asc}
+    t.index ["option_id"], :name => "index_accessories_options_on_option_id", :order => {"option_id" => :asc}
     t.foreign_key ["accessory_id"], "accessories", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "accessories_options_accessory_id_fkey"
     t.foreign_key ["option_id"], "options", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "accessories_options_option_id_fkey"
   end
@@ -81,8 +81,8 @@ ActiveRecord::Schema.define(:version => 20130605102922) do
     t.string   "role",                                  :default => "unprivileged", :null => false
     t.string   "locale"
     t.boolean  "wants_booking_email",                   :default => true,           :null => false
-    t.index ["email"], :name => "index_users_on_email", :unique => true
-    t.index ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
+    t.index ["email"], :name => "index_users_on_email", :unique => true, :order => {"email" => :asc}
+    t.index ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true, :order => {"reset_password_token" => :asc}
   end
 
   create_table "bookings", :force => true do |t|
@@ -96,17 +96,17 @@ ActiveRecord::Schema.define(:version => 20130605102922) do
     t.text     "comment"
     t.integer  "temperature"
     t.string   "sample"
-    t.index ["machine_id"], :name => "index_bookings_on_machine_id"
-    t.index ["user_id"], :name => "index_bookings_on_user_id"
-    t.foreign_key ["user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "bookings_user_id_fkey"
+    t.index ["machine_id"], :name => "index_bookings_on_machine_id", :order => {"machine_id" => :asc}
+    t.index ["user_id"], :name => "index_bookings_on_user_id", :order => {"user_id" => :asc}
     t.foreign_key ["machine_id"], "machines", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "bookings_machine_id_fkey"
+    t.foreign_key ["user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "bookings_user_id_fkey"
   end
 
   create_table "bookings_options", :id => false, :force => true do |t|
     t.integer "booking_id"
     t.integer "option_id"
-    t.index ["booking_id"], :name => "index_bookings_options_on_booking_id"
-    t.index ["option_id"], :name => "index_bookings_options_on_option_id"
+    t.index ["booking_id"], :name => "index_bookings_options_on_booking_id", :order => {"booking_id" => :asc}
+    t.index ["option_id"], :name => "index_bookings_options_on_option_id", :order => {"option_id" => :asc}
     t.foreign_key ["booking_id"], "bookings", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "bookings_options_booking_id_fkey"
     t.foreign_key ["option_id"], "options", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "bookings_options_option_id_fkey"
   end
@@ -116,17 +116,17 @@ ActiveRecord::Schema.define(:version => 20130605102922) do
     t.integer  "excluded_option_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.index ["excluded_option_id"], :name => "index_exclusions_on_excluded_option_id"
-    t.index ["option_id"], :name => "index_exclusions_on_option_id"
-    t.foreign_key ["option_id"], "options", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "exclusions_option_id_fkey"
+    t.index ["excluded_option_id"], :name => "index_exclusions_on_excluded_option_id", :order => {"excluded_option_id" => :asc}
+    t.index ["option_id"], :name => "index_exclusions_on_option_id", :order => {"option_id" => :asc}
     t.foreign_key ["excluded_option_id"], "options", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "exclusions_excluded_option_id_fkey"
+    t.foreign_key ["option_id"], "options", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "exclusions_option_id_fkey"
   end
 
   create_table "machines_options", :id => false, :force => true do |t|
     t.integer "machine_id"
     t.integer "option_id"
-    t.index ["machine_id"], :name => "index_machines_options_on_machine_id"
-    t.index ["option_id"], :name => "index_machines_options_on_option_id"
+    t.index ["machine_id"], :name => "index_machines_options_on_machine_id", :order => {"machine_id" => :asc}
+    t.index ["option_id"], :name => "index_machines_options_on_option_id", :order => {"option_id" => :asc}
     t.foreign_key ["machine_id"], "machines", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "machines_options_machine_id_fkey"
     t.foreign_key ["option_id"], "options", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "machines_options_option_id_fkey"
   end
@@ -134,8 +134,8 @@ ActiveRecord::Schema.define(:version => 20130605102922) do
   create_table "machines_users", :id => false, :force => true do |t|
     t.integer "machine_id"
     t.integer "user_id"
-    t.index ["machine_id"], :name => "index_machines_users_on_machine_id"
-    t.index ["user_id"], :name => "index_machines_users_on_user_id"
+    t.index ["machine_id"], :name => "index_machines_users_on_machine_id", :order => {"machine_id" => :asc}
+    t.index ["user_id"], :name => "index_machines_users_on_user_id", :order => {"user_id" => :asc}
     t.foreign_key ["machine_id"], "machines", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "machines_users_machine_id_fkey"
     t.foreign_key ["user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "machines_users_user_id_fkey"
   end
