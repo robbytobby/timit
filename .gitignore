@@ -7,3 +7,5 @@ tmp/
 coverage/
 public/assets/
 config/database.yml
+zeus.json
+custom_plan.rb
