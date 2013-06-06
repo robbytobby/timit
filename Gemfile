@@ -49,10 +49,10 @@ gem 'exception_notification'
 group :development, :test do
   gem 'rails3-generators'
   gem 'accept_values_for'
-  gem "pry"
+  gem "pry-rails"
   gem "pry-doc"
   #gem "better_errors"
-  gem "binding_of_caller"
+  #gem "binding_of_caller"
 end
 
 group :test do

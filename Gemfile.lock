@@ -40,8 +40,6 @@ GEM
     ansi (1.4.3)
     arel (3.0.2)
     bcrypt-ruby (3.0.1)
-    binding_of_caller (0.7.1)
-      debug_inspector (>= 0.0.1)
     builder (3.0.4)
     cancan (1.6.10)
     capistrano (2.15.4)
@@ -82,7 +80,6 @@ GEM
       nokogiri (>= 1.5.0)
       rails (~> 3.0)
     database_cleaner (1.0.1)
-    debug_inspector (0.0.2)
     devise (2.2.4)
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.1)
@@ -166,6 +163,8 @@ GEM
     pry-doc (0.4.6)
       pry (>= 0.9)
       yard (>= 0.8)
+    pry-rails (0.3.0)
+      pry (>= 0.9.10)
     rack (1.4.5)
     rack-cache (1.2)
       rack (>= 0.4)
@@ -269,7 +268,6 @@ PLATFORMS
 
 DEPENDENCIES
   accept_values_for
-  binding_of_caller
   cancan
   capistrano
   coffee-rails (~> 3.2.1)
@@ -290,8 +288,8 @@ DEPENDENCIES
   libnotify
   nested_form!
   pg
-  pry
   pry-doc
+  pry-rails
   rails (= 3.2.13)
   rails3-generators
   rails3_pg_deferred_constraints
