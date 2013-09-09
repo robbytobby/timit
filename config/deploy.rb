@@ -11,7 +11,7 @@ set :rvm_type, :user
 #  'BUNDLE_PATH'  => '/var/www/timit2/.rvm/gems/ruby-1.9.2-p290@timit'  # If you are using bundler.
 #}
 
-$LOAD_PATH.unshift File.join(File.dirname(__FILE__), 'deploy')
+#$LOAD_PATH.unshift File.join(File.dirname(__FILE__), 'deploy')
 require "cap_db_config"
 require "cap_passenger"
 load "deploy/assets"

@@ -41,6 +41,7 @@ gem 'icalendar'
 
 # Deploy with Capistrano
 gem 'capistrano'
+gem 'rvm-capistrano'
 gem 'exception_notification'
 
 # To use debugger
