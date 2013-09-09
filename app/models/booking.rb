@@ -202,7 +202,7 @@ class Booking < ActiveRecord::Base
   end
 
   def last_minute?
-    if starts_at.to_date - Time.now.to_date <=1 && maximum_exceeded?
+    if starts_at.present? && starts_at.to_date - Time.now.to_date <=1 && maximum_exceeded?
       true
     else
       false
