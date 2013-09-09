@@ -170,7 +170,7 @@ class Booking < ActiveRecord::Base
     event = Icalendar::Event.new
     if all_day?
       event.start = starts_at.to_date
-      event.end = ends_at.to_date
+      event.end = ends_at.to_date + 1.day
       event.start.ical_params = { "VALUE" => "DATE" }
       event.end.ical_params = { "VALUE" => "DATE" }
     else

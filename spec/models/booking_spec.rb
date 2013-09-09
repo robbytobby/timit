@@ -529,7 +529,7 @@ describe Booking do
       event = @booking.to_ics
       event.start.should == @booking.starts_at.to_date
       event.start.ical_params.should == {"VALUE" => "DATE"}
-      event.end.should == @booking.ends_at.to_date
+      event.end.should == @booking.ends_at.to_date + 1.day
       event.end.ical_params.should == {"VALUE" => "DATE"}
     end
   end
