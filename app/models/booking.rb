@@ -179,7 +179,7 @@ class Booking < ActiveRecord::Base
     event.created = I18n.l(created_at, format: :ical)
     event.last_modified = I18n.l(updated_at, format: :ical)
     event.uid = "timit_booking_#{self.id}"
-    event.url = "http://timit.chemie.uni-freiburg.de/#{I18n.locale}/calendar"
+    event.url = "http://timit.physchem.uni-freiburg.de/#{I18n.locale}/calendar"
     event
   end
 

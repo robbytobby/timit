@@ -521,7 +521,7 @@ describe Booking do
       event.created.should == I18n.l(@booking.created_at, format: :ical)
       event.last_modified.should == I18n.l(@booking.updated_at, format: :ical)
       event.uid.should == "timit_booking_#{@booking.id}"
-      event.url.should == "http://timit.chemie.uni-freiburg.de/#{I18n.locale}/calendar"
+      event.url.should == "http://timit.physchem.uni-freiburg.de/#{I18n.locale}/calendar"
     end
 
     it "deals with all_day_events" do
