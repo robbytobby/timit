@@ -165,7 +165,7 @@ class Booking < ActiveRecord::Base
     event = Icalendar::Event.new
     if all_day?
       event.start = starts_at.to_date
-      event.end = ends_at.to_date
+      event.end = ends_at.to_date + 1.day
       event.start.ical_params = { "VALUE" => "DATE" }
       event.end.ical_params = { "VALUE" => "DATE" }
     else
@@ -202,7 +202,7 @@ class Booking < ActiveRecord::Base
   end
 
   def last_minute?
-    if starts_at.to_date - Time.now.to_date <=1 && maximum_exceeded?
+    if starts_at.present? && starts_at.to_date - Time.now.to_date <=1 && maximum_exceeded?
       true
     else
       false
