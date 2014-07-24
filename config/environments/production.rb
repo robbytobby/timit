@@ -52,7 +52,7 @@ Timit::Application.configure do
   #TODO configure
   if Rails.env.production?
     config.action_mailer.raise_delivery_errors = true
-    config.action_mailer.default_url_options = { :host => 'timit.chemie.uni-freiburg.de' }
+    config.action_mailer.default_url_options = { :host => 'timit.physchem.uni-freiburg.de' }
   else
     config.action_mailer.raise_delivery_errors = false
     config.action_mailer.default_url_options = { :host => 'localhost:3000' }

@@ -1,6 +1,6 @@
 #TODO: abhängig von der Umgebung mache#TODO: abhängig von der Umgebung machenn
 if Rails.env.production?
-  ActionMailer::Base.default_url_options[:host] = "timit.chemie.uni-freiburg.de"
+  ActionMailer::Base.default_url_options[:host] = "timit.physchem.uni-freiburg.de"
   ActionMailer::Base.delivery_method = :sendmail
 end
 
