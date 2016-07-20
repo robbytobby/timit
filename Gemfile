@@ -6,7 +6,7 @@ gem 'rack', '1.3.3' # get rid of nasty messages
 # Bundle edge Rails instead:
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'
 
-gem 'sqlite3'
+#gem 'sqlite3'
 gem 'pg'
 
 # Gems used only for assets and not required
@@ -41,8 +41,8 @@ gem 'icalendar'
 # gem 'unicorn'
 
 # Deploy with Capistrano
-gem 'capistrano'
-gem 'rvm-capistrano'
+gem 'capistrano', require: false
+gem 'rvm-capistrano', require: false
 gem 'exception_notification'
 
 # To use debugger
